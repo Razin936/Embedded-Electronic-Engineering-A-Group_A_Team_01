@@ -1,0 +1,64 @@
+{
+  "protocol_version": "0.2",
+  "student_id": "1230281",
+  "course": "Embedded Electronic Engineering A – Real-Time Systems",
+  "milestone": "M1",
+  "topic": "Priority Exchange",
+  "entries": [
+    {
+      "id": "e-859b578a",
+      "timestamp": "2026-05-23T09:56:33+00:00",
+      "parent_id": null,
+      "objective": "Understand the Priority Exchange (PE) server algorithm for scheduling\naperiodic tasks alongside periodic tasks under Rate Monotonic scheduling\nin real-time systems, including its mechanism, schedulability bound,\nand trade-offs compared to other server algorithms (Polling Server,\nDeferrable Server, Sporadic Server).",
+      "ai_tool": {
+        "name": "Claude",
+        "model": "Claude Opus 4.7"
+      },
+      "prompt": "In Real-Time system, explain \"Priority Exchange\" topic to me in detail",
+      "ai_output_summary": "Explained Priority Exchange as a bandwidth-preserving server algorithm\nfor handling aperiodic tasks under Rate Monotonic scheduling. Key points\ncovered:\n\n- Server defined by period Ts and capacity Cs; treated as periodic task\n  with RM-assigned priority.\n- Core mechanism: when no aperiodic request is pending, server exchanges\n  its remaining capacity with the currently executing lower-priority\n  periodic task — the periodic task runs at server's high priority, and\n  the capacity migrates down to the periodic task's priority level.\n- Capacity \"trickles down\" through priority levels until consumed by an\n  aperiodic request or discarded at the lowest level.\n- Schedulability bound formula provided (Liu & Layland-style, adapted\n  for server utilization Us).\n- Comparison table of PS, DS, PE, SS covering capacity preservation,\n  response time, and complexity.\n- PE has better schedulability bound than Deferrable Server (avoids\n  back-to-back effect) but high implementation complexity.\n- Historical note: Sporadic Server later offered comparable bounds with\n  simpler implementation, so PE is mostly of theoretical importance.",
+      "verification": {
+        "actions": [
+          "Cross-checked the explanation against standard real-time systems",
+          "literature: Buttazzo's \"Hard Real-Time Computing Systems\" (Chapter on",
+          "fixed-priority servers) and the original Sprunt, Sha, Lehoczky (1989)",
+          "paper introducing Priority Exchange and Sporadic Server. Compared",
+          "server classification (PS, DS, PE, SS), capacity preservation mechanism,",
+          "and schedulability bound against course material from the Real-Time",
+          "Systems lecture. Verified that the core mechanism (priority exchange",
+          "with lower-priority periodic tasks to preserve capacity) and the",
+          "historical positioning (PE superseded by SS due to implementation",
+          "complexity) match accepted textbook treatment."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "- No primary citations provided inline (no DOI, page numbers, or direct",
+          "references to Buttazzo or Sprunt/Sha/Lehoczky 1989).",
+          "- Schedulability bound formula presented in Liu & Layland style; exact",
+          "derivation and original source attribution not given and must be",
+          "verified independently.",
+          "- Comparison table of PS, DS, PE, SS uses qualitative labels",
+          "(\"better\", \"worst\", \"low/medium/high\") with no quantitative",
+          "benchmarks or numerical examples.",
+          "- Statement that \"Sporadic Server superseded PE in practical use\" is",
+          "presented as general consensus without a supporting citation.",
+          "- The worked illustration of priority exchange is simplified and uses",
+          "hypothetical values; not a verified textbook example.",
+          "- No discussion of edge cases such as multiple simultaneous aperiodic",
+          "requests or interaction with blocking/priority inversion."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": false,
+        "section": "",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "Gained a clearer understanding of where Priority Exchange sits within\nthe family of server-based scheduling algorithms for aperiodic task\nhandling under Rate Monotonic scheduling. The key insight was the\ndistinction between bandwidth-preserving and non-preserving servers,\nand specifically why PE achieves a better schedulability bound than\nthe Deferrable Server: PE avoids the back-to-back effect by degrading\nunused capacity to lower priority levels over time, rather than\nholding it at high priority until the period ends. Previously I had\nconflated PE and DS as similar bandwidth-preserving mechanisms;\nthe trade-off between schedulability and aperiodic response time is\nnow clearer. Also useful was the historical context that PE is\nmostly of theoretical importance today because Sporadic Server\nachieves comparable bounds with simpler implementation. For deeper\nstudy I will consult Buttazzo's textbook and the original 1989 paper\nto verify the schedulability formula and explore numerical examples\nbefore treating any of this material as canonical."
+    }
+  ],
+  "exported_at": "2026-05-23T09:56:33+00:00"
+}
