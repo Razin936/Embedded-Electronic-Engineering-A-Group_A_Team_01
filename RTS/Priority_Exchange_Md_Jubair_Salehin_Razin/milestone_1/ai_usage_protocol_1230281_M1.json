@@ -7,7 +7,7 @@
   "entries": [
     {
       "id": "e-859b578a",
-      "timestamp": "2026-05-23T10:43:17+00:00",
+      "timestamp": "2026-05-24T10:48:53+00:00",
       "parent_id": null,
       "objective": "Understand the Priority Exchange (PE) server algorithm for scheduling\naperiodic tasks alongside periodic tasks under Rate Monotonic scheduling\nin real-time systems, including its mechanism, schedulability bound,\nand trade-offs compared to other server algorithms (Polling Server,\nDeferrable Server, Sporadic Server).",
       "ai_tool": {
@@ -61,7 +61,7 @@
     },
     {
       "id": "e-b150e86f",
-      "timestamp": "2026-05-23T10:43:17+00:00",
+      "timestamp": "2026-05-24T10:48:53+00:00",
       "parent_id": null,
       "objective": "Clarify the implementation-level meaning of \"priority exchange\" in the\nPriority Exchange server algorithm: specifically whether the exchange\nis a genuine OS-level priority manipulation or purely virtual scheduler\nbookkeeping. Understand the scheduler data structures, the steps\nperformed at each scheduling decision, and the reasons why PE is\nconsidered hard to implement compared to other server algorithms\n(Polling Server, Deferrable Server, Sporadic Server).",
       "ai_tool": {
@@ -117,7 +117,7 @@
     },
     {
       "id": "e-1c6ae89c",
-      "timestamp": "2026-05-23T10:43:17+00:00",
+      "timestamp": "2026-05-24T10:48:53+00:00",
       "parent_id": null,
       "objective": "Understand the exchange-partner selection policy in the Priority\nExchange server algorithm when multiple lower-priority periodic\ntasks are simultaneously ready. Determine whether the policy is\ndeterministic, how it interacts with preemption and new task\narrivals during an active exchange, and how the capacity-at-priority\nbookkeeping handles partner changes within a single server period.",
       "ai_tool": {
@@ -178,7 +178,7 @@
     },
     {
       "id": "e-16ee66aa",
-      "timestamp": "2026-05-23T10:43:17+00:00",
+      "timestamp": "2026-05-24T10:48:53+00:00",
       "parent_id": null,
       "objective": "Identify the assumptions Priority Exchange makes about the underlying\nscheduler and task model, and understand what fails when each\nassumption is violated. The goal is to assess PE's practical\napplicability in realistic embedded systems where idealised\nassumptions (zero-cost preemption, task independence, single\nprocessor) typically do not hold.",
       "ai_tool": {
@@ -245,7 +245,7 @@
     },
     {
       "id": "e-35a643eb",
-      "timestamp": "2026-05-23T10:43:17+00:00",
+      "timestamp": "2026-05-24T10:48:53+00:00",
       "parent_id": null,
       "objective": "Determine whether the Priority Exchange mechanism remains relevant in\nmodern multi-core real-time systems or whether it is fundamentally\nrestricted to uniprocessor deployment. Understand which conceptual\ncontributions of PE persist in current multi-core scheduling\npractice and which mechanisms have superseded it in production\nRTOS and Linux-based real-time environments.",
       "ai_tool": {
@@ -305,7 +305,80 @@
         "direct_text_reused": false
       },
       "reflection": "This interaction completed the practical picture of Priority\nExchange by placing it in the modern multi-core landscape. The\nclearest takeaway is that PE's mechanism — capacity migration\nthrough a linearly ordered priority space — depends fundamentally\non the uniprocessor assumption and does not survive translation to\nmulti-core scheduling, whether partitioned or global. The\nbandwidth-preservation principle that PE introduced persists,\nbut in entirely different mechanisms: CBS under EDF, hierarchical\nreservation frameworks, and the Linux SCHED_DEADLINE policy. For\nthe automotive multi-core platforms I work with at dSPACE\n(typically Infineon or NXP under AUTOSAR OS), the relevant\nscheduling primitives are partitioned fixed-priority with timing\nprotection — PE has no presence in that ecosystem. This reinforces\nthe conclusion from the assumption analysis: PE is a teaching tool\nand a historical milestone, not a candidate for any modern\ndeployment. Across all five interactions in this thread, the\ncoherent picture is: PE is conceptually important as the first\nalgorithm to beat Deferrable Server's schedulability bound, it\nillustrates bandwidth preservation cleanly on a uniprocessor, it\nwas superseded in practice by Sporadic Server (in fixed-priority\ncontexts) and by CBS (in dynamic-priority contexts), and its\nmechanism does not generalise to multi-core. For thesis or exam\nwork I would treat PE as part of the historical lineage of\nserver-based aperiodic scheduling, not as a candidate algorithm\nfor any current system. All historical claims, specific kernel\nversion numbers, and standards references should be verified\nagainst primary sources before being used in academic writing."
+    },
+    {
+      "id": "e-5826942c",
+      "timestamp": "2026-05-24T10:48:53+00:00",
+      "parent_id": null,
+      "objective": "Convert a YouTube lecture transcript on real-time scheduling\n(generalisations of RMA, context switch overhead, period\ntransformation, precedence constraints, aperiodic and sporadic\ntasks, and server algorithms) into a comprehensive\nbeginner-friendly study document with explanatory diagrams. The\ngoal is to produce structured exam-preparation material covering\nDeadline Monotonic Analysis, context switch handling, period\ntransformation, precedence-constrained scheduling, and the full\nfamily of server algorithms (Polling, Deferrable, Priority\nExchange, Sporadic, Slack Stealer).",
+      "ai_tool": {
+        "name": "Claude",
+        "model": "Claude Opus 4.7"
+      },
+      "prompt": "I have the transcript of the following YouTube video:\nhttps://www.youtube.com/watch?v=ldq1-engkxI\n\nPlease convert the transcript into a well-structured academic learning document suitable for university submission.\n\nThe document should:\n- Present the content in a clear and logical order.\n- Explain the topic in beginner-friendly language.\n- Preserve the main ideas and technical meaning of the original video.\n- Include an introduction, main explanation sections, important definitions, examples, diagrams/tables where useful, and a final summary.\n- Use formal academic wording, but keep the explanation easy to follow.\n- Avoid copying the transcript directly; rewrite it in original words.\n- Add visual aids such as flowcharts, simple diagrams, or comparison tables if they improve understanding.\n\nPlease generate the final output as a Word document or PowerPoint presentation.",
+      "ai_output_summary": "Produced a beginner-friendly Word document (.docx) summarising\nthe lecture content with embedded diagrams. The document covers:\n\n- Mini-vocabulary section: execution time, period, deadline\n  explained in plain English before any formal treatment.\n- Big-picture overview diagram positioning every subtopic in the\n  real-time scheduling landscape.\n- Part 1 — Deadline Monotonic Analysis (DMA): motivation for\n  why RMA is not optimal when deadlines are shorter than periods.\n- Part 2 — Context switch overhead: visualisation of switching\n  gaps, the effective execution time formula e + 2C, and a worked\n  example.\n- Part 3 — Period transformation: technique for splitting a long\n  critical task into smaller virtual subtasks, with before/after\n  diagram.\n- Part 4 — Precedence constraints: right-to-left scheduling\n  approach illustrated step-by-step.\n- Part 5 — Aperiodic vs sporadic tasks: side-by-side diagram of\n  the two task types.\n- Part 6 — Server algorithms (Polling, Deferrable, Priority\n  Exchange, Sporadic, Slack Stealer): each with its own timeline\n  diagram and a pros/cons callout box.\n- Part 7 — Comparison table summarising all five server types\n  across capacity preservation, response time, complexity, and\n  practical use.\n- Summary section and glossary for quick revision.\n\nWorkflow used by the assistant:\n- Consulted internal docx skill for best practices.\n- Generated 8 SVG diagrams in timeline style matching the\n  lecture's visualisation conventions.\n- Resolved a duplicate-attribute issue in one SVG, then converted\n  all SVGs to PNG via cairosvg.\n- Assembled the Word document with embedded PNG diagrams,\n  colour-coded callout boxes (yellow for key insights, green for\n  pros, yellow for trade-offs), and structured sections.\n- Validated the document and presented it as a downloadable file.",
+      "verification": {
+        "actions": [
+          "Cross-checked the document content against the source lecture",
+          "transcript and standard real-time systems references (Buttazzo",
+          "\"Hard Real-Time Computing Systems\"). The treatment of Deadline",
+          "Monotonic Analysis, the context-switch overhead formula e + 2C,",
+          "period transformation, precedence-constrained scheduling via",
+          "right-to-left scheduling, and the five server algorithm types",
+          "follows the lecture's structure and matches accepted textbook",
+          "material. The comparative ranking of server algorithms (Polling",
+          "no preservation, Deferrable best response time but worst",
+          "schedulability bound, Priority Exchange better bound than",
+          "Deferrable, Sporadic Server practical bandwidth-preserving",
+          "choice, Slack Stealer optimal in theory but complex) matches",
+          "the body of real-time scheduling literature. The diagrams use",
+          "timeline conventions consistent with how server algorithms are",
+          "typically illustrated in textbooks and lecture material."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "- Document was generated from a single lecture transcript; no",
+          "primary textbook references (Buttazzo, Liu & Layland, Sprunt",
+          "/ Sha / Lehoczky) cited inline.",
+          "- Server algorithm comparison table uses qualitative labels",
+          "(\"better\", \"worst\", \"low/medium/high\") with no numerical",
+          "benchmarks or worked schedulability examples.",
+          "- Diagrams are illustrative and use hypothetical task parameters;",
+          "they are not reproductions of verified textbook examples.",
+          "- The context switch overhead formula e + 2C is presented as it",
+          "appears in the lecture; the derivation and the conditions under",
+          "which the factor 2 holds (rather than 1 or some other value",
+          "depending on preemption model) were not discussed.",
+          "- The period transformation technique is described conceptually",
+          "without giving the formal task-splitting rule or the impact",
+          "on schedulability analysis.",
+          "- The precedence-constrained scheduling section presents",
+          "right-to-left scheduling as a heuristic; the formal optimality",
+          "conditions and alternative approaches (e.g. EDF with modified",
+          "deadlines) were not covered.",
+          "- The Slack Stealer description follows the lecture's",
+          "characterisation as \"optimal but complex\" without detailing the",
+          "slack computation algorithm or the conditions for optimality.",
+          "- No discussion of how the lecturer's framing aligns with or",
+          "differs from canonical textbook treatments; would benefit from",
+          "cross-referencing against Buttazzo's chapter structure.",
+          "- The choice of Word format with embedded PNG diagrams is",
+          "convenient for revision but may not be ideal for sharing with",
+          "others if SVG-quality scaling is needed."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": false,
+        "section": "",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction produced a consolidated revision document that\nties together every topic from the source lecture into a single\nbeginner-friendly reference with diagrams. The most useful aspect\nwas the comparative server-algorithm table, which made the\ndistinctions between Polling, Deferrable, Priority Exchange,\nSporadic, and Slack Stealer visible at a glance — something the\nlecture itself presented sequentially but never side-by-side.\nThe diagrams use timeline conventions that match the lecture's\nown style, which should help bridge between the video and the\nwritten notes during revision. Caveats: the document is derived\nfrom a single source (the lecture transcript) without\ncross-referencing primary textbook material, so all\nclassifications and comparative statements should be verified\nagainst Buttazzo or another canonical reference before being\nrelied on for exam answers or thesis writing. The qualitative\nnature of the comparison table is a deliberate simplification\nfor an introductory pass; for any deeper analysis I would need\nthe actual schedulability bound formulas and worked numerical\nexamples. Overall this is good scaffolding for exam preparation,\nnot a substitute for working through the original textbook\ntreatment."
     }
   ],
-  "exported_at": "2026-05-23T10:43:17+00:00"
+  "exported_at": "2026-05-24T10:48:53+00:00"
 }
