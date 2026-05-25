@@ -1,0 +1,234 @@
+{
+  "protocol_version": "0.2",
+  "student_id": "1230473",
+  "course": "Special Emphasis-A_Real_Time _Systems",
+  "milestone": "1",
+  "topic": "Sporadic Server",
+  "entries": [
+    {
+      "id": "e-69a1705d",
+      "timestamp": "2026-05-25T14:03:02+00:00",
+      "parent_id": null,
+      "objective": "To understand the Milestone 1 requirements for my RTS seminar topic “Sporadic Server” and plan how to start the technical briefing, because Buttazzo is recommended as the main reference but I currently do not have direct access to the book.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "My RTS seminar topic assigned by my professor is “Sporadic Server”. The professor recommended Buttazzo’s real-time systems book as the main reference, but I currently do not have access to that book through my library. Milestone 1 requires a short technical briefing with problem statement, motivation, core technical idea, formalism or algorithm, assumptions, scope limitations, runtime/memory/scalability aspects, unclear points, and relevance for embedded systems/computer science. Guide me on how to prepare Milestone 1 honestly without pretending that I read Buttazzo, and suggest how I should use accessible alternative sources while keeping Buttazzo as the recommended reference.",
+      "ai_output_summary": "ChatGPT explained that Milestone 1 should show technical understanding, not a polished final paper. It suggested structuring the briefing into sections such as problem statement, motivation, core idea of Sporadic Server, formal model, assumptions, resource overhead, relevance, and open questions. It also advised not to claim that I used Buttazzo directly if I do not have access to the book. Instead, I should mention Buttazzo as the recommended main reference and use accessible sources, such as the original Sporadic Server paper and open lecture material, for the first milestone. The AI also emphasized that the final milestone text must be written in my own words and verified with sources.",
+      "verification": {
+        "actions": [
+          "I checked the AI guidance against the seminar requirements given by the professor. The seminar instructions require scientific writing, references, reference notes, GitHub use, and strict avoidance of plagiarism. I also checked that the topic “Sporadic Server” is listed as one of the possible RTS seminar topics. Since I do not currently have direct access to Buttazzo’s book, I will not claim direct use of it. I will use accessible alternative sources for initial understanding, especially the original Sporadic Server paper by Sprunt, Sha, and Lehoczky, and open lecture material on real-time server-based scheduling. If I later obtain access to Buttazzo, I will use it for verification and update my reference notes."
+        ],
+        "level": "primary-source-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "ChatGPT's output was useful for planning the milestone, but it does not replace source reading. Some technical details, especially the exact replenishment rule and schedulability assumptions of the Sporadic Server, still need to be checked from academic sources. Also, since Buttazzo is not currently accessible to me, I must not cite specific content or pages from that book."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Milestone 1: Technical Understanding and Research Framing",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction helped me understand how to start Milestone 1 honestly. I learned that I should not pretend to have read Buttazzo if I do not have access to the book. Instead, I can mention Buttazzo as the recommended reference and use accessible academic sources for initial understanding. The milestone should show my own technical understanding of Sporadic Server, especially the problem setting, server budget, replenishment idea, assumptions, overhead, limitations, and open questions. I will write the final milestone in my own words and verify technical claims with accessible sources."
+    },
+    {
+      "id": "e-ddfdff73",
+      "timestamp": "2026-05-25T14:03:02+00:00",
+      "parent_id": null,
+      "objective": "To find accessible alternative references for understanding Sporadic Server because I currently do not have access to Buttazzo’s book, which is the recommended main reference.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "My RTS seminar topic is Sporadic Server. Buttazzo’s book is recommended as the main reference, but I currently do not have access to it through my library. Please suggest accessible alternative references that explain Sporadic Server, aperiodic task scheduling, server capacity, replenishment, and schedulability. I need references that I can honestly cite or use for technical understanding without pretending that I read Buttazzo.",
+      "ai_output_summary": "The LLM suggested using accessible references instead of pretending to have used Buttazzo. It recommended the original Sporadic Server paper by Sprunt, Sha, and Lehoczky, open lecture notes on resource reservation servers, and other accessible real-time scheduling material. The AI also advised clearly documenting that Buttazzo is the recommended reference but was not directly available at this stage.",
+      "verification": {
+        "actions": [
+          "I checked that the suggested references are relevant to Sporadic Server and real-time scheduling. The original paper by Sprunt, Sha, and Lehoczky is a primary source for the Sporadic Server algorithm. I also checked open lecture material and accessible real-time systems resources for explanations of server-based scheduling. I will not claim to have used Buttazzo directly unless I actually obtain access to the book."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The AI could suggest references, but I still need to check which ones are academically acceptable and accessible through reliable sources. I must not cite Buttazzo directly unless I actually read it. Some online PDFs may need careful checking for copyright or source reliability."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "References and technical background for Milestone 1",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction helped me avoid a possible academic honesty problem. Since I did not have access to Buttazzo’s book, I should not pretend that I used it as a read source. Instead, I will mention Buttazzo as the recommended main reference and use accessible sources such as the original Sporadic Server paper and open lecture material. This makes my workflow more transparent and reduces plagiarism risk."
+    },
+    {
+      "id": "e-3b30e5ae",
+      "timestamp": "2026-05-25T14:03:02+00:00",
+      "parent_id": null,
+      "objective": "To clarify the technical mechanism of the Sporadic Server, especially budget consumption, replenishment, assumptions, and overhead.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Based on my topic assigned from Prof. “Sporadic Server”. Explain the algorithm at a technical but beginner-friendly level. Focus only on the main mechanism: server budget, replenishment period, how aperiodic jobs are served, why the server protects periodic hard real-time tasks, and what overhead or implementation complexity it introduces. Do not write final seminar text; give me points that I can verify and rewrite in my own words.",
+      "ai_output_summary": "The LLM explained that a Sporadic Server reserves a limited execution capacity for aperiodic jobs. The server can execute irregular requests only while budget is available. When budget is consumed, the consumed amount is replenished later instead of being restored immediately. This makes the server responsive to aperiodic events while limiting processor interference against periodic hard real-time tasks. The AI also identified implementation overheads such as budget tracking, replenishment queue management, timer handling, and possible additional context switches.",
+      "verification": {
+        "actions": [
+          "I compared the explanation with the original Sporadic Server paper by Sprunt, Sha, and Lehoczky and with accessible lecture notes on resource reservation servers. I checked whether the main mechanism was correctly described: limited server capacity, delayed replenishment, aperiodic job execution, and protection of periodic tasks. I also checked whether the mentioned overheads are reasonable from an implementation point of view."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The explanation was useful for understanding the concept, but it did not provide a complete formal replenishment rule or full schedulability proof. These parts still need to be checked carefully from academic references before being included in the final paper."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Milestone 1 sections: core technical idea, algorithm, assumptions, and resource aspects",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction helped me understand the technical heart of Sporadic Server: controlled service for aperiodic jobs through budget and replenishment. I still need to verify the exact replenishment rule and schedulability assumptions from academic sources. I will use this explanation only as a learning aid and rewrite the milestone in my own words."
+    },
+    {
+      "id": "e-fe919cc8",
+      "timestamp": "2026-05-25T14:03:02+00:00",
+      "parent_id": null,
+      "objective": "To understand how Sporadic Server differs from Polling Server and Deferrable Server, so that I can explain the motivation and technical contribution more clearly in Milestone 1.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "As you know I'm working on “Sporadic Server”. I currently do not have access to Buttazzo’s book, so I am using accessible academic sources for initial understanding. Please explain the difference between Polling Server, Deferrable Server, and Sporadic Server at a beginner-friendly technical level. Focus on why Sporadic Server was introduced, what problem it solves better than the other two, and what assumptions or limitations I should mention. Do not write final seminar text; give me points that I can verify and rewrite in my own words.",
+      "ai_output_summary": "AI explained that Polling Server, Deferrable Server, and Sporadic Server are all mechanisms for serving aperiodic tasks in real-time systems. Polling Server checks for aperiodic work periodically and may waste capacity if no request is available. Deferrable Server keeps its capacity during a period, which improves response time but may create more interference with periodic tasks. Sporadic Server also preserves responsiveness, but uses delayed replenishment of consumed capacity to better control processor demand. The AI suggested using this comparison to explain why Sporadic Server is technically relevant.",
+      "verification": {
+        "actions": [
+          "I checked the comparison against accessible real-time systems lecture material and the original Sporadic Server paper. I focused on whether the explanation correctly describes the motivation for Sporadic Server: improving aperiodic response time while limiting interference with hard real-time periodic tasks. I also checked that I do not present the comparison as copied textbook text."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The comparison was useful for understanding the motivation, but it was still a simplified explanation. I need to verify exact technical details, especially replenishment behavior and schedulability conditions, before using them in the final paper."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": false,
+        "section": "Milestone 1: problem statement, motivation, and core technical idea",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction helped me understand why Sporadic Server is not just another server mechanism but a more controlled way to serve aperiodic requests. The comparison with Polling Server and Deferrable Server makes the motivation clearer. I will use the idea for my own explanation, but I will verify the technical details from accessible academic sources and rewrite the section in my own words."
+    },
+    {
+      "id": "e-3a3efad1",
+      "timestamp": "2026-05-25T14:03:02+00:00",
+      "parent_id": null,
+      "objective": "To get a final check of my Milestone 1 draft before uploading it to GitHub, especially to see whether it sounds like my own work and whether anything important is missing.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "I have finished a first version of my Milestone 1 for the RTS topic “Sporadic Server”. Can you check it like a reviewer before I upload it to GitHub? I mainly want to know: does it sound understandable, are the important parts missing, does anything sound too much like copied/AI text, and are my open questions good enough? Please do not rewrite the full text, just give me short feedback in simple points.",
+      "ai_output_summary": "The LLM gave reviewer-style feedback on the Milestone 1 draft. It checked whether the draft was understandable, whether the main parts of the milestone were present, and whether the text sounded too polished or generic. It suggested making the problem statement more concrete, explaining the budget and replenishment idea more clearly, keeping the unclear questions honest, and checking all technical claims with sources before submitting.",
+      "verification": {
+        "actions": [
+          "I compared the feedback with the Milestone 1 checklist and the seminar requirements. I checked whether my draft includes the required parts: problem statement, core technical idea, formal model or algorithm, assumptions, resource aspects, unclear points, and relevance to embedded systems/computer science. I also reviewed my own wording to make sure I did not directly reuse AI-generated text."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "revised",
+        "issues": [
+          "The feedback was useful for improving structure and readability, but it was still a general review.So I still need to check the exact details with accessible references."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Final review of Milestone 1 before GitHub upload",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction was useful as a final sanity check before uploading the milestone to GitHub. It helped me see whether the draft is understandable and whether it covers the expected milestone points. I did not use the AI output as a source or copy text from it. I used it only to decide what to revise in my own draft."
+    },
+    {
+      "id": "e-18f35d94",
+      "timestamp": "2026-05-25T14:03:02+00:00",
+      "parent_id": null,
+      "objective": "To clear my basic confusion about what a Sporadic Server actually does before writing the technical explanation.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "I am still a bit confused about Sporadic Server. Can you explain it to me in a simple way, like I am new to real-time systems? I understand periodic tasks a little bit, but I am confused about why we need a server for aperiodic tasks and what budget/replenishment really means. Please explain with a small example, not like a final report.",
+      "ai_output_summary": "The AI explained Sporadic Server in a simpler way. It described periodic tasks as regular jobs and aperiodic tasks as irregular jobs that can arrive at unknown times. The server was explained as a controlled CPU-time reserve for these irregular jobs. The AI used the idea of a limited budget, where the server can execute aperiodic work only while it has remaining capacity. When capacity is used, it is restored later through replenishment. This helped me understand the topic before writing the formal milestone text.",
+      "verification": {
+        "actions": [
+          "I compared the simple explanation with accessible lecture material on real-time scheduling and server-based handling of aperiodic tasks. I checked whether the basic ideas of periodic tasks, aperiodic tasks, server budget, and replenishment were described consistently. I treated the explanation only as a learning aid, not as a source for final text."
+        ],
+        "level": "secondary-source-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The explanation was simplified, so it did not include the exact formal replenishment rule or a complete schedulability analysis. I still need academic sources for the precise technical description."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": false,
+        "section": "Core technical idea / personal understanding notes",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction helped me understand the topic in simple language before trying to write it academically. The budget and replenishment idea became clearer to me. I will not copy this explanation into the milestone, but I can now write my own explanation more confidently."
+    },
+    {
+      "id": "e-59058229",
+      "timestamp": "2026-05-25T14:03:02+00:00",
+      "parent_id": null,
+      "objective": "To improve the open questions section of Milestone 1 so that it looks honest and useful for professor feedback.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "For my Milestone 1 on Sporadic Server, I need to write some open questions for feedback. I do not want them to sound fake or too generic. Can you help me check whether these questions are good for a student who is still learning the topic? I want questions about Buttazzo access, exact replenishment rule, comparison with Deferrable Server, and whether implementation should be in UPPAAL or C/C++.",
+      "ai_output_summary": "For my Milestone 1 on Sporadic Server, I need to write some open questions for feedback. I do not want them to sound fake or too generic. Can you help me check whether these questions are good for a student who is still learning the topic? I want questions about Buttazzo access, exact replenishment rule, comparison with Deferrable Server, and whether implementation should be in UPPAAL or C/C++.",
+      "verification": {
+        "actions": [
+          "I checked the suggested questions against the Milestone 1 checklist and the seminar requirements. I made sure the questions are connected to real parts of the work, such as references, formal algorithm description, implementation choice, and comparison with related server mechanisms."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "revised",
+        "issues": [
+          "The AI helped improve the wording of the questions, but it could not decide the professor’s expectation. The final decision about scope and implementation still needs feedback from the professor."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Unclear points and questions for feedback",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction helped me make the open questions more realistic. Instead of hiding what I do not understand yet, I can show the exact points where I need feedback. This also fits the purpose of Milestone 1 because the milestone is about technical understanding and research framing, not pretending that everything is already solved."
+    }
+  ],
+  "exported_at": "2026-05-25T14:03:02+00:00"
+}
