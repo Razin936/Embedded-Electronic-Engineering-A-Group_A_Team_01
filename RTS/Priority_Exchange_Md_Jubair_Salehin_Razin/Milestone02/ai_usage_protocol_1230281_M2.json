@@ -1,0 +1,163 @@
+{
+  "protocol_version": "0.2",
+  "student_id": "1230281",
+  "course": "Embedded Electronic Engineering A – Real-Time Systems",
+  "milestone": "M2",
+  "topic": "Priority Exchange",
+  "entries": [
+    {
+      "id": "e-a1f5d084",
+      "timestamp": "2026-05-29T22:05:54+00:00",
+      "parent_id": null,
+      "objective": "Establish a structured work plan for Milestone 2 (M2) of the Real-Time\nSystems seminar assignment on the Priority Exchange server algorithm.\nThe objective is to identify the sub-sections that M2 must cover\naccording to the assignment specification by Prof. Dr. Henkler,\nallocate them across the available preparation days, and define\nconcrete deliverables for each working session. The output of this\ninteraction is intended to serve as the planning artefact that\norganises the subsequent contextualisation and tradeoff analysis\nphase of the seminar work.",
+      "ai_tool": {
+        "name": "Claude",
+        "model": "Claude Opus 4.7"
+      },
+      "prompt": "Now tell me about M2: what sub-sectors will you categorise it into\nto go through one by one? Instruct me one by one.",
+      "ai_output_summary": "Provided a structured plan for Milestone 2 organised around six\nsub-sections that correspond to the expected output as specified\nby Prof. Dr. Henkler:\n\n1. Related Approaches and Paradigms — mapping the lineage of\n   aperiodic server algorithms from background scheduling through\n   Polling Server, Deferrable Server, Priority Exchange, Sporadic\n   Server, Dynamic Sporadic Server, Total Bandwidth Server, and\n   Constant Bandwidth Server, establishing the position of\n   Priority Exchange within this genealogy.\n2. Competing Solution Strategies — non-server alternatives for\n   aperiodic task handling, including Slack Stealing\n   (Lehoczky and Ramos-Thuel, 1992), Dual-Priority Scheduling\n   (Davis and Wellings, 1995), Earliest Deadline First-based\n   servers, and modern resource reservation frameworks.\n3. Assumptions Across Approaches — comparison of the task model,\n   underlying scheduler, platform model, worst-case execution\n   time knowledge, and resource-sharing handling assumed by each\n   algorithm.\n4. Tradeoff Analysis — application of the five tradeoff axes\n   articulated in the assignment specification (precision versus\n   runtime overhead, response time versus schedulability,\n   optimality versus feasibility, offline versus online,\n   formal guarantees versus practical deployability) to Priority\n   Exchange and the comparable algorithms.\n5. Consequences for Real-Time and Embedded Systems — practical\n   deployment implications of selecting Priority Exchange versus\n   Sporadic Server or Constant Bandwidth Server in production\n   real-time operating systems, with reference to embedded\n   constraints and certification standards (ISO 26262, DO-178C).\n6. Scope and Boundaries of Related Work — explicit acknowledgment\n   that Priority Exchange was introduced alongside Sporadic\n   Server in a single 1989 paper, that modern citations are\n   primarily of successors rather than competitors, and that\n   the related-work landscape is therefore intentionally compact.\n\nA day-by-day plan was provided allocating the six sub-sections\nacross the available working days from 26 May to 01 June 2026,\nwith concrete deliverables, suggested reading material, and\nfollow-up commands for each day. A target citation count of eight\nto twelve well-chosen references was recommended, with an\nindicative list including Sprunt, Sha and Lehoczky 1989, Buttazzo\n\"Hard Real-Time Computing Systems\", Liu and Layland 1973,\nLehoczky, Sha and Strosnider 1987, Lehoczky and Ramos-Thuel 1992,\nDavis and Wellings 1995, Spuri and Buttazzo 1996, and the course\nslides of Prof. Dr. Henkler. A skeleton LaTeX document structure\nbased on the IEEEtran conference class was also provided to\nfacilitate direct integration with the M1 deliverable.",
+      "verification": {
+        "actions": [
+          "The proposed sub-section structure was cross-checked against the",
+          "expected-output description in the assignment specification by",
+          "Prof. Dr. Henkler, which explicitly requires identification of",
+          "related approaches, neighbouring problem classes, design",
+          "alternatives, assumptions, and consequences. The principle of",
+          "avoiding artificial accumulation of weakly related references,",
+          "also stated in the assignment specification, is reflected in",
+          "the target citation count and in the explicit acknowledgment",
+          "that Priority Exchange's related-work landscape is compact.",
+          "The genealogy of aperiodic server algorithms (Polling Server,",
+          "Deferrable Server, Priority Exchange, Sporadic Server, Dynamic",
+          "Sporadic Server, Total Bandwidth Server, Constant Bandwidth",
+          "Server) and the attribution of the non-server alternatives",
+          "(Slack Stealing, Dual-Priority Scheduling) match the standard",
+          "treatment in the real-time scheduling literature, in particular",
+          "Buttazzo \"Hard Real-Time Computing Systems\"."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "- The day-by-day allocation is a planning suggestion and not",
+          "derived from the assignment specification itself; it should",
+          "be adjusted to reflect the student's actual availability and",
+          "the progress made on each sub-section.",
+          "- Bibliographic references for the suggested citations are given",
+          "by author and year only; full bibliographic detail (venue,",
+          "pages, DOI) must be verified independently before inclusion",
+          "in the M2 deliverable.",
+          "- The recommendation of eight to twelve references is indicative",
+          "rather than prescribed by the assignment specification; the",
+          "appropriate number depends on the depth required for the",
+          "tradeoff analysis and on the related-work density of the",
+          "Priority Exchange topic.",
+          "- The LaTeX skeleton uses the IEEEtran conference class as in",
+          "Milestone 1; the assignment specification does not mandate",
+          "this class and an alternative template may be required if",
+          "specified by the seminar guidelines.",
+          "- The five tradeoff axes are taken from the assignment",
+          "specification but the mapping of Priority Exchange to each",
+          "axis is a preliminary characterisation and must be supported",
+          "by primary-source evidence in the final deliverable.",
+          "- The reference to ISO 26262 and DO-178C in the consequences",
+          "section is illustrative; their actual relevance to the",
+          "deployment of Priority Exchange should be verified against",
+          "the certification standards themselves before being asserted",
+          "in the M2 deliverable.",
+          "- The plan does not include an explicit phase for incorporating",
+          "feedback from the mentor on the M1 submission, which may",
+          "require revision of the contextualisation in M2."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": false,
+        "section": "",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "The interaction produced a structured planning artefact for\nMilestone 2 of the seminar assignment on the Priority Exchange\nserver algorithm. The six sub-sections identified — related\napproaches and paradigms, competing solution strategies,\nassumptions across approaches, tradeoff analysis, consequences\nfor real-time and embedded systems, and scope and boundaries of\nrelated work — correspond directly to the expected-output\ndescription in the assignment specification by Prof. Dr. Henkler\nand provide a coherent organisational framework for the\ncontextualisation phase of the work.\n\nThe key methodological insight from this interaction is that the\nPriority Exchange topic does not require an exhaustive accumulation\nof related references but rather a focused mapping of the\nalgorithm's position within a tightly delimited family of\naperiodic server algorithms introduced primarily by Sprunt, Sha\nand Lehoczky in 1989. The related-work landscape is therefore\ncharacterised by its successors (Sporadic Server, Constant\nBandwidth Server) rather than by direct competitors, and this\nshape of the literature must be explicitly addressed in the M2\ndeliverable rather than concealed by artificial padding of\nreferences.\n\nThe five tradeoff axes specified in the assignment — precision\nversus runtime overhead, response time versus schedulability,\noptimality versus feasibility, offline versus online operation,\nand formal guarantees versus practical deployability — form the\ncore analytical contribution of M2 and should be applied\nsystematically to Priority Exchange in comparison with Polling\nServer, Deferrable Server, and Sporadic Server. The preliminary\ncharacterisations provided in this interaction will be revised\non the basis of primary-source evidence drawn from Sprunt, Sha\nand Lehoczky 1989 and from Buttazzo \"Hard Real-Time Computing\nSystems\".\n\nAll bibliographic references, certification-standard claims, and\nquantitative aspects of the planning suggestions will be verified\nagainst primary sources prior to incorporation in the submitted\ndeliverable. The planning artefact is treated as scaffolding for\nthe contextualisation work and not as a substitute for the\nunderlying scientific analysis."
+    },
+    {
+      "id": "e-c546f597",
+      "timestamp": "2026-05-29T22:05:54+00:00",
+      "parent_id": null,
+      "objective": "Identify verified, freely accessible primary and secondary sources\nfor Day 1 of the Milestone 2 working plan, namely the construction\nof the genealogy of aperiodic server algorithms. The objective is\nto obtain clickable links to canonical primary sources (the Sprunt,\nSha and Lehoczky 1989 paper introducing Priority Exchange and",
+      "ai_tool": {
+        "name": "Claude",
+        "model": "Claude Opus 4.7"
+      },
+      "prompt": "Sporadic Server, the Spuri and Buttazzo 1994 paper on EDF-based\nservers, and the Liu and Layland 1973 foundation paper) together\nwith structured reading guidance specifying which sections of each\ndocument are relevant for the family-tree construction. The output\nis intended to function as the source-gathering checklist for the\nfirst working session of the contextualisation phase.\nProvide verified, freely accessible clickable links to the primary\nsources required for Step 1 — Gather Sources of the\nMilestone 2 working plan. For each source, indicate the specific\nsections or content to be consulted in the context of constructing\nthe genealogy of aperiodic server algorithms.",
+      "ai_output_summary": "Provided a tiered list of verified, freely accessible sources for\nDay 1 of the Milestone 2 working plan, organised by primary status\nand depth of treatment, with explicit section-level reading\nguidance for each item.\n\nTier 1 — Essential primary sources:\n- Sprunt, Sha and Lehoczky 1989, accessed as the Carnegie Mellon\n  Software Engineering Institute technical report version\n  CMU/SEI-89-TR-11. Reading guidance directed to the abstract and\n  introduction for motivation, Section 2 for the background on\n  Polling Server and Deferrable Server, Section 3 for the\n  Sporadic Server algorithm and its improvement over Priority\n  Exchange, Section 4 for the simulation-based performance\n  comparison, Section 5 for the schedulability analysis, and the\n  reference list for the citation of the Lehoczky, Sha and\n  Strosnider 1987 paper on Deferrable Server.\n- Spuri and Buttazzo 1994, accessed via the personal RETIS\n  laboratory page of Professor Buttazzo. Reading guidance\n  directed to the abstract and introduction for the\n  positioning of the Earliest Deadline First branch of the\n  family tree, Section 2 for the background and confirmation of\n  the lineage running through Lehoczky 1987 and Sprunt 1989,\n  Section 3 for Dynamic Priority Exchange and Dynamic Sporadic\n  Server as Earliest Deadline First analogues of Priority\n  Exchange and Sporadic Server, Section 4 for the Total\n  Bandwidth Server, and the conclusion for the performance\n  comparison.\n\nTier 2 — Foundation reference:\n- Liu and Layland 1973, recommended for citation as the foundation\n  of fixed-priority scheduling. Reading guidance limited to the\n  abstract and the first two pages for confirmation of the Rate\n  Monotonic optimality bound, with the observation that this\n  reference is already in use in the Milestone 1 deliverable.\n\nTier 3 — Lecture-slide summaries used as backup material:\n- Real-Time Systems Lecture 6 by Wassim Ahmad, for a concise\n  comparison of Polling Server, Deferrable Server, Priority\n  Exchange and Sporadic Server.\n- CIS 541 course material from the University of Pennsylvania\n  by Insup Lee, for worst-case scenarios and timing diagrams\n  for Polling Server, Deferrable Server, and Priority Exchange.\n- CPEN432 Task Servers slides from the University of British\n  Columbia, with explicit slide-range guidance for Polling\n  Server, Deferrable Server, Sporadic Server, and Constant\n  Bandwidth Server.\n\nTier 4 — Additional primary source for the most modern algorithm:\n- Abeni and Buttazzo 1998 on the Constant Bandwidth Server,\n  suggested for retrieval via Google Scholar, with the note\n  that the Sprunt 1989 paper does not cover Constant Bandwidth\n  Server because it postdates Sprunt by nearly a decade.\n\nA two-hour reading plan was provided in five phases (30 minutes\non the Sprunt paper, 20 minutes on the Spuri and Buttazzo paper,\n20 minutes on the CPEN432 slides for Constant Bandwidth Server,\n30 minutes of structured note-taking, and 20 minutes of\nfamily-tree sketching). A handwritten template for the resulting\nfamily tree was provided, organised on a horizontal time axis\nfrom 1973 to 1998 and split into a Rate Monotonic branch\n(Liu and Layland 1973, Lehoczky, Sha and Strosnider 1987,\nSprunt, Sha and Lehoczky 1989 introducing Priority Exchange and\nSporadic Server) and an Earliest Deadline First branch\n(Spuri and Buttazzo 1994 introducing Dynamic Priority Exchange,\nDynamic Sporadic Server, and Total Bandwidth Server, followed by\nAbeni and Buttazzo 1998 introducing Constant Bandwidth Server).\nA methodological note was included clarifying that the purpose\nof the reading is positioning rather than mastery, and that five\nextraction facts per algorithm (name, year, authors, improvement\nover predecessor, key mechanism in one sentence) are sufficient\nfor the Milestone 2 deliverable.",
+      "verification": {
+        "actions": [
+          "The accessibility of each suggested source was verified by web",
+          "search prior to inclusion in the recommendation. The Carnegie",
+          "Mellon Software Engineering Institute technical report version",
+          "of the Sprunt, Sha and Lehoczky 1989 paper was confirmed to be",
+          "freely hosted by Carnegie Mellon University and to contain the",
+          "same scientific content as the journal version. The Spuri and",
+          "Buttazzo 1994 paper was confirmed to be hosted on the personal",
+          "RETIS laboratory page of Professor Buttazzo, which is the",
+          "canonical legitimate distribution channel for that paper. The",
+          "section-level reading guidance for each source was cross-checked",
+          "against the standard structure of these papers and against",
+          "secondary treatments in Buttazzo \"Hard Real-Time Computing",
+          "Systems\". The lecture-slide sources were verified to be hosted",
+          "on institutional domains (Syrian Private University, University",
+          "of Pennsylvania, University of British Columbia) consistent with",
+          "legitimate academic distribution."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "- Direct links to the Liu and Layland 1973 paper and the Abeni",
+          "and Buttazzo 1998 paper were not provided; the user is",
+          "directed to a search-engine query rather than a verified",
+          "hosted location, which introduces an additional step.",
+          "- The reading-time estimates (30 minutes for the Sprunt paper,",
+          "20 minutes for the Spuri and Buttazzo paper, 20 minutes for",
+          "the CPEN432 slides) are indicative and based on the depth",
+          "required for the Milestone 2 family-tree extraction; actual",
+          "reading time may vary substantially depending on familiarity",
+          "with the underlying scheduling theory.",
+          "- Section numbers for the Sprunt 1989 paper are stated by name",
+          "but page ranges are given only approximately; the user must",
+          "verify the section structure against the actual PDF.",
+          "- The Wassim Ahmad lecture material is hosted on a Syrian",
+          "Private University domain; the institutional provenance was",
+          "not deeply verified and the material should be treated as a",
+          "pedagogical aid rather than as a citable primary source.",
+          "- The CPEN432 slides are course material rather than a peer",
+          "reviewed publication; they are appropriate for orientation",
+          "but should not be cited in lieu of the primary papers (in",
+          "particular Abeni and Buttazzo 1998 for the Constant Bandwidth",
+          "Server).",
+          "- The handwritten family-tree template uses a simplified",
+          "branching structure that abstracts away parallel research",
+          "threads (for example, Slack Stealing by Lehoczky and",
+          "Ramos-Thuel 1992, and Dual-Priority Scheduling by Davis and",
+          "Wellings 1995); these will need to be added in the Competing",
+          "Solution Strategies section of the Milestone 2 deliverable.",
+          "- The methodological recommendation to limit each algorithm to",
+          "five extraction facts is a working heuristic for the",
+          "Milestone 2 timeframe; deeper analysis may be required for",
+          "the Tradeoff Analysis section."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": false,
+        "section": "",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "The interaction provided a structured starting point for the\nliterature-gathering phase of Milestone 2 by identifying verified,\nfreely accessible versions of the canonical primary sources for\nthe Priority Exchange algorithm and its surrounding family of\naperiodic server algorithms. The most valuable output is the\nidentification of the Carnegie Mellon Software Engineering\nInstitute technical report version of the Sprunt, Sha and\nLehoczky 1989 paper as a freely available primary source, which\nremoves a common access barrier for the canonical reference on\nPriority Exchange. The identification of the Spuri and Buttazzo\n1994 paper on the personal RETIS laboratory page of Professor\nButtazzo similarly provides direct access to the Earliest\nDeadline First branch of the family tree without recourse to\nrestricted-access journal databases.\n\nThe section-level reading guidance provided for each primary\nsource allows the Milestone 2 work to proceed in a time-boxed\nmanner consistent with the available preparation window. The\nsuggested two-hour structure for the first working session\n(reading, note-taking, and family-tree sketching) is a working\nplan that will be revised on contact with the actual reading\nmaterial; in particular, the depth required for the schedulability\nanalysis sections of the Sprunt paper may exceed the time\nallocation given here.\n\nA residual concern is that the lecture-slide sources, although\nuseful as orientation material, are not substitutes for the\nprimary papers and must not be cited in their place in the\nMilestone 2 deliverable. The bibliography of Milestone 2 will\ndraw exclusively from peer reviewed primary sources and from\nthe textbook reference by Buttazzo, in line with the assignment\nspecification by Prof. Dr. Henkler and the standard practice\nof the seminar.\n\nAll bibliographic references and access links will be verified\nagainst their stated hosting locations prior to inclusion in\nthe final deliverable. Section numbers, author attributions,\nand publication years cited from the assistant's output will be\ncross-checked against the actual contents of the retrieved\ndocuments. The output of this interaction is treated as a\nworking source list and not as a substitute for direct\nverification of each primary source."
+    }
+  ],
+  "exported_at": "2026-05-29T22:05:54+00:00"
+}
