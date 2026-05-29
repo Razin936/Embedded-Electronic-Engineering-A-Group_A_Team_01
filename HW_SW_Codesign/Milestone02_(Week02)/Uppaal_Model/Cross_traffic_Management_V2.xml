@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.6//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_6.dtd'>
+<nta>
+	<declaration>// ===== Global Declarations =====
+// Communication channels for Vehicle 1
+chan request1;
+chan grant1;
+chan complete1;
+
+// Communication channels for Vehicle 2
+chan request2;
+chan grant2;
+chan complete2;
+
+// RSU decision timing clock
+clock decisionClock;
+
+// Timing constants in milliseconds
+const int MAX_DECISION_TIME = 100;
+const int CROSSING_TIME      = 3000;
+const int MAX_WAIT_TIME      = 10000;
+
+// Shared state
+bool slotOccupied = false;
+
+// Waiting flags for simple FIFO-like behaviour
+bool v1Waiting = false;
+bool v2Waiting = false;
+</declaration>
+	<template>
+		<name x="5" y="5">Vehicle1_Template</name>
+		<declaration>// Local clocks
+clock x;          // general / crossing timer
+clock waitClock;  // wait-for-grant timer
+</declaration>
+		<location id="id0" x="-510" y="0">
+			<name x="-543" y="-34">Approaching</name>
+		</location>
+		<location id="id1" x="-340" y="0">
+			<name x="-365" y="-34">Requesting</name>
+		</location>
+		<location id="id2" x="-170" y="0">
+			<name x="-195" y="-34">Waiting</name>
+			<label kind="invariant" x="-229" y="17">waitClock &lt;= MAX_WAIT_TIME</label>
+		</location>
+		<location id="id3" x="0" y="0">
+			<name x="-16" y="-34">Crossing</name>
+			<label kind="invariant" x="-34" y="17">x &lt;= CROSSING_TIME</label>
+		</location>
+		<location id="id4" x="187" y="0">
+			<name x="161" y="-34">Completed</name>
+		</location>
+		<location id="id5" x="357" y="0">
+			<name x="347" y="-34">Done</name>
+		</location>
+		<init ref="id0"/>
+		<transition id="id6">
+			<source ref="id0"/>
+			<target ref="id1"/>
+			<label kind="assignment" x="-501" y="-25">x = 0</label>
+		</transition>
+		<transition id="id7">
+			<source ref="id1"/>
+			<target ref="id2"/>
+			<label kind="synchronisation" x="-331" y="-25">request1!</label>
+			<label kind="assignment" x="-331" y="-9">waitClock = 0</label>
+		</transition>
+		<transition id="id8">
+			<source ref="id2"/>
+			<target ref="id3"/>
+			<label kind="synchronisation" x="-127" y="-25">grant1?</label>
+			<label kind="assignment" x="-127" y="-9">x = 0</label>
+		</transition>
+		<transition id="id9">
+			<source ref="id3"/>
+			<target ref="id4"/>
+			<label kind="guard" x="34" y="-25">x &gt;= CROSSING_TIME</label>
+		</transition>
+		<transition id="id10">
+			<source ref="id4"/>
+			<target ref="id5"/>
+			<label kind="synchronisation" x="221" y="-25">complete1!</label>
+		</transition>
+		<transition id="id11">
+			<source ref="id5"/>
+			<target ref="id5"/>
+			<nail x="397" y="-60"/>
+			<nail x="317" y="-60"/>
+		</transition>
+	</template>
+	<template>
+		<name x="5" y="5">Vehicle2_Template</name>
+		<declaration>// Local clocks
+clock x;          // general / crossing timer
+clock waitClock;  // wait-for-grant timer
+</declaration>
+		<location id="id12" x="-510" y="0">
+			<name x="-543" y="-34">Approaching</name>
+		</location>
+		<location id="id13" x="-340" y="0">
+			<name x="-365" y="-34">Requesting</name>
+		</location>
+		<location id="id14" x="-170" y="0">
+			<name x="-195" y="-34">Waiting</name>
+			<label kind="invariant" x="-229" y="17">waitClock &lt;= MAX_WAIT_TIME</label>
+		</location>
+		<location id="id15" x="0" y="0">
+			<name x="-16" y="-34">Crossing</name>
+			<label kind="invariant" x="-34" y="17">x &lt;= CROSSING_TIME</label>
+		</location>
+		<location id="id16" x="187" y="0">
+			<name x="161" y="-34">Completed</name>
+		</location>
+		<location id="id17" x="357" y="0">
+			<name x="347" y="-34">Done</name>
+		</location>
+		<init ref="id12"/>
+		<transition id="id18">
+			<source ref="id12"/>
+			<target ref="id13"/>
+			<label kind="assignment" x="-501" y="-25">x = 0</label>
+		</transition>
+		<transition id="id19">
+			<source ref="id13"/>
+			<target ref="id14"/>
+			<label kind="synchronisation" x="-331" y="-25">request2!</label>
+			<label kind="assignment" x="-331" y="-9">waitClock = 0</label>
+		</transition>
+		<transition id="id20">
+			<source ref="id14"/>
+			<target ref="id15"/>
+			<label kind="synchronisation" x="-127" y="-25">grant2?</label>
+			<label kind="assignment" x="-127" y="-9">x = 0</label>
+		</transition>
+		<transition id="id21">
+			<source ref="id15"/>
+			<target ref="id16"/>
+			<label kind="guard" x="34" y="-25">x &gt;= CROSSING_TIME</label>
+		</transition>
+		<transition id="id22">
+			<source ref="id16"/>
+			<target ref="id17"/>
+			<label kind="synchronisation" x="221" y="-25">complete2!</label>
+		</transition>
+		<transition id="id23">
+			<source ref="id17"/>
+			<target ref="id17"/>
+			<nail x="397" y="-60"/>
+			<nail x="317" y="-60"/>
+		</transition>
+	</template>
+	<template>
+		<name>RSU_Controller</name>
+		<location id="id24" x="-620" y="100">
+			<name x="-655" y="116">Idle</name>
+		</location>
+		<location id="id25" x="-430" y="0">
+			<name x="-470" y="-34">ReceiveV1</name>
+			<committed/>
+		</location>
+		<location id="id26" x="-430" y="200">
+			<name x="-470" y="216">ReceiveV2</name>
+			<committed/>
+		</location>
+		<location id="id27" x="-230" y="100">
+			<name x="-265" y="66">Decision</name>
+			<label kind="invariant" x="-340" y="116">decisionClock &lt;= MAX_DECISION_TIME</label>
+		</location>
+		<location id="id28" x="-40" y="0">
+			<name x="-56" y="-34">GrantV1</name>
+			<committed/>
+		</location>
+		<location id="id29" x="-40" y="200">
+			<name x="-56" y="216">GrantV2</name>
+			<committed/>
+		</location>
+		<location id="id30" x="160" y="0">
+			<name x="135" y="-34">OccupiedV1</name>
+		</location>
+		<location id="id31" x="160" y="200">
+			<name x="135" y="216">OccupiedV2</name>
+		</location>
+		<location id="id32" x="380" y="100">
+			<name x="360" y="66">ReleaseSlot</name>
+			<committed/>
+		</location>
+		<init ref="id24"/>
+		<transition id="id33">
+			<source ref="id24"/>
+			<target ref="id25"/>
+			<label kind="synchronisation" x="-620" y="20">request1?</label>
+			<label kind="assignment" x="-620" y="36">v1Waiting = true, decisionClock = 0</label>
+		</transition>
+		<transition id="id34">
+			<source ref="id24"/>
+			<target ref="id26"/>
+			<label kind="synchronisation" x="-620" y="150">request2?</label>
+			<label kind="assignment" x="-620" y="166">v2Waiting = true, decisionClock = 0</label>
+		</transition>
+		<transition id="id35">
+			<source ref="id25"/>
+			<target ref="id27"/>
+		</transition>
+		<transition id="id36">
+			<source ref="id26"/>
+			<target ref="id27"/>
+		</transition>
+		<transition id="id37">
+			<source ref="id27"/>
+			<target ref="id28"/>
+			<label kind="guard" x="-220" y="-10">v1Waiting == true &amp;&amp; slotOccupied == false</label>
+			<label kind="assignment" x="-220" y="6">slotOccupied = true, v1Waiting = false</label>
+		</transition>
+		<transition id="id38">
+			<source ref="id27"/>
+			<target ref="id29"/>
+			<label kind="guard" x="-220" y="190">v1Waiting == false &amp;&amp; v2Waiting == true &amp;&amp; slotOccupied == false</label>
+			<label kind="assignment" x="-220" y="206">slotOccupied = true, v2Waiting = false</label>
+		</transition>
+		<transition id="id39">
+			<source ref="id28"/>
+			<target ref="id30"/>
+			<label kind="synchronisation" x="40" y="-20">grant1!</label>
+		</transition>
+		<transition id="id40">
+			<source ref="id29"/>
+			<target ref="id31"/>
+			<label kind="synchronisation" x="40" y="180">grant2!</label>
+		</transition>
+		<transition id="id41">
+			<source ref="id30"/>
+			<target ref="id32"/>
+			<label kind="synchronisation" x="240" y="20">complete1?</label>
+		</transition>
+		<transition id="id42">
+			<source ref="id31"/>
+			<target ref="id32"/>
+			<label kind="synchronisation" x="240" y="150">complete2?</label>
+		</transition>
+		<transition id="id43">
+			<source ref="id32"/>
+			<target ref="id27"/>
+			<label kind="guard" x="-60" y="-150">v1Waiting == true || v2Waiting == true</label>
+			<label kind="assignment" x="-60" y="-134">slotOccupied = false, decisionClock = 0</label>
+			<nail x="380" y="-130"/>
+			<nail x="-230" y="-130"/>
+		</transition>
+		<transition id="id44">
+			<source ref="id32"/>
+			<target ref="id24"/>
+			<label kind="guard" x="-200" y="330">v1Waiting == false &amp;&amp; v2Waiting == false</label>
+			<label kind="assignment" x="-200" y="346">slotOccupied = false</label>
+			<nail x="380" y="340"/>
+			<nail x="-620" y="340"/>
+		</transition>
+	</template>
+	<system>// Instantiate processes
+Vehicle1 = Vehicle1_Template();
+Vehicle2 = Vehicle2_Template();
+RSU      = RSU_Controller();
+
+// Composition: M/M/1 with two vehicles and one RSU slot
+system Vehicle1, Vehicle2, RSU;
+</system>
+	<queries>
+		<query>
+			<formula>A[] not deadlock</formula>
+			<comment>The system should never get stuck.</comment>
+			<result outcome="success" type="quality" timestamp="2026-05-29 13:11:11 +0200">
+			</result>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Vehicle1.Done</formula>
+			<comment>Vehicle 1 can reach its crossing-finished state.</comment>
+			<result outcome="success" type="quality" timestamp="2026-05-29 13:11:26 +0200">
+			</result>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Vehicle2.Done</formula>
+			<comment>Vehicle 2 can reach its crossing-finished state.</comment>
+			<result outcome="success" type="quality" timestamp="2026-05-29 13:11:29 +0200">
+			</result>
+		</query>
+		<query>
+			<formula>A[] not (slotOccupied == true and RSU.Idle)</formula>
+			<comment>RSU is never idle while the slot is occupied.</comment>
+			<result outcome="success" type="quality" timestamp="2026-05-29 13:11:31 +0200">
+			</result>
+		</query>
+		<query>
+			<formula>A[] RSU.Decision imply decisionClock &lt;= MAX_DECISION_TIME</formula>
+			<comment>RSU decision time stays within 100 ms.</comment>
+			<result outcome="success" type="quality" timestamp="2026-05-29 13:11:32 +0200">
+			</result>
+		</query>
+		<query>
+			<formula>A[] not (Vehicle1.Crossing and Vehicle2.Crossing)</formula>
+			<comment>M/M/1 safety: both vehicles never cross at the same time.</comment>
+			<result outcome="success" type="quality" timestamp="2026-05-29 13:11:35 +0200">
+			</result>
+		</query>
+	</queries>
+</nta>
