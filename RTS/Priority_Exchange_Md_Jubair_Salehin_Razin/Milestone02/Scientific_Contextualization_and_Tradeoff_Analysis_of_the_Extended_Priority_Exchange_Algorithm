@@ -1,0 +1,256 @@
+```latex
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{array}
+
+\begin{document}
+
+\title{Scientific Contextualization and Tradeoff Analysis of the Extended Priority Exchange Algorithm}
+
+
+
+\maketitle
+
+\begin{abstract}
+This milestone contextualizes the Extended Priority Exchange algorithm within the broader field of real-time scheduling. The focus is not only on describing the assigned algorithm, but also on identifying neighboring approaches, assumptions, tradeoffs, and consequences for embedded real-time systems. Priority Exchange is studied as an aperiodic service mechanism for fixed-priority systems, where the goal is to improve response time for irregular aperiodic requests while preserving the deadline guarantees of hard periodic tasks. Related approaches such as Polling Server, Deferrable Server, Sporadic Server, Slack Stealing, Dual Priority Scheduling, Priority Inheritance, Priority Ceiling, and Stack Resource Policy are compared. The analysis shows that improved responsiveness usually comes with increased scheduling complexity, runtime bookkeeping, or stronger offline assumptions.
+\end{abstract}
+
+\begin{IEEEkeywords}
+real-time scheduling, priority exchange, aperiodic tasks, sporadic server, fixed-priority scheduling, embedded systems
+\end{IEEEkeywords}
+
+\section{Introduction}
+
+Real-time systems are systems in which correctness depends not only on the logical result of computation, but also on the time at which the result is produced. In hard real-time systems, missing a deadline can lead to unsafe or unacceptable behavior. Therefore, scheduling methods must provide predictable timing behavior.
+
+The assigned topic is positioned in the area of real-time scheduling, especially the scheduling of hard periodic tasks together with aperiodic or soft real-time requests. Periodic tasks are regular tasks with known activation patterns, such as control loops, monitoring tasks, or sensor sampling. Aperiodic tasks arrive irregularly and may represent external events, communication messages, diagnostic requests, alarms, or operator inputs.
+
+The central problem is that hard periodic tasks must keep their timing guarantees, while aperiodic requests should still receive good response time. A simple solution would be to reserve processor time for aperiodic requests using a server. However, if no aperiodic request is ready when the server is activated, the reserved capacity can be wasted. The Extended Priority Exchange algorithm addresses this issue by exploiting unused periodic time for aperiodic service \cite{sprunt1988extended_priority_exchange}.
+
+This milestone provides a scientific contextualization and tradeoff analysis of Priority Exchange. The goal is not to artificially collect many weakly related papers, but to understand where the assigned work sits in the scientific and engineering landscape.
+
+\section{Position of the Assigned Work}
+
+The Extended Priority Exchange algorithm belongs to the family of aperiodic service mechanisms for fixed-priority real-time systems. The main goal is to improve the response time of aperiodic requests without violating the schedulability of hard periodic tasks.
+
+In a simple Polling Server approach, a server periodically checks whether aperiodic work is available. If no aperiodic request is waiting at that time, the server capacity may be lost. Priority Exchange improves this situation by allowing unused server capacity to be preserved through a priority or capacity exchange mechanism. If the server has capacity but no aperiodic job is ready, lower-priority periodic tasks may execute, while the server's capacity is preserved for later aperiodic service.
+
+This makes Priority Exchange scientifically interesting because it tries to balance two conflicting goals:
+
+\begin{itemize}
+    \item improving responsiveness for aperiodic requests;
+    \item preserving the timing guarantees of hard periodic tasks.
+\end{itemize}
+
+The topic is relevant for embedded real-time systems because many embedded systems contain both predictable periodic workloads and irregular event-driven workloads. Examples include automotive controllers, communication systems, industrial control systems, medical devices, and robotic platforms.
+
+\section{Scientific Context and Related Approaches}
+
+Priority Exchange should be understood as one approach within a broader group of scheduling and synchronization mechanisms. Some methods directly address aperiodic task service, while others address related predictability problems such as blocking and priority inversion.
+
+\subsection{Polling Server}
+
+A Polling Server is activated periodically and checks whether an aperiodic request is waiting. If an aperiodic request exists, the server executes it using its available capacity. If no aperiodic request exists at the polling instant, the server capacity may be wasted.
+
+The main advantage of this approach is simplicity. It is easy to understand, easy to implement, and predictable. The main disadvantage is that it can provide poor response time when an aperiodic request arrives just after the polling instant.
+
+\subsection{Deferrable Server}
+
+A Deferrable Server preserves its execution capacity for a part of the server period. Therefore, aperiodic requests that arrive after the server release can still be served quickly. This improves response time compared with the Polling Server.
+
+However, preserving capacity can create additional interference for periodic tasks. Therefore, schedulability analysis becomes more careful than in the simple polling case.
+
+\subsection{Priority Exchange}
+
+Priority Exchange tries to avoid wasting unused server capacity. If the server has capacity but no aperiodic request is available, lower-priority periodic work may execute while the server capacity is preserved through priority or capacity exchange \cite{sprunt1988extended_priority_exchange}.
+
+The advantage is better use of unused processor time and improved response time for later aperiodic requests. The disadvantage is that the mechanism is more difficult to explain, analyze, and implement than simpler server approaches.
+
+\subsection{Sporadic Server}
+
+The Sporadic Server provides aperiodic task service while preserving compatibility with fixed-priority schedulability analysis \cite{sprunt1989sporadic_server}. It uses a budget and replenishment rules to control how much processor time can be consumed by aperiodic requests.
+
+The Sporadic Server has a strong theoretical foundation and is widely used as a comparison point for aperiodic service mechanisms. Its main limitation is implementation complexity, because the replenishment rules must be handled correctly.
+
+\subsection{Slack Stealing}
+
+Slack Stealing computes the amount of processor time that can be safely used by aperiodic tasks without causing hard periodic tasks to miss their deadlines \cite{lehoczky1992slack,davis1993slack}. This can provide very good aperiodic response time because it uses available slack efficiently.
+
+However, slack computation can be complex and depends on reliable timing information. If task parameters such as worst-case execution time are inaccurate, the safety of the analysis may be reduced.
+
+\subsection{Dual Priority Scheduling}
+
+Dual Priority Scheduling uses different priority levels for jobs during their lifetime \cite{davis1995dual}. A job may initially execute at one priority and later be promoted to another priority.
+
+This approach is related because it also manipulates priority behavior to improve timing properties. Its limitation is that promotion times and priority states must be managed carefully.
+
+\subsection{Priority Inheritance and Priority Ceiling}
+
+Priority Inheritance and Priority Ceiling protocols address a different but neighboring problem: priority inversion and blocking during shared-resource access \cite{sha1990priority_inheritance}.
+
+Priority Inheritance temporarily raises the priority of a lower-priority task when it blocks a higher-priority task. Priority Ceiling assigns ceiling priorities to shared resources to prevent uncontrolled blocking and some deadlock situations.
+
+These methods are relevant because they also aim to improve predictability in priority-based real-time systems.
+
+\subsection{Stack Resource Policy}
+
+The Stack Resource Policy is a real-time resource-access protocol that supports predictable execution and bounded blocking \cite{baker1991srp}. It is not an aperiodic service algorithm, but it is useful as a comparison point because it provides strong formal guarantees for shared-resource access.
+
+\section{Comparison of Related Approaches}
+
+Table~\ref{tab:comparison} summarizes the main differences between Priority Exchange and neighboring scheduling or resource-access approaches.
+
+\begin{table*}[htbp]
+\caption{Comparison of Priority Exchange with neighboring real-time scheduling and resource-access approaches}
+\label{tab:comparison}
+\centering
+\begin{tabular}{|p{3cm}|p{4.2cm}|p{4.2cm}|p{4.2cm}|}
+\hline
+\textbf{Approach} & \textbf{Main Idea} & \textbf{Advantage} & \textbf{Limitation / Tradeoff} \\
+\hline
+Polling Server &
+Server periodically checks for aperiodic jobs. &
+Simple, predictable, and easy to implement. &
+Capacity can be wasted if no aperiodic job is ready. \\
+\hline
+Deferrable Server &
+Server preserves capacity for later aperiodic arrivals. &
+Better response time than Polling Server. &
+Can increase interference on periodic tasks. \\
+\hline
+Priority Exchange &
+Unused server capacity is preserved by priority or capacity exchange. &
+Improves use of unused processor time and improves aperiodic response. &
+More complex accounting, explanation, and analysis. \\
+\hline
+Sporadic Server &
+Consumed budget is replenished according to defined rules. &
+Strong compatibility with fixed-priority schedulability analysis. &
+Runtime replenishment rules are more complex. \\
+\hline
+Slack Stealing &
+Aperiodic tasks use computed slack from hard periodic tasks. &
+Can provide very good aperiodic response time. &
+Requires accurate and potentially complex slack computation. \\
+\hline
+Dual Priority Scheduling &
+Jobs may be promoted from lower to higher priority. &
+Useful priority-promotion mechanism. &
+Requires management of promotion times and priority states. \\
+\hline
+Priority Inheritance &
+Resource holder inherits higher priority when blocking a higher-priority task. &
+Reduces priority inversion. &
+Can still allow chained blocking. \\
+\hline
+Priority Ceiling &
+Resources have ceiling priorities. &
+Bounds blocking and prevents some deadlock situations. &
+Requires offline knowledge of resource usage. \\
+\hline
+Stack Resource Policy &
+Uses resource and preemption ceilings for predictable resource access. &
+Provides strong formal blocking guarantees. &
+More complex than basic synchronization. \\
+\hline
+\end{tabular}
+\end{table*}
+
+\section{Assumptions Behind the Approaches}
+
+Most of the discussed approaches rely on a set of assumptions. These assumptions are important because real-time guarantees are only meaningful if the system model is realistic.
+
+\begin{itemize}
+    \item The system is usually modeled as a uniprocessor preemptive real-time system.
+    \item Hard periodic tasks have known periods, worst-case execution times, relative deadlines, and priorities.
+    \item Aperiodic tasks arrive irregularly and often have soft timing requirements.
+    \item The hard periodic task set must remain schedulable even when aperiodic service is added.
+    \item Server-based approaches assume that a server budget or capacity can be reserved for aperiodic work.
+    \item Priority Exchange assumes that unused server capacity can be preserved through a priority or capacity exchange mechanism.
+    \item Sporadic Server assumes that consumed budget can be replenished according to correct replenishment rules.
+    \item Slack Stealing assumes that available slack can be computed safely without violating periodic deadlines.
+    \item Priority Inheritance, Priority Ceiling, and Stack Resource Policy assume that shared resources and critical sections are known or bounded.
+    \item Many methods rely on accurate worst-case execution time estimates. If these estimates are wrong, schedulability conclusions may be unsafe.
+\end{itemize}
+
+\section{Tradeoff Analysis}
+
+\subsection{Aperiodic Responsiveness vs Hard Real-Time Predictability}
+
+Aperiodic service mechanisms improve response time for irregular requests. However, the hard periodic workload must remain schedulable. This creates a central tradeoff. Polling Server is predictable but may provide poor aperiodic response. Priority Exchange, Sporadic Server, and Slack Stealing improve responsiveness, but require more complex scheduling rules and analysis.
+
+\subsection{Simplicity vs Efficiency}
+
+Simpler methods are easier to implement and verify. Polling Server is simple but inefficient when capacity is unused. Deferrable Server improves efficiency by preserving capacity temporarily. Priority Exchange improves efficiency further by exchanging unused capacity with lower-priority periodic execution. Sporadic Server is analytically strong, but its replenishment rules are harder to implement.
+
+\subsection{Offline Guarantees vs Online Flexibility}
+
+Hard real-time systems usually prefer offline schedulability guarantees because correctness must be shown before deployment. Online mechanisms can react better to actual workload behavior, but they can make worst-case analysis harder. Priority Exchange and Slack Stealing are attractive because they exploit unused time, but both require careful reasoning to remain safe.
+
+\subsection{Formal Guarantees vs Practical Deployability}
+
+Strong formal guarantees are important in safety-critical embedded systems. Protocols such as Priority Ceiling and Stack Resource Policy provide strong blocking guarantees. However, they require information about resources, ceilings, and task interactions. A method is practically useful only if its theoretical benefit justifies its implementation cost.
+
+\subsection{Runtime and Memory Overhead}
+
+Server-based methods require runtime state such as budget, period, replenishment time, consumed capacity, or exchanged priority. Priority Exchange requires bookkeeping for exchanged capacity. Sporadic Server requires replenishment accounting. Slack Stealing requires slack computation and tracking. In small embedded systems, this overhead matters because CPU time and memory are limited.
+
+\section{Consequences for Embedded Real-Time Systems}
+
+Embedded systems often include both periodic control loops and irregular event-driven tasks. Examples include sensor acquisition, actuator control, communication handling, diagnostics, alarms, and user inputs.
+
+The choice of scheduling method affects:
+
+\begin{itemize}
+    \item deadline predictability;
+    \item response time for aperiodic events;
+    \item CPU utilization;
+    \item implementation complexity;
+    \item memory overhead;
+    \item certification difficulty;
+    \item debugging effort.
+\end{itemize}
+
+For safety-critical embedded systems, formal guarantees may be more important than average response time. For less critical systems, simpler mechanisms may be preferable if they are easier to implement, debug, and maintain.
+
+Priority Exchange is useful because it attempts to improve aperiodic response time without wasting reserved server capacity. However, its practical value depends on whether the response-time improvement justifies the additional complexity.
+
+\section{Why Some Related Work Is Indirectly Related}
+
+Not all related work uses the exact term ``Priority Exchange''. Some papers discuss the same scientific problem under broader terms such as aperiodic service, server-based scheduling, slack stealing, or priority promotion.
+
+Resource-access protocols such as Priority Inheritance, Priority Ceiling, and Stack Resource Policy do not directly solve aperiodic scheduling. However, they are relevant because they address timing predictability, blocking, and priority effects in real-time systems.
+
+Therefore, this milestone does not artificially collect many papers with weak keyword overlap. Instead, it compares neighboring mechanisms and explains their assumptions, tradeoffs, and embedded-system consequences.
+
+\section{Open Questions for Feedback}
+
+The following questions remain useful for discussion before writing the final version of the seminar paper:
+
+\begin{itemize}
+    \item Should the final paper focus mainly on the Extended Priority Exchange Algorithm, or on the broader family of aperiodic server mechanisms?
+    \item Should Polling Server, Deferrable Server, and Sporadic Server be explained in detail, or only used as comparison points?
+    \item Should resource-access protocols such as Priority Inheritance, Priority Ceiling, and Stack Resource Policy be included in the final paper, or are they too indirect?
+    \item Should the final paper include a small timing example comparing Polling Server, Priority Exchange, and Sporadic Server?
+    \item Should the analysis remain limited to fixed-priority scheduling, or should dynamic-priority systems such as EDF also be mentioned?
+\end{itemize}
+
+\section{Conclusion}
+
+This milestone positioned the Extended Priority Exchange algorithm within the scientific and engineering context of real-time scheduling. Priority Exchange is mainly related to aperiodic service in fixed-priority real-time systems. Its purpose is to improve aperiodic responsiveness by preserving unused server capacity through priority or capacity exchange.
+
+The comparison with Polling Server, Deferrable Server, Sporadic Server, Slack Stealing, Dual Priority Scheduling, Priority Inheritance, Priority Ceiling, and Stack Resource Policy shows that real-time scheduling methods involve important tradeoffs. Better response time often requires more complex analysis and runtime bookkeeping. Stronger guarantees often require stronger assumptions and more detailed offline information.
+
+For embedded systems, the main consequence is that scheduling protocols must be chosen carefully. A theoretically efficient method is only useful if it can be implemented reliably and if its overhead is acceptable for the target system.
+
+\bibliographystyle{IEEEtran}
+\bibliography{ref}
+
+\end{document}
+```
