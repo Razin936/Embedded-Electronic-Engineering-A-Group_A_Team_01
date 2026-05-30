@@ -7,7 +7,7 @@
   "entries": [
     {
       "id": "e-a1f5d084",
-      "timestamp": "2026-05-29T22:05:54+00:00",
+      "timestamp": "2026-05-30T08:43:07+00:00",
       "parent_id": null,
       "objective": "Establish a structured work plan for Milestone 2 (M2) of the Real-Time\nSystems seminar assignment on the Priority Exchange server algorithm.\nThe objective is to identify the sub-sections that M2 must cover\naccording to the assignment specification by Prof. Dr. Henkler,\nallocate them across the available preparation days, and define\nconcrete deliverables for each working session. The output of this\ninteraction is intended to serve as the planning artefact that\norganises the subsequent contextualisation and tradeoff analysis\nphase of the seminar work.",
       "ai_tool": {
@@ -82,7 +82,7 @@
     },
     {
       "id": "e-c546f597",
-      "timestamp": "2026-05-29T22:05:54+00:00",
+      "timestamp": "2026-05-30T08:43:07+00:00",
       "parent_id": null,
       "objective": "Identify verified, freely accessible primary and secondary sources\nfor Day 1 of the Milestone 2 working plan, namely the construction\nof the genealogy of aperiodic server algorithms. The objective is\nto obtain clickable links to canonical primary sources (the Sprunt,\nSha and Lehoczky 1989 paper introducing Priority Exchange and",
       "ai_tool": {
@@ -157,7 +157,247 @@
         "direct_text_reused": false
       },
       "reflection": "The interaction provided a structured starting point for the\nliterature-gathering phase of Milestone 2 by identifying verified,\nfreely accessible versions of the canonical primary sources for\nthe Priority Exchange algorithm and its surrounding family of\naperiodic server algorithms. The most valuable output is the\nidentification of the Carnegie Mellon Software Engineering\nInstitute technical report version of the Sprunt, Sha and\nLehoczky 1989 paper as a freely available primary source, which\nremoves a common access barrier for the canonical reference on\nPriority Exchange. The identification of the Spuri and Buttazzo\n1994 paper on the personal RETIS laboratory page of Professor\nButtazzo similarly provides direct access to the Earliest\nDeadline First branch of the family tree without recourse to\nrestricted-access journal databases.\n\nThe section-level reading guidance provided for each primary\nsource allows the Milestone 2 work to proceed in a time-boxed\nmanner consistent with the available preparation window. The\nsuggested two-hour structure for the first working session\n(reading, note-taking, and family-tree sketching) is a working\nplan that will be revised on contact with the actual reading\nmaterial; in particular, the depth required for the schedulability\nanalysis sections of the Sprunt paper may exceed the time\nallocation given here.\n\nA residual concern is that the lecture-slide sources, although\nuseful as orientation material, are not substitutes for the\nprimary papers and must not be cited in their place in the\nMilestone 2 deliverable. The bibliography of Milestone 2 will\ndraw exclusively from peer reviewed primary sources and from\nthe textbook reference by Buttazzo, in line with the assignment\nspecification by Prof. Dr. Henkler and the standard practice\nof the seminar.\n\nAll bibliographic references and access links will be verified\nagainst their stated hosting locations prior to inclusion in\nthe final deliverable. Section numbers, author attributions,\nand publication years cited from the assistant's output will be\ncross-checked against the actual contents of the retrieved\ndocuments. The output of this interaction is treated as a\nworking source list and not as a substitute for direct\nverification of each primary source."
+    },
+    {
+      "id": "e-7e6ef454",
+      "timestamp": "2026-05-30T08:43:07+00:00",
+      "parent_id": null,
+      "objective": "Obtain verified bibliographic references and access information for\ntwo primary sources required for the Competing Solution Strategies\nsub-section of the Milestone 2 deliverable, namely the Davis and\nWellings 1995 paper on Dual-Priority Scheduling and the\nLehoczky and Ramos-Thuel 1992 paper on Slack Stealing. The\nobjective includes identification of canonical citations,\nclarification of access pathways given paywall constraints on the\nIEEE Xplore digital library, and preparation of properly formatted\nBibTeX entries for incorporation into the Milestone 2 reference\nlist. The output is intended to support the positioning of\nPriority Exchange against non-server alternatives in the\ncontextualisation phase of the seminar work.",
+      "ai_tool": {
+        "name": "Claude",
+        "model": "Claude Opus 4.7"
+      },
+      "prompt": "Provide verified bibliographic references and accessible download\npathways for the canonical primary sources on Dual-Priority\nScheduling (Davis and Wellings 1995) and Slack Stealing\n(Lehoczky and Ramos-Thuel 1992), together with properly formatted\nBibTeX entries suitable for inclusion in the Milestone 2\nreference list.",
+      "ai_output_summary": "Provided verified bibliographic information for the two primary\nsources required for the Competing Solution Strategies sub-section\nof the Milestone 2 deliverable, together with access guidance and\nformatted BibTeX entries.\n\nPrimary source identification:\n- Davis and Wellings 1995, \"Dual Priority Scheduling,\" Proceedings\n  of the 16th IEEE Real-Time Systems Symposium, Pisa, Italy,\n  pages 100-109, with the corresponding Digital Object Identifier\n  10.1109/REAL.1995.495200. The paper is held behind the IEEE\n  Xplore paywall.\n- Lehoczky and Ramos-Thuel 1992, \"An Optimal Algorithm for\n  Scheduling Soft-Aperiodic Tasks in Fixed-Priority Preemptive\n  Systems,\" Proceedings of the IEEE Real-Time Systems Symposium,\n  pages 110-123. The paper is similarly held behind the IEEE\n  Xplore paywall.\n\nSupplementary references identified during the search:\n- Thuel and Lehoczky 1994, \"Algorithms for Scheduling Hard\n  Aperiodic Tasks in Fixed-Priority Systems Using Slack\n  Stealing,\" Proceedings of the IEEE Real-Time Systems Symposium,\n  identified as the canonical reference for the hard-deadline\n  variant of Slack Stealing.\n- Davis, Tindell and Burns 1993, \"Scheduling Slack Time in\n  Fixed Priority Preemptive Systems,\" Proceedings of the 14th\n  IEEE Real-Time Systems Symposium, pages 222-231, identified\n  as the dynamic-slack-stealing variant.\n- Davis 1994, Technical Report YCS 230, University of York,\n  \"Dual Priority Scheduling: A Means of Providing Flexibility\n  in Hard Real-Time Systems,\" identified as a potentially freely\n  accessible earlier version of the Davis and Wellings work via\n  the University of York research database.\n\nAccess guidance:\n- A doctoral thesis hosted on the DiVA portal, titled \"An\n  Investigation of the Dual Priority Scheduling Paradigm,\" was\n  identified as a freely accessible alternative source that\n  provides a detailed exposition of the Davis and Wellings method.\n- Google Scholar was suggested as the preferred mechanism for\n  locating university-hosted preprint copies of the\n  Lehoczky and Ramos-Thuel 1992 paper.\n- The HSHL institutional library was noted as a potential\n  access pathway via IEEE Xplore institutional subscription.\n\nMethodological observation:\nThe DiVA thesis identifies a direct head-to-head comparison of\nDual-Priority Scheduling against Dynamic Slack Stealing, Extended\nPriority Exchange, and Background Scheduling. This confirms the\npositioning of Dual-Priority Scheduling and Slack Stealing as\ngenuine competing strategies for Priority Exchange and supports\nthe structural choice of the Competing Solution Strategies\nsub-section of the Milestone 2 deliverable.\n\nBibTeX output:\nThree formatted BibTeX entries were generated for the Davis and\nWellings 1995 paper, the Lehoczky and Ramos-Thuel 1992 paper,\nand the Davis, Tindell and Burns 1993 paper, with author names,\npublication venue, page ranges, year, and Digital Object\nIdentifier where available, suitable for direct incorporation\ninto the Milestone 2 BibTeX reference file.",
+      "verification": {
+        "actions": [
+          "The bibliographic details of the two primary sources were",
+          "cross-checked against the IEEE Xplore catalogue records and",
+          "against secondary citation lists in established real-time",
+          "systems literature, including Buttazzo \"Hard Real-Time",
+          "Computing Systems\". The publication venue (IEEE Real-Time",
+          "Systems Symposium), year, and page ranges for both the",
+          "Davis and Wellings 1995 paper and the Lehoczky and",
+          "Ramos-Thuel 1992 paper match the canonical citation form",
+          "used in subsequent real-time scheduling literature. The",
+          "Digital Object Identifier for the Davis and Wellings 1995",
+          "paper was verified against the IEEE Xplore record. The",
+          "positioning of Dual-Priority Scheduling and Slack Stealing",
+          "as non-server competing strategies for aperiodic task",
+          "handling was confirmed by reference to the DiVA thesis",
+          "identified during the search, which presents a head-to-head",
+          "comparison of these methods with Extended Priority Exchange."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "- The original IEEE Xplore versions of both primary sources are",
+          "paywalled; access via the HSHL institutional subscription will",
+          "need to be confirmed before relying on these references in the",
+          "final Milestone 2 deliverable.",
+          "- The DiVA-hosted doctoral thesis is identified as a useful",
+          "exposition of the Davis and Wellings method but should not be",
+          "cited in lieu of the primary Davis and Wellings 1995 paper;",
+          "its role is limited to facilitating the understanding of the",
+          "primary source.",
+          "- The Davis 1994 University of York technical report YCS 230 is",
+          "suggested as a potentially freely accessible earlier version of",
+          "the Davis and Wellings work, but its accessibility on the",
+          "University of York research database was not directly verified",
+          "in this interaction; verification is required before reliance.",
+          "- The BibTeX entries provided use the conference proceedings form",
+          "but do not include the publisher field, the month of the",
+          "conference, or the editor where applicable; these may need to",
+          "be added depending on the bibliography style required by the",
+          "Milestone 2 LaTeX template.",
+          "- The page range cited for the Lehoczky and Ramos-Thuel 1992 paper",
+          "(110-123) is consistent with secondary citation lists but should",
+          "be cross-checked against the actual conference proceedings",
+          "before final submission.",
+          "- The methodological observation that Dual-Priority Scheduling",
+          "was directly compared against Extended Priority Exchange in the",
+          "DiVA thesis is a useful pointer for the Milestone 2 deliverable,",
+          "but the head-to-head comparison itself should be consulted in",
+          "the primary Davis and Wellings paper rather than cited from the",
+          "secondary thesis.",
+          "- The interaction does not explicitly address the relationship",
+          "between the Lehoczky and Ramos-Thuel 1992 soft-aperiodic paper",
+          "and the Thuel and Lehoczky 1994 hard-aperiodic paper; both may",
+          "need to be cited depending on the scope of the Milestone 2",
+          "Slack Stealing discussion."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": false,
+        "section": "",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "The interaction provided verified bibliographic information for\ntwo primary sources central to the Competing Solution Strategies\nsub-section of the Milestone 2 deliverable and clarified the\naccess situation given the paywall on the IEEE Xplore digital\nlibrary. The most valuable outcome is the identification of\nfreely accessible secondary material (notably the DiVA-hosted\ndoctoral thesis on the Dual Priority Scheduling paradigm) that\nfacilitates understanding of the Davis and Wellings method\nwithout recourse to the paywalled primary source for the\npreliminary reading phase.\n\nA methodologically significant observation arose from the search:\nthe DiVA thesis presents a direct head-to-head comparison of\nDual-Priority Scheduling against Dynamic Slack Stealing, Extended\nPriority Exchange, and Background Scheduling. This confirms the\npositioning of Dual-Priority Scheduling and Slack Stealing as\ngenuine competing strategies for the Priority Exchange algorithm\nand validates the structural choice of treating them in a dedicated\nCompeting Solution Strategies sub-section rather than as\nincidental references. The published comparison itself, once\naccessed via the institutional subscription or via the University\nof York technical report, will provide a citable basis for the\ntradeoff analysis in the subsequent sub-section of the Milestone 2\ndeliverable.\n\nA residual concern is that the canonical primary sources for\nboth Dual-Priority Scheduling and Slack Stealing are\npaywalled, and the accessibility of the Davis 1994 University of\nYork technical report as a freely available alternative requires\ndirect verification before reliance. The interaction does not\nsubstitute for direct consultation of the primary papers via the\nHSHL library subscription, which will be the next step in the\nliterature-gathering phase.\n\nThe formatted BibTeX entries provided will be incorporated into\nthe Milestone 2 reference file after verification of author\nspellings, publication venue formatting, and page ranges against\nthe primary sources. Bibliographic style consistency with the\nexisting Milestone 1 reference file will also be checked prior\nto the final compilation of the deliverable."
+    },
+    {
+      "id": "e-394b3655",
+      "timestamp": "2026-05-30T08:43:07+00:00",
+      "parent_id": null,
+      "objective": "Define where Priority Exchange fits in the real-time scheduling landscape.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "For my Milestone 2 topic, explain the scientific position of the Extended Priority Exchange Algorithm. Focus on real-time scheduling, periodic hard real-time tasks, aperiodic tasks, unused periodic time, and why this is relevant for embedded systems.",
+      "ai_output_summary": "The AI explained that Priority Exchange belongs to aperiodic service mechanisms in fixed-priority real-time systems. It described the central problem: hard periodic tasks must keep deadline guarantees, while aperiodic requests should receive good response time. It explained that Priority Exchange tries to preserve unused server capacity instead of wasting it.",
+      "verification": {
+        "actions": [
+          "The explanation was consistent with the general real-time scheduling context and with the title of the main Priority Exchange paper: “Exploiting Unused Periodic Time for Aperiodic Service Using the Extended Priority Exchange Algorithm.”"
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The AI explanation was useful, but it needed citation support from authentic sources."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": false,
+        "section": "",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This helped me formulate the main scientific problem: improving aperiodic response time while preserving hard periodic schedulability."
+    },
+    {
+      "id": "e-b90da508",
+      "timestamp": "2026-05-30T08:43:07+00:00",
+      "parent_id": null,
+      "objective": "Find valid and authentic academic sources for Priority Exchange and related methods.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Find authentic academic sources for Extended Priority Exchange, Sporadic Server, Priority Inheritance, Priority Ceiling, Stack Resource Policy, Slack Stealing, Dual Priority Scheduling, and Buttazzo’s real-time systems textbook. Provide BibTeX entries and explain which source supports which part of the milestone.",
+      "ai_output_summary": "Find authentic academic sources for Extended Priority Exchange, Sporadic Server, Priority Inheritance, Priority Ceiling, Stack Resource Policy, Slack Stealing, Dual Priority Scheduling, and Buttazzo’s real-time systems textbook. Provide BibTeX entries and explain which source supports which part of the milestone.",
+      "verification": {
+        "actions": [
+          "The source list was checked against bibliographic metadata such as paper titles, authors, venues, years, and DOI information where available. The sources matched known real-time scheduling literature."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "Some BibTeX entries did not include DOI information. I kept the sources but noted that bibliography metadata should be cleaned later for the final paper."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": false,
+        "section": "",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction helped move from a general AI-generated explanation to a source-supported scientific context."
+    },
+    {
+      "id": "e-2eb3bbe2",
+      "timestamp": "2026-05-30T08:43:07+00:00",
+      "parent_id": null,
+      "objective": "Identify related and neighboring methods for comparison with Priority Exchange.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Create a structured comparison of Priority Exchange with neighboring approaches: Polling Server, Deferrable Server, Sporadic Server, Slack Stealing, Dual Priority Scheduling, Priority Inheritance, Priority Ceiling, and Stack Resource Policy. For each, give main idea, advantage, and limitation.",
+      "ai_output_summary": "The AI produced a structured comparison of scheduling and resource-access approaches. It separated direct aperiodic service mechanisms from indirectly related resource-access protocols. It explained that Polling Server is simple but wastes capacity, Sporadic Server gives stronger analysis but needs replenishment bookkeeping, Slack Stealing uses available slack but needs accurate computation, and Priority Ceiling/SRP provide blocking guarantees but require offline resource information.",
+      "verification": {
+        "actions": [
+          "The comparison was checked for conceptual consistency. Approaches directly related to aperiodic service were separated from resource-access protocols, which are only indirectly related."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [
+          "The first output mixed direct and indirect related work. I decided to clearly state that resource-access protocols are neighboring but not direct aperiodic scheduling methods."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": false,
+        "section": "",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction improved the scientific quality because it avoided treating all related work as equally direct."
+    },
+    {
+      "id": "e-c0f4b482",
+      "timestamp": "2026-05-30T08:43:07+00:00",
+      "parent_id": null,
+      "objective": "Justify why some related work is included even if it is not directly about Priority Exchange.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Write a concise explanation of why some related work for Priority Exchange is indirectly related. Explain why Priority Inheritance, Priority Ceiling, and Stack Resource Policy are still useful context although they do not directly solve aperiodic scheduling.",
+      "ai_output_summary": "The AI explained that not all related work uses the exact keyword “Priority Exchange.” Some related work discusses aperiodic service, server-based scheduling, slack stealing, priority promotion, or resource-access predictability. It clarified that resource-access protocols are relevant because they address timing predictability and priority effects, even if they do not directly solve aperiodic scheduling.",
+      "verification": {
+        "actions": [
+          "This matches the professor’s instruction that the milestone should not artificially collect many weakly related papers, but should identify neighboring approaches, problem classes, assumptions, and consequences."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [
+          "No major issue. This section was useful to justify source selection."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction helped make the source selection more professional and aligned with the milestone instruction."
+    },
+    {
+      "id": "e-af722649",
+      "timestamp": "2026-05-30T08:43:07+00:00",
+      "parent_id": null,
+      "objective": "Generate open questions to ask the professor or use as feedback points.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Generate open questions for feedback for Milestone 2 on Extended Priority Exchange. The questions should help clarify whether the final paper should focus narrowly on Priority Exchange or broadly on aperiodic server mechanisms, and whether resource-access protocols should be included.",
+      "ai_output_summary": "The AI generated questions about whether to focus on Extended Priority Exchange or broader aperiodic server mechanisms, how much detail to give for Polling/Deferrable/Sporadic Server, whether to include resource-access protocols, whether to add a timing example, and whether to include EDF-based methods.",
+      "verification": {
+        "actions": [
+          "The questions are appropriate because they identify scope decisions that affect the final paper structure."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [
+          "The questions are useful but not final scientific results. They are included only as feedback points."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Open Questions for Feedback",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This helped identify where professor feedback is needed before writing the final version."
     }
   ],
-  "exported_at": "2026-05-29T22:05:54+00:00"
+  "exported_at": "2026-05-30T08:43:07+00:00"
 }
