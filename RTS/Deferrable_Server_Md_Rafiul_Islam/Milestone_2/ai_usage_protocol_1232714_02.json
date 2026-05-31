@@ -1,0 +1,111 @@
+{
+  "protocol_version": "0.2",
+  "student_id": "1232714",
+  "course": "Real-Time system",
+  "milestone": "02",
+  "topic": "Deferrable Server",
+  "entries": [
+    {
+      "id": "e-3ca8dc66",
+      "timestamp": "2026-05-31T13:14:46+00:00",
+      "parent_id": null,
+      "objective": "To understand the exact goal of Milestone 2 for the topic Deferrable Server and identify what kind of scientific content should be prepared.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "5.5"
+      },
+      "prompt": "I am preparing Milestone 2 for my Real-Time Systems topic: Deferrable Server. Please explain what Milestone 2 should contain and guide me step by step according to a scientific documentation style. I need to understand whether this milestone should focus only on implementation or also on context, comparison, and trade-off analysis.",
+      "ai_output_summary": "The AI explained that Milestone 2 should not only describe the Deferrable Server itself, but should also include scientific context, related scheduling approaches, comparison with similar server mechanisms, and a trade-off analysis. It suggested that the milestone should explain the motivation, main behavior, benefits, limitations, and comparison with alternatives such as Polling Server and Sporadic Server.",
+      "verification": {
+        "actions": [
+          "Checked whether the proposed structure matches the course topic and the expected milestone direction.",
+          "Compared the AI suggestion with the professor’s instruction that AI usage and scientific reasoning must be documented.",
+          "Confirmed that context, comparison, and trade-off analysis are suitable for Milestone 2."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The AI gave a general structure first, so I still needed to adapt it specifically to my topic Deferrable Server."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": false,
+        "section": "",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction helped me understand that Milestone 2 should be written as a scientific explanation, not only as a short technical note. I learned that Deferrable Server should be explained together with its motivation, trade-offs, and relation to other real-time scheduling servers."
+    },
+    {
+      "id": "e-75a78814",
+      "timestamp": "2026-05-31T13:14:46+00:00",
+      "parent_id": null,
+      "objective": "To understand the meaning of server budget, server period, and capacity preservation in the Deferrable Server.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "5.5"
+      },
+      "prompt": "Explain the scientific context of the Deferrable Server in real-time scheduling. Please describe how it fits into fixed-priority scheduling, how it handles aperiodic requests, what server budget and server period mean, and why preserving capacity during the period improves response time.",
+      "ai_output_summary": "The AI explained that the Deferrable Server behaves like a periodic task with a fixed priority, a server period, and an execution budget. The server period defines how often the capacity is replenished, while the budget defines how much processor time can be used for aperiodic requests. The AI clarified that the special feature of the Deferrable Server is that unused capacity is preserved during the current period, so an aperiodic request arriving later in the period can still be served immediately if budget remains.",
+      "verification": {
+        "actions": [
+          "I checked the terminology budget, period, replenishment, and capacity preservation against the lecture understanding of server-based scheduling.",
+          "I verified that the Deferrable Server preserves unused budget within the period, unlike a simple polling behavior."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The explanation was clear, but I needed to avoid writing it as if the Deferrable Server always guarantees better overall schedulability."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": false,
+        "section": "",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction helped me understand the core mechanism of the Deferrable Server. I learned that the important idea is capacity preservation: the server does not lose its budget immediately if no aperiodic job is ready at the beginning of the period."
+    },
+    {
+      "id": "e-449668e6",
+      "timestamp": "2026-05-31T13:14:46+00:00",
+      "parent_id": null,
+      "objective": "To understand the advantages and limitations of the Deferrable Server by comparing it with Polling Server and Sporadic Server.",
+      "ai_tool": {
+        "name": "ChatGTP",
+        "model": "5.5"
+      },
+      "prompt": "Compare Deferrable Server with Polling Server and Sporadic Server. Focus on response time for aperiodic tasks, wasted capacity, predictability, interference with periodic tasks, and schedulability analysis. Explain why Deferrable Server can be better than Polling Server but less controlled than Sporadic Server.",
+      "ai_output_summary": "The AI explained that a Polling Server is simple but may waste capacity if no aperiodic request is available at polling time. The Deferrable Server improves aperiodic responsiveness because it preserves unused budget during the period. However, this preserved capacity can create more interference for periodic tasks. The AI also explained that the Sporadic Server is generally more controlled because its replenishment is linked to actual budget consumption, which supports more predictable schedulability analysis.",
+      "verification": {
+        "actions": [
+          "I checked whether the comparison is consistent with the known behavior of Polling Server, Deferrable Server, and Sporadic Server.",
+          "I verified that the comparison does not incorrectly claim that Deferrable Server is always the best method.",
+          "I checked that the trade-off between better aperiodic response and increased interference is included."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The AI comparison was useful, but I needed to rewrite it in my own words and focus only on the points required for Milestone 2."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": false,
+        "section": "Comparison with Related Server Approaches",
+        "usage_type": "comparison-structuring",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction helped me understand that the Deferrable Server is a compromise. It usually gives better aperiodic response than Polling Server, but it can be less predictable than Sporadic Server because preserved budget may cause extra interference."
+    }
+  ],
+  "exported_at": "2026-05-31T13:14:46+00:00"
+}
