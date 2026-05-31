@@ -1,0 +1,202 @@
+{
+  "protocol_version": "0.2",
+  "student_id": "1230473",
+  "course": "Real Time System",
+  "milestone": "Milestone 2",
+  "topic": "Sporadic Server",
+  "entries": [
+    {
+      "id": "e-8d3df2fe",
+      "timestamp": "2026-05-31T10:05:38+00:00",
+      "parent_id": null,
+      "objective": "To understand what Milestone 2 requires and how to compare Sporadic Server with related real-time scheduling approaches.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Currently doing milestone 2 also i have provide the info from Milestone 1 for my Real-Time Systems seminar topic “Sporadic Server”. Milestone 2 is about scientific contextualization and tradeoff analysis, not just explaining the algorithm again. Guide me step by step on how to compare Sporadic Server with related approaches such as Polling Server, Deferrable Server, Priority Exchange, Slack Stealing, and EDF-based servers. I need to understand assumptions, tradeoffs, and consequences for embedded systems. Do not write the final paper text; guide me how to structure my own work.",
+      "ai_output_summary": "The LLM explained that Milestone 2 should place Sporadic Server in the wider context of real-time scheduling and aperiodic task handling. It suggested comparing Sporadic Server with Polling Server, Deferrable Server, Priority Exchange, Slack Stealing, and EDF-based server approaches. The main tradeoffs identified were response time versus schedulability, simplicity versus implementation complexity, runtime overhead versus better responsiveness, and formal guarantees versus practical deployability.",
+      "verification": {
+        "actions": [
+          "I compared the suggested structure with the Milestone 2 description and with the lecture material. The uploaded lecture shows that scheduling is part of architecture exploration and design decisions in embedded systems. It also distinguishes static and dynamic scheduling, which helps connect Sporadic Server to practical embedded-system scheduling choices."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The LLM gave a useful structure, but the technical details and exact tradeoffs still need to be checked against academic sources."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Milestone 2 structure and planning",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction helped me understand that Milestone 2 is not only related work. It is about positioning Sporadic Server among related approaches and explaining engineering tradeoffs. I will use this only as planning support and write the final analysis in my own words."
+    },
+    {
+      "id": "e-3e662df9",
+      "timestamp": "2026-05-31T10:05:38+00:00",
+      "parent_id": null,
+      "objective": "To identify which related approaches should be compared with Sporadic Server in Milestone 2.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "wll I also need to compare it with related or neighboring approaches which methods should I include and why? I know about Polling Server and Deferrable Server but I also want to know whether Priority Exchange Slack Stealing and EDF-based servers are relevant. so explain me only the relationship and comparison points",
+      "ai_output_summary": "The LLM suggested that the closest related methods are Background Scheduling, Polling Server, Deferrable Server, Priority Exchange, Slack Stealing, and EDF-based server mechanisms. It explained that Polling Server and Deferrable Server are the most direct comparisons because they also handle aperiodic jobs using server capacity. Priority Exchange and Slack Stealing are neighboring approaches because they also try to improve aperiodic responsiveness. EDF-based servers are related but belong more to dynamic-priority scheduling.",
+      "verification": {
+        "actions": [
+          "I checked whether the suggested approaches are relevant to aperiodic task scheduling and real-time server mechanisms. I also compared the idea with the Milestone 2 requirement, which asks for related approaches, neighboring strategies, and explanation if related work is indirect."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The list of approaches is useful, but I still need to verify the technical details of each method from reliable sources. Some approaches, such as EDF-based servers, may be only indirectly related to classical Sporadic Server."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Related and neighboring approaches",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction helped me decide which approaches to include in Milestone 2. It also helped me avoid collecting random weakly related papers. I will focus mainly on methods that solve the same problem: serving irregular jobs while protecting real-time tasks."
+    },
+    {
+      "id": "e-6d1e7bdc",
+      "timestamp": "2026-05-31T10:05:38+00:00",
+      "parent_id": null,
+      "objective": "To understand the main engineering tradeoffs between Sporadic Server and related scheduling methods.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "okay now I want to to write the tradeoff analysis part of Milestone 2 for Sporadic Server, help me how i could go through the tradeoffs in a simple way? I want to compare response time, schedulability runtime overhead memory overhead etc. and practical use in embedded systems just give me the points so that I can check and rewrite.",
+      "ai_output_summary": "The LLM explained that the main tradeoff is between fast aperiodic response and protection of periodic hard real-time tasks. Background scheduling is simple and safe for periodic tasks but gives poor aperiodic response. Polling Server is simple but may waste capacity. Deferrable Server improves response time but can increase interference. Sporadic Server gives controlled responsiveness but needs more bookkeeping for budget and replenishment. The AI also mentioned runtime overhead, memory for queues, timer management, and implementation complexity.",
+      "verification": {
+        "actions": [
+          "I checked whether the tradeoffs match the Milestone 2 task description. The milestone asks for tradeoffs such as runtime, memory, feasibility, and guarantees. I also compared the ideas with real-time scheduling lecture material and my Milestone 1 understanding."
+        ],
+        "level": "secondary-source-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The tradeoff explanation is still general. The exact schedulability claims and replenishment behavior of Sporadic Server must be verified from academic sources before final submission."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Tradeoff Analysis",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction helped me understand that Milestone 2 should not only list related methods. It should explain what is gained and what is lost when choosing one method over another. I will use these points to write my own tradeoff analysis."
+    },
+    {
+      "id": "e-095e12f2",
+      "timestamp": "2026-05-31T10:05:38+00:00",
+      "parent_id": null,
+      "objective": "To connect Sporadic Server tradeoffs with embedded-system design and the uploaded lecture material.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "I uploaded lecture material about HW/SW codesign and embedded-system design for Milestone 2 on Sporadic Server tell me how can I connect the scheduling tradeoffs to embedded systems? I want to mention architecture exploration, timing budgets, static vs dynamic scheduling, and implementation consequences without going away from my RTS topic.",
+      "ai_output_summary": "The LLM explained that scheduling is part of embedded-system design decisions, not only a mathematical topic. It connected Sporadic Server to timing budgets, architecture exploration, runtime overhead, memory for queues, timer handling, and operating-system support. It also explained that the lecture distinction between static and dynamic scheduling can be used to position Sporadic Server as a dynamic response mechanism for irregular jobs within a real-time system.",
+      "verification": {
+        "actions": [
+          "I compared the AI explanation with the uploaded lecture material. The lecture includes architecture exploration, scheduling, timing estimation, and static versus dynamic scheduling. I checked that the connection to Sporadic Server is reasonable and not forced."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The lecture is not specifically about Sporadic Server, so the connection is indirect. I should use it only to discuss embedded-system design consequences, not as a technical source for the Sporadic Server algorithm."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Consequences for embedded systems",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction helped me connect the scheduling topic to embedded-system design. I understood that the choice of a server mechanism affects implementation, timing, memory, and scheduling behavior. I will keep this connection short and clearly explain that the lecture is used for design context."
+    },
+    {
+      "id": "e-e1c71d1b",
+      "timestamp": "2026-05-31T10:05:38+00:00",
+      "parent_id": null,
+      "objective": "To explain why some related work for Sporadic Server may be sparse, older, or indirectly related.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "now I need to explain why some related work may be missing, sparse, or only indirectly related. For Sporadic Server, how can I explain this honestly? I do not want to add random papers just to make the related work section longer.",
+      "ai_output_summary": "The LLM explained that Sporadic Server is a specific classical method inside aperiodic task scheduling. Because of this, related work may not always use exactly the same keyword. Some work may discuss broader server-based scheduling, resource reservation, fixed-priority scheduling, or EDF-based bandwidth servers. The AI suggested explaining that the milestone focuses on neighboring solution strategies rather than collecting many weakly related papers.",
+      "verification": {
+        "actions": [
+          "I compared this with the Milestone 2 description, which says that students should not artificially collect weakly related papers. I checked that it is reasonable to include direct methods such as Polling Server and Deferrable Server, and indirect neighboring methods such as Slack Stealing or EDF-based servers."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "This is mainly methodological guidance, not a technical source. I still need real references for the related approaches."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Why related work may be sparse or indirect",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction helped me understand that Milestone 2 is about meaningful context, not collecting many unrelated papers. I will include only approaches that are technically close to the problem of aperiodic task handling and real-time scheduling tradeoffs."
+    },
+    {
+      "id": "e-adb157d7",
+      "timestamp": "2026-05-31T10:05:38+00:00",
+      "parent_id": null,
+      "objective": "To get a final check of my Milestone 2 plan before writing the full document and uploading it to GitHub.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5"
+      },
+      "prompt": "follow my plan for Milestone 2 my sections are: purpose, position of Sporadic Server related approaches tradeoff analysis assumptions embedded-system consequences indirect related work and open questions. check if this plan makes sense for the milestone? also answer like a simple reviewer and only tell me what is missing or too weak.",
+      "ai_output_summary": "The LLM reviewed the Milestone 2 plan and said the structure fits the task. It suggested making the comparison with Polling Server and Deferrable Server the strongest part, keeping Priority Exchange and Slack Stealing as neighboring approaches, and using EDF-based servers only as indirect context. It also suggested adding explicit tradeoffs about response time, schedulability, implementation complexity, timer overhead, memory overhead, and practical deployability.",
+      "verification": {
+        "actions": [
+          "I checked the feedback against the Milestone 2 checklist and my planned structure. I also checked whether the suggested sections match the expected output: related approaches, assumptions, tradeoffs, consequences for embedded systems, and explanation of indirect related work."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "revised",
+        "issues": [
+          "The review was useful for structure, but it did not verify the full technical correctness. I still need to check references."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Final plan review",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction helped me confirm that my Milestone 2 structure is complete. It also reminded me to keep the comparison focused and not make the related work section too broad. I will now write the milestone in my own words and document the sources separately."
+    }
+  ],
+  "exported_at": "2026-05-31T10:05:38+00:00"
+}
