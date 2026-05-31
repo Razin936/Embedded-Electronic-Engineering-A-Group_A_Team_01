@@ -1,0 +1,110 @@
+{
+  "protocol_version": "0.2",
+  "student_id": "2220070",
+  "course": "Real-Time Systems and HW/SW Co-Design",
+  "milestone": "M02",
+  "topic": "Polling Server and Fixed-Priority Servers",
+  "entries": [
+    {
+      "id": "e-33b171c5",
+      "timestamp": "2026-05-31T15:21:06+02:00",
+      "parent_id": null,
+      "objective": "Identify related approaches, neighboring server strategies, and design alternatives for the Polling Server as part of M2 scientific contextualization.",
+      "ai_tool": {
+        "name": "Claude",
+        "model": "claude-sonnet-4-6"
+      },
+      "prompt": "Polling Server (incl. Introduction to fixed priority servers) from buttazzo book. i want to start milestone 02",
+      "ai_output_summary": "Claude produced a structured M2 contextualization covering: the full fixed-priority server family (Background, PS, DS, SS, TBS, CBS, Slack Stealing) with a landscape diagram; related approaches with justification for inclusion/exclusion; explanation of why FP server related work is narrow (single line of work by Sprunt, Sha, Lehoczky); and tradeoff analysis covering the capacity-preservation vs. schedulability-guarantee axis, embedded system consequences (timing determinism, memory, energy, OS support), and assumptions that may be unrealistic.",
+      "verification": {
+        "actions": [
+          "Cross-checked PS vs DS vs SS capacity rules and WCRT bounds against Buttazzo textbook Ch. 5 structure.",
+          "Verified that Liu & Layland bound applies directly to PS but not DS — confirmed from lecture material.",
+          "Primary source citations for DS (Lehoczky 1987) and SS (Sprunt 1989) not independently verified against original papers."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "DS modified schedulability bound formula not verified against primary source.",
+          "SS replenishment edge cases may be simplified relative to Sprunt 1989 original.",
+          "TBS deadline assignment formula accepted at plausibility level only."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": false,
+        "section": "Scientific Contextualization / M2: Tradeoff Analysis",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "The AI output provided a useful structural map of the server design space and correctly identified the central tradeoff between capacity preservation and schedulability cost. It helped justify why related work is narrow and why the EDF branch (TBS, CBS) represents a paradigm shift rather than an extension. The landscape diagram clarified where PS sits relative to its neighbors. The output required cross-checking of formulas and the primary source citations (Lehoczky 1987, Sprunt 1989) should be verified against the original papers before M4."
+    },
+    {
+      "id": "e-3950cb3b",
+      "timestamp": "2026-05-31T15:21:06+02:00",
+      "parent_id": null,
+      "objective": "Identify, format, and verify the exact algebraic schedulability limits (Liu & Layland vs. Hyperbolic Bounds) for a Polling Server alongside a periodic task set.",
+      "ai_tool": {
+        "name": "Gemini",
+        "model": "Gemini 1.5 Pro"
+      },
+      "prompt": "For my Milestone 2 tradeoff analysis, I need to document the exact formal guarantees behind a Polling Server under Rate-Monotonic (RM) scheduling according to Buttazzo's textbook",
+      "ai_output_summary": "he AI ​​generated a dense mathematical breakdown. It provided the traditional Liu & Layland upper bound adjusted for an extra task:$$U_p + U_s \\le (n+1) \\left( 2^{\\frac{1}{n+1}} - 1 \\right)$$It also supplied the sharper Buttazzo Hyperbolic Bound:$$\\prod_{i=1}^{n} (U_i + 1) \\le \\frac{2}{U_s + 1}$$It concluded with bulleted notes detailing why the Deferrable Server introduces a deferred-execution penalty (the \"back-to-back\" hit) that drops the utilization bound, while the Polling Server avoids this completely by instantly forfeiting unused capacity.",
+      "verification": {
+        "actions": [
+          "Cross-referenced the product symbols ($\\prod$) and inequalities of the Hyperbolic Bound directly against Hard Real-Time Computing Systems (Chapter 5, Theorem 5.1). Confirmed that the mathematical derivation of the$PS$matches a standard periodic task because its execution profile introduces zero deferred jitter."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "None. Formulas matched the primary reference textbook exactly."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": false,
+        "section": "",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "The AI generated a compilable IEEE-formatted LaTeX document that correctly scaffolds M1 and M2 content in the same file, with M3 and M4 as placeholders for future milestones. The iterative build (M1 first, then M2 added, then references completed) matches the milestone-by-milestone workflow required by the seminar. The output required review of table column widths, section label naming, and reference key consistency — all minor issues resolved in the same session."
+    },
+    {
+      "id": "e-e1127cfc",
+      "timestamp": "2026-05-31T15:21:06+02:00",
+      "parent_id": null,
+      "objective": "Analyze the physical resource implications—specifically memory queue limits and sleep-state energy overhead—of implementing a Polling Server on constrained embedded hardware.",
+      "ai_tool": {
+        "name": "Gemeni",
+        "model": "Gemini 1.5 Pro"
+      },
+      "prompt": "Analyze the consequences of implementing a Polling Server on highly constrained embedded hardware/microcontrollers, drawing from the principles in Buttazzo. Provide structured notes covering: 1. Memory / Queue Constraints: How the immediate budget forfeiture rule forces engineers to calculate maximum burst arrivals to statically size the RAM queue and prevent buffer overflows. 2. Energy / Processor Constraints: The power-consumption overhead caused by a periodic timer waking up the CPU to poll an empty queue, compared to an interrupt-driven event mechanism. 3. Determinism: Why the Polling Server is favored in safety-critical systems despite poor average-case latencies.",
+      "ai_output_summary": "The AI ​​provided structured engineering notes analyzing microcontroller deployment constraints. It explained that because a Polling Server drops its execution capacity if the aperiodic queue is empty, a burst of events arriving midway through a period must be held in memory. This requires bounded RAM queue allocation to prevent heap exhaustion. It also noted the energy inefficiencies of periodic timer wake-ups hitting empty queues, but highlighted how this sacrifice guarantees strict timing determinism.",
+      "verification": {
+        "actions": [
+          "Evaluated the resource consumption models from an embedded systems engineering perspective. Validated that periodic polling loops do prevent lower-power deep sleep cycles on microcontrollers compared to event-driven interrupts, confirming the AI's power-draw deduction."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The AI ​​originally overemphasized dynamic allocation models. It was manually revised to reflect strictly static allocation, which is standard practice in safety-critical hard real-time systems."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": false,
+        "section": "",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": ""
+    }
+  ],
+  "exported_at": "2026-05-31T15:21:06+02:00"
+}
