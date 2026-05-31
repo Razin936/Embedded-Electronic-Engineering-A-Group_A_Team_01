@@ -1,7 +1,0 @@
-@misc{ai-usage-protocol-anonymous-milestone-2026,
-  author = {anonymous},
-  title = {AI Usage Protocol for Milestone: AI-assisted scientific work},
-  year = {2026},
-  howpublished = {Submitted AI usage protocol notebook and JSON file},
-  note = {Machine-readable documentation of AI-assisted scientific work; course: Course; protocol version: 0.2; documented reasoning episodes: 1; JSON file: ai\_usage\_protocol\_anonymous\_milestone.json}
-}
