@@ -159,6 +159,4 @@ Recommended textbook reference. Currently not directly accessible, so no specifi
 
 ---
 
-## Source-use Note
 
-This document is written in my own words as a Milestone 2 working document. The original Sporadic Server attribution is based on [1]. The comparison of server approaches is based on course and lecture material [2] and [3]. The embedded-system framing is supported by [4]. Exact utilisation bounds, formulas, and response-time analysis are intentionally kept qualitative here and should be verified from accessible primary sources before the final seminar paper.
