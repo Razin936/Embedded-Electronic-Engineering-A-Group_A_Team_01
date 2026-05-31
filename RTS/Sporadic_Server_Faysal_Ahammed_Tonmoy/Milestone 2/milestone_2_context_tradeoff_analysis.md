@@ -1,72 +1,164 @@
-Milestone 2: Scientific Contextualization and Tradeoff Analysis
+# Milestone 2: Scientific Contextualization and Tradeoff Analysis
 
-Topic: Sporadic Server
+**Topic:** Sporadic Server
+**Name:** Faysal Ahammed Tonmoy
+**Matriculation No.:** 1230473
+**Team:** A1
+**Course:** Real-Time Systems
 
-Name: Faysal Ahammed Tonmoy
+---
 
-Matriculation No.: 1230473
+## 1. Purpose of this Milestone
 
-Team: A1
+Milestone 1 was about understanding the Sporadic Server itself: what it is, how its budget works, and how the replenishment mechanism helps to serve irregular jobs. Milestone 2 does not repeat only that basic explanation. Instead, it places the Sporadic Server in a wider scientific and engineering context.
 
-Course: Real-Time Systems
+The goal of this milestone is to understand which other scheduling approaches deal with the same problem, what assumptions they rely on, and what tradeoffs follow from choosing one method instead of another. In simple words, Milestone 1 answered what a Sporadic Server is. Milestone 2 looks at why it was proposed, what the alternatives are, and what the choice means for a real embedded or real-time system.
 
-1. Purpose of this Milestone
-Milestone 1 was about understanding the Sporadic Server itself — what it is and how its budget and replenishment work. Milestone 2 does not repeat that. Instead it places the Sporadic Server in a wider context: which other scheduling approaches deal with the same problem, what assumptions they rely on, and what tradeoffs follow from choosing one over another. So Milestone 1 answered what a Sporadic Server is, and Milestone 2 looks at why it was proposed, what the alternatives are, and what the choice means for a real embedded system.
-2. Position of Sporadic Server
-The Sporadic Server is a way of handling aperiodic and sporadic tasks inside a fixed-priority, preemptive system — usually one where the periodic tasks use Rate Monotonic (RM) priorities. It is a server-based (bandwidth-preserving) method: a fixed amount of processor time is reserved at a chosen priority and used to run jobs that do not arrive on a regular period.
-It is worth saying what it is not. It is not a full scheduling policy and not a replacement for RM or EDF. It runs on top of a base policy and coexists with the periodic tasks. Its purpose is narrow: to give irregular jobs bounded, prioritised processor time so they get a reasonable response, without breaking the timing guarantees of the periodic tasks. The mechanism was originally introduced by Sprunt, Sha, and Lehoczky [1].
-3. Related and Neighboring Approaches
-The approaches below are included because they deal with the same problem — servicing aperiodic work alongside periodic real-time tasks — or because they are the closest technical neighbours of the Sporadic Server. Loosely related work has been left out on purpose, following the seminar guidance [3].
-3.1 Background Scheduling
-This is the simplest option. Aperiodic jobs run at the lowest priority, so only in the processor's idle time. Because they never preempt periodic tasks, they have no effect on periodic schedulability. The downside is response time: when the periodic load is high there is little idle time, so an aperiodic job can wait a long time, and the wait is hard to bound. The Sporadic Server can be seen as an improvement on this, giving aperiodic work a dedicated higher-priority budget instead of leaving it to idle time.
-3.2 Polling Server
-A Polling Server is a periodic task that serves pending aperiodic requests at each activation, up to its capacity. If nothing is waiting at the polling instant, the capacity for that period is discarded. It is simple, and since it is literally periodic it fits normal periodic schedulability analysis. The weakness is timing: a request arriving just after a polling instant waits until the next activation, which in the worst case is close to a full period, and capacity is wasted when there is nothing to do. From my current understanding, the Sporadic Server tries to keep better responsiveness than the Polling Server while still keeping interference bounded through its replenishment rule.
-3.3 Deferrable Server
-A Deferrable Server is also periodic but keeps its capacity through the period instead of discarding it. As long as budget remains, a request arriving at any time can be served immediately, and capacity is refilled at the start of each period. This gives better response than the Polling Server. The cost is more interference: because capacity can be spent late in one period and again early in the next, the server can put two bursts of demand close together on lower-priority tasks, which lowers the utilisation that the periodic set can be guaranteed. So a Deferrable Server does not behave like a normal periodic task in the analysis. As far as I understand, the Sporadic Server was designed to keep this kind of capacity preservation while still allowing cleaner reasoning about interference, through its replenishment rule [1].
-3.4 Priority Exchange and Slack Stealing
-These are two further approaches in the same area. Priority Exchange is another fixed-priority bandwidth-preserving server: instead of discarding unused capacity it "exchanges" it down to lower priority levels, so the capacity is preserved but at a reduced priority, at the cost of more bookkeeping. Slack stealing is different — it is not a fixed-capacity server but computes the slack of the periodic tasks (how much they can be delayed without missing deadlines) and uses it to run aperiodic jobs, often at high priority. It can give very good response times when the slack is computed correctly, but that computation is expensive. Both are included as related context rather than as the main comparison.
-3.5 EDF-based Servers
-The servers above assume fixed priorities. In the dynamic-priority (EDF) world there is a parallel family of bandwidth-reservation servers, for example the Total Bandwidth Server and the Constant Bandwidth Server (CBS), where CBS also gives temporal isolation between tasks. They are related as the EDF counterparts of bandwidth reservation, but they belong to a different scheduling paradigm, so I treat them as indirect context. The Sporadic Server is a fixed-priority mechanism.
-4. Main Tradeoffs
-4.1 Response Time vs Schedulability
-These two goals work against each other, and the approaches above sit at different points on that line. Background scheduling protects the periodic tasks fully but gives the worst response. The Polling Server keeps the analysis clean but pays a response-time penalty. The Deferrable Server improves response but lowers the schedulable utilisation because of the extra interference. From my current understanding, the main strength of the Sporadic Server is that it tries to keep good aperiodic response while still allowing cleaner schedulability reasoning. It is not always the best choice though — depending on the parameters and the actual arrival pattern, a Deferrable Server or slack stealing can give better response in some cases.
-4.2 Simplicity vs Implementation Complexity
-Among the capacity-preserving servers the Polling Server is the simplest, since there is little to track beyond a periodic refill. The Deferrable Server is a bit more involved but still uses a single periodic refill. The Sporadic Server is the most demanding: it has to track how much budget was used and schedule each replenishment by its rule, which can mean several pending replenishments at once. More control over timing means more state and more logic to implement and test.
-4.3 Runtime and Memory Overhead
-The extra control of a Sporadic Server costs something at runtime. The main sources are:
+---
 
-budget checking before and during dispatch,
-updating the remaining budget as the server runs,
-managing the replenishment queue (several future replenishments, each needing storage and a timer),
-managing the queue of waiting aperiodic jobs,
-timer/interrupt events when replenishments are due,
-extra context switches when the server preempts or yields.
+## 2. Position of Sporadic Server in Real-Time Scheduling
 
-On a small embedded target, where memory and CPU cycles are limited, these are not negligible and can eat into the responsiveness the server was chosen for.
-4.4 Formal Guarantees vs Practical Implementation
-The guarantees above rest on idealised assumptions: perfect preemption, negligible scheduler overhead, exact timing, correct worst-case execution times, and a correctly implemented replenishment rule. Real systems differ — timer resolution is finite, interrupt latency is non-zero, the scheduler itself takes time, measured execution times have error, and some RTOS implementations simplify the replenishment rule. So a method that looks good on paper may behave differently once deployed, and for embedded work the practical deployability and the correctness of the implementation matter as much as the theoretical bound. The same gap shows up between offline analysis and online arrivals: periodic tasks can be analysed before runtime, while aperiodic jobs arrive online, so the server is dimensioned offline but has to react online within its reserved budget.
-5. Assumptions and Embedded-System Consequences
-The servers here share a set of assumptions: a single processor (the classical Sporadic Server is uniprocessor), a preemptive fixed-priority base scheduler, known or bounded worst-case execution times for the periodic tasks, correct priority assignment (for example RM), a sensible server period and capacity, correct budget accounting and replenishment, and aperiodic jobs that can be queued and can tolerate some delay. These are not free — moving to a multiprocessor, allowing unknown execution times, or accepting imprecise timers changes the analysis and can break the guarantees.
-For embedded systems this matters in practice. CPU budget and memory are limited, so the overhead in Section 4.3 is a real factor. Timer precision and scheduler overhead decide whether a server actually behaves as its analysis predicts. The more capable mechanisms (Sporadic Server, slack stealing) buy responsiveness with implementation effort and runtime cost, which has to be justified by the application. This is why the choice of scheduling mechanism is really a design and architecture decision, not only a theoretical one, which fits the HW/SW co-design view [4]. The right server depends on the mix of periodic and aperiodic work, how critical the aperiodic jobs are, and the resource budget. Many embedded and edge systems run periodic control or sensing loops next to irregular, event-driven processing, which is exactly the situation these servers are meant for.
-6. Why Related Work May Be Indirect
-Searching for "Sporadic Server" alone gives few results, which can look like the topic is barely studied. The reason is that it is one specific classical mechanism, and most of the related literature sits under broader headings such as aperiodic and sporadic task scheduling, server-based scheduling, resource reservation, fixed-priority scheduling, and bandwidth reservation. Searching under those terms gives a fuller picture. Following the seminar guidance, I have not added unrelated papers just to make the list longer [3].
-7. Open Questions
+The Sporadic Server is a method for handling aperiodic and sporadic tasks inside a fixed-priority, preemptive real-time system. In many explanations, the periodic tasks are assumed to be scheduled by Rate Monotonic priorities. The server is used to reserve a fixed amount of processor time for jobs that do not arrive regularly.
 
-Should the final paper focus the detailed comparison on Polling, Deferrable, and Sporadic Server, and keep Priority Exchange, slack stealing, and the EDF servers only as brief context?
-How deep should the replenishment-rule explanation be — conceptual, or a worked step-by-step example?
-Should the implementation example be modelled in UPPAAL or written in C/C++ on an RTOS such as FreeRTOS?
-If the recommended textbook stays inaccessible, are the lecture materials acceptable as the main supporting sources?
-How much quantitative detail (utilisation bounds, response-time formulas) is expected, given that exact figures should come from a primary source I cannot currently access?
+It is important to say what the Sporadic Server is not. It is not a complete scheduling policy and it is not a replacement for Rate Monotonic or EDF. It works together with a base scheduling policy. Its purpose is narrower: it gives irregular jobs bounded and prioritized processor time so that they can get a better response time, while the periodic real-time tasks are still protected.
 
-8. References and Source-use Notes
-[1] Sprunt, B., Sha, L., and Lehoczky, J. — "Aperiodic Task Scheduling for Hard-Real-Time Systems", The Journal of Real-Time Systems, vol. 1, no. 1, 1989.
-Main source for the original Sporadic Server idea and motivation. Used for the historical attribution and the general design goal. No specific quantitative results have been reproduced; bibliographic details (volume, pages) should be confirmed from the accessible copy.
-[2] Resource Reservation Server — Lecture Material.
-Course source for comparing Polling, Deferrable, and Sporadic Server. Used as the basis for Sections 3 and 4.
-[3] HSHL Real-Time Systems Seminar Slides.
-Process/context source: seminar requirements, scientific writing rules, GitHub usage, referencing, and the plagiarism policy, including the guidance not to pad the reference list.
-[4] HW/SW Co-Design Lecture.
-Context source for the embedded framing in Section 5 — scheduling as a design/architecture decision.
-[5] Buttazzo, G. — "Hard Real-Time Computing Systems".
-Recommended textbook, not accessible at this stage. No specific claims, page numbers, or results are taken from it anywhere in this document. To be consulted and cited properly if access is obtained.
-Source-use note: the text is written in my own words from general real-time scheduling knowledge. Attribution for the mechanism is to [1]; the comparison follows the course materials [2] and [3]; the embedded framing follows [4]. Bounds and exact formulas are kept qualitative on purpose and should be checked against an accessible primary source before final submission.
+The original Sporadic Server mechanism was introduced by Sprunt, Sha, and Lehoczky. Their work is important because it addresses the problem of improving aperiodic responsiveness without losing the ability to reason about schedulability.
+
+---
+
+## 3. Related and Neighboring Approaches
+
+The approaches in this section are included because they deal with the same main problem: serving aperiodic work in a system that also contains periodic real-time tasks. I do not include weakly related papers only to make the reference list longer.
+
+### 3.1 Background Scheduling
+
+Background scheduling is the simplest option. Aperiodic jobs run at the lowest priority, which means they run only when no periodic task is ready. This protects the periodic tasks very well because aperiodic jobs do not interrupt them.
+
+The disadvantage is response time. If the periodic workload is high, there may be very little idle time. Then an aperiodic job can wait for a long time. Compared with this, the Sporadic Server gives aperiodic work a dedicated budget at a chosen priority, instead of leaving it only to idle processor time.
+
+### 3.2 Polling Server
+
+A Polling Server is a periodic task that checks whether aperiodic jobs are waiting. At each activation, it serves pending aperiodic jobs up to its capacity. If no aperiodic job is waiting at that time, the capacity for that period is lost.
+
+This method is simple and fits well into normal periodic schedulability analysis because the server behaves like a periodic task. The weakness is that a job arriving just after the polling instant may wait almost a full server period. Capacity can also be wasted when the server is activated but has nothing to do.
+
+From my current understanding, the Sporadic Server tries to improve this by avoiding unnecessary loss of useful capacity while still keeping interference controlled through its replenishment rule.
+
+### 3.3 Deferrable Server
+
+A Deferrable Server is also based on a server budget, but it keeps unused capacity during the current period. This means an aperiodic job that arrives later in the period can still be served quickly if budget remains.
+
+This gives better response time than the Polling Server. However, the preserved capacity can create more interference for lower-priority periodic tasks. For example, the server may execute late in one period and then again early in the next period after replenishment. This can create a stronger burst of execution.
+
+The Sporadic Server is closely related to the Deferrable Server because both try to improve aperiodic response time. The difference is that the Sporadic Server uses a more careful replenishment rule to control when consumed budget becomes available again.
+
+### 3.4 Priority Exchange and Slack Stealing
+
+Priority Exchange is another related fixed-priority approach. It tries to preserve unused high-priority capacity by exchanging it down to lower priority levels. This can use capacity better than a simple Polling Server, but it also needs more bookkeeping.
+
+Slack Stealing is different. It tries to calculate how much the periodic tasks can be delayed without missing deadlines. This available slack can then be used to execute aperiodic jobs. If the slack is computed correctly, this can give very good response times. The disadvantage is that slack calculation can be complex, especially if it must be done at runtime.
+
+Both Priority Exchange and Slack Stealing are related to Sporadic Server because they also try to improve aperiodic response time while protecting periodic tasks. However, they are not the main focus of my topic.
+
+### 3.5 EDF-based Servers
+
+The methods above mainly belong to fixed-priority scheduling. In EDF-based scheduling, there are also server methods, such as the Total Bandwidth Server and the Constant Bandwidth Server. These methods reserve processor bandwidth for aperiodic or sporadic work under dynamic-priority scheduling.
+
+They are related because they solve a similar problem, but they belong to a different scheduling paradigm. Therefore, I treat EDF-based servers as indirect context rather than as the main comparison.
+
+---
+
+## 4. Main Tradeoffs
+
+### 4.1 Response Time vs Schedulability
+
+The first tradeoff is between fast aperiodic response time and protection of periodic real-time tasks.
+
+Background scheduling protects periodic tasks very well, but aperiodic jobs may wait too long. Polling Server is simple and easier to analyse, but response time can be poor if jobs arrive just after polling. Deferrable Server improves response time, but it may increase interference. The Sporadic Server tries to balance both sides by giving aperiodic jobs budget while controlling how consumed budget is replenished.
+
+This does not mean that Sporadic Server is always the best choice. Depending on the system parameters and job arrival pattern, another method may sometimes give better response time or be easier to implement. The main strength of Sporadic Server is that it tries to combine good responsiveness with controlled interference.
+
+### 4.2 Simplicity vs Implementation Complexity
+
+Polling Server is the simplest among these server methods because it mainly needs periodic activation and capacity checking. Deferrable Server is slightly more complex because unused capacity is preserved during the period.
+
+Sporadic Server is more complex because the system must track how much budget was used and when that budget should be replenished. There may be multiple pending replenishments. This means more state, more logic, and more risk of implementation errors.
+
+So the tradeoff is clear: more control over timing gives better behaviour, but it also increases implementation complexity.
+
+### 4.3 Runtime and Memory Overhead
+
+Sporadic Server needs extra runtime work. The scheduler must check whether budget is available, update the remaining budget while the server runs, manage a queue of aperiodic jobs, and manage future replenishment events.
+
+There is also memory overhead because the system must store information about the server budget, waiting jobs, and scheduled replenishments. Timer or interrupt events are also needed when replenishment times arrive.
+
+For a powerful computer this overhead may be small, but in embedded systems CPU time and memory are limited. Therefore, the overhead is part of the design decision.
+
+### 4.4 Formal Guarantees vs Practical Implementation
+
+Theoretical guarantees depend on assumptions. These include accurate worst-case execution times, correct priority assignment, ideal preemption, exact timing, and correct implementation of the replenishment rule.
+
+Real systems are not perfect. Timer resolution is limited, interrupt latency exists, scheduler overhead is not zero, and measured execution times may contain error. Some real-time operating systems may also simplify the server behaviour to make implementation easier.
+
+Therefore, a scheduling method that looks good in theory must still be checked carefully in practical implementation.
+
+---
+
+## 5. Assumptions and Embedded-System Consequences
+
+The approaches discussed here rely on several assumptions. The classical Sporadic Server is mainly discussed for a single processor. It also assumes preemptive fixed-priority scheduling, known or bounded worst-case execution times, correct priority assignment, suitable server capacity and period, correct budget accounting, and correct replenishment handling.
+
+These assumptions matter. If the system is multiprocessor, if execution times are unknown, or if timers are imprecise, then the analysis can become more difficult or may no longer apply directly.
+
+For embedded systems, this is important because CPU budget and memory are limited. A more advanced server can improve response time, but it also requires more implementation effort. The system must support timers, queues, context switching, and budget tracking. Therefore, choosing a server method is not only a theoretical decision. It is also an architecture and design decision.
+
+This fits the embedded-system view from the HW/SW co-design lecture, where scheduling is part of the overall design process and not isolated from implementation.
+
+---
+
+## 6. Why Related Work May Be Indirect
+
+Searching only for the exact term “Sporadic Server” may give fewer results than expected. This does not mean the problem is unimportant. The reason is that Sporadic Server is one specific classical mechanism inside a broader area.
+
+Related work may appear under broader terms such as:
+
+* aperiodic task scheduling,
+* sporadic task scheduling,
+* server-based scheduling,
+* resource reservation,
+* fixed-priority scheduling,
+* bandwidth reservation.
+
+For this reason, I should not include unrelated papers just to increase the number of references. The better approach is to include sources that are genuinely connected to the same problem: serving irregular jobs while protecting real-time guarantees.
+
+---
+
+---
+
+## 7. References and Source-use Notes
+
+### [1] Sprunt, Sha, and Lehoczky — “Aperiodic Task Scheduling for Hard-Real-Time Systems”
+
+Main source for the original Sporadic Server idea and motivation. Used for historical attribution and for understanding the general design goal of the mechanism.
+
+### [2] Resource Reservation Server Lecture Material
+
+Used for comparing Polling Server, Deferrable Server, and Sporadic Server.
+
+### [3] HSHL Real-Time Systems Seminar Slides
+
+Used for seminar requirements, scientific writing rules, GitHub usage, referencing expectations, and plagiarism policy.
+
+### [4] HW/SW Co-Design Lecture
+
+Used only as context for embedded-system design, especially the idea that scheduling is part of architecture and implementation decisions.
+
+### [5] Buttazzo — “Hard Real-Time Computing Systems”
+
+Recommended textbook reference. Currently not directly accessible, so no specific claims, page numbers, or quantitative results are taken from it. It should be consulted and cited properly if access becomes available.
+
+---
+
+## Source-use Note
+
+This document is written in my own words as a Milestone 2 working document. The original Sporadic Server attribution is based on [1]. The comparison of server approaches is based on course and lecture material [2] and [3]. The embedded-system framing is supported by [4]. Exact utilisation bounds, formulas, and response-time analysis are intentionally kept qualitative here and should be verified from accessible primary sources before the final seminar paper.
