@@ -1,8 +1,13 @@
 Milestone 2: Scientific Contextualization and Tradeoff Analysis
+
 Topic: Sporadic Server
+
 Name: Faysal Ahammed Tonmoy
+
 Matriculation No.: 1230473
+
 Team: A1
+
 Course: Real-Time Systems
 
 1. Purpose of this Milestone
