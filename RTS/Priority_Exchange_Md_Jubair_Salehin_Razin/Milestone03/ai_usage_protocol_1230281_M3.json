@@ -1,0 +1,407 @@
+{
+  "protocol_version": "0.2",
+  "student_id": "1230281",
+  "student_name": "Md Jubair Salehin Razin",
+  "course": "Embedded Electronic Engineering A – Real-Time Systems",
+  "milestone": "M3",
+  "topic": "Priority Exchange",
+  "entries": [
+    {
+      "id": "e-428b2ade",
+      "timestamp": "2026-06-03T14:00:00+00:00",
+      "parent_id": null,
+      "objective": "Clarify the purpose and expected output of Milestone 3 for the Real-Time Systems seminar topic Priority Exchange. The goal was to distinguish the critical evaluation and transfer task from the earlier technical understanding and contextualisation milestones.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "I have completed Milestone 1 and Milestone 2. Now I need to complete Milestone 3: Critical Evaluation and Transfer for my RTS topic Priority Exchange. Explain what Milestone 3 expects from me point by point, especially strengths, limitations, assumptions, implementation impact, suitable applications, unsuitable applications, and open questions.",
+      "ai_output_summary": "The AI explained that Milestone 3 is not a repetition of the technical explanation from Milestone 1 or the related-work/context analysis from Milestone 2. It must evaluate Priority Exchange scientifically by discussing strengths, limitations, restrictive assumptions, practical implementation consequences, suitable and unsuitable applications, and possible extensions or open questions.",
+      "verification": {
+        "actions": [
+          "Checked against the Milestone 3 assignment text.",
+          "Compared with the completed Milestone 1 and Milestone 2 scope."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [
+          "Used for planning only; final technical content still needed source support."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Milestone 3 report structure",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This clarified that Milestone 3 must show scientific judgment about where Priority Exchange is useful, risky, and transferable to embedded systems."
+    },
+    {
+      "id": "e-d90bdf81",
+      "timestamp": "2026-06-03T14:00:00+00:00",
+      "parent_id": null,
+      "objective": "Confirm the correct assigned RTS topic and avoid preparing Milestone 3 for the wrong server algorithm.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "My RTS topic is Priority Exchange. I am Md Jubair Salehin Razin. Please correct the analysis and focus only on Priority Exchange, not Deferrable Server.",
+      "ai_output_summary": "The AI corrected the topic and confirmed that the assigned topic is Priority Exchange for Md Jubair Salehin Razin. It identified Buttazzo Chapter 5.5 as the relevant textbook section.",
+      "verification": {
+        "actions": [
+          "Checked the course topic allocation table.",
+          "Checked Buttazzo's table of contents where Priority Exchange appears as Chapter 5.5."
+        ],
+        "level": "primary-source-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [
+          "A previous planning message had incorrectly continued with Deferrable Server; this corrected the scope."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Topic confirmation",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This prevented the deliverable from being written for the wrong topic and aligned the work with the seminar allocation."
+    },
+    {
+      "id": "e-110c3f2e",
+      "timestamp": "2026-06-03T14:00:00+00:00",
+      "parent_id": null,
+      "objective": "Extract the main Priority Exchange mechanism from Buttazzo Chapter 5.5 and identify the central technical idea needed for the report.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Using Buttazzo Chapter 5.5, explain the main mechanism of Priority Exchange. Focus on server capacity, period, aperiodic service, and how unused capacity is preserved through priority exchange.",
+      "ai_output_summary": "The AI explained that Priority Exchange is a fixed-priority aperiodic server. A periodic server has a capacity and a period. If aperiodic work is pending, the server uses its capacity to execute it. If no aperiodic work is pending, the server exchanges its high-priority capacity with a lower-priority periodic task, allowing the periodic task to run while equivalent server capacity is preserved at the lower priority level.",
+      "verification": {
+        "actions": [
+          "Checked the mechanism against Buttazzo Chapter 5.5.",
+          "Verified that the description does not confuse PE with Deferrable Server."
+        ],
+        "level": "primary-source-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [
+          "The explanation needed formal wording before report inclusion."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Priority Exchange working principle",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This established the technical core: PE preserves unused server capacity through exchange with lower-priority periodic task execution."
+    },
+    {
+      "id": "e-ffcb9335",
+      "timestamp": "2026-06-03T14:00:00+00:00",
+      "parent_id": null,
+      "objective": "Develop a simple intuitive explanation of Priority Exchange before writing the formal report text.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Explain Priority Exchange in a simple way for a student who is new to real-time scheduling. Use an example with server capacity and lower-priority periodic tasks.",
+      "ai_output_summary": "The AI described Priority Exchange as a server that does not waste unused service time. If no aperiodic job is waiting, a lower-priority periodic task can execute earlier, while the server keeps equivalent service capacity at that lower priority level for later aperiodic work.",
+      "verification": {
+        "actions": [
+          "Checked the simplified explanation against the formal mechanism from Buttazzo.",
+          "Ensured it did not imply unlimited high-priority service."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [
+          "The informal explanation was useful for understanding but not reused directly."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": false,
+        "section": "",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This improved my own understanding and helped me prepare a clearer formal explanation."
+    },
+    {
+      "id": "e-471b8cd4",
+      "timestamp": "2026-06-03T14:00:00+00:00",
+      "parent_id": null,
+      "objective": "Compare Priority Exchange with neighboring fixed-priority server approaches to support the strengths and limitations sections of Milestone 3.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Compare Priority Exchange with Polling Server and Deferrable Server. Focus on aperiodic response time, capacity preservation, periodic task interference, and implementation complexity.",
+      "ai_output_summary": "The AI compared three fixed-priority server approaches. Polling Server is simple but loses capacity if no aperiodic request is waiting. Deferrable Server preserves capacity at the server priority, improving response but increasing possible interference. Priority Exchange preserves unused capacity by exchanging it with lower-priority periodic execution, improving schedulability behavior compared with Deferrable Server but requiring more bookkeeping.",
+      "verification": {
+        "actions": [
+          "Checked the comparison against Buttazzo Chapter 5.",
+          "Revised wording so PE was not presented as universally superior."
+        ],
+        "level": "primary-source-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [
+          "The word 'better' depends on response-time, schedulability, or implementation metrics."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Strengths and tradeoff discussion",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This helped frame PE as a tradeoff rather than simply a better algorithm."
+    },
+    {
+      "id": "e-25f401d4",
+      "timestamp": "2026-06-03T14:00:00+00:00",
+      "parent_id": null,
+      "objective": "Identify the main strengths of Priority Exchange for the Milestone 3 critical evaluation report.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "For Milestone 3, identify the main strengths of Priority Exchange compared with background service, Polling Server, and Deferrable Server. Make the points suitable for a critical evaluation report.",
+      "ai_output_summary": "The AI identified strengths such as improved aperiodic service compared with background execution, avoidance of immediate capacity loss as in Polling Server, compatibility with fixed-priority scheduling, and more conservative schedulability behavior for periodic tasks compared with Deferrable Server.",
+      "verification": {
+        "actions": [
+          "Checked the strengths against Buttazzo Chapter 5.5.",
+          "Cross-checked the schedulability-related claims conceptually against the PE/DS comparison."
+        ],
+        "level": "primary-source-check"
+      },
+      "evaluation": {
+        "status": "revised",
+        "issues": [
+          "Initial phrasing was too positive and was revised to avoid overclaiming."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Strengths of Priority Exchange",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This provided the core material for the strengths section while keeping the evaluation balanced."
+    },
+    {
+      "id": "e-ef30a00f",
+      "timestamp": "2026-06-03T14:00:00+00:00",
+      "parent_id": null,
+      "objective": "Identify limitations and risks of Priority Exchange for a balanced scientific evaluation.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Critically evaluate the limitations and risks of Priority Exchange. Focus on implementation complexity, aperiodic response-time limitations, schedulability risks, and possible problems in real embedded systems.",
+      "ai_output_summary": "The AI explained that Priority Exchange is more complex than Polling Server and Deferrable Server because it must track capacity at different priority levels. It also identified that aperiodic response time can be worse than Deferrable Server when available capacity has degraded to a lower priority level. It highlighted configuration risks related to server period and capacity.",
+      "verification": {
+        "actions": [
+          "Checked capacity-tracking complexity against Buttazzo Chapter 5.5.",
+          "Reasoned about degraded-priority capacity causing lower aperiodic responsiveness."
+        ],
+        "level": "primary-source-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [
+          "Some implementation risks are inferred from the mechanism rather than experimentally measured."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Limitations and risks",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This made the report more critical by showing the cost of PE's improved capacity preservation."
+    },
+    {
+      "id": "e-5aaae640",
+      "timestamp": "2026-06-03T14:00:00+00:00",
+      "parent_id": null,
+      "objective": "Identify theoretical assumptions behind Priority Exchange that may be restrictive in realistic embedded systems.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "List the theoretical assumptions behind Priority Exchange and fixed-priority server analysis that may be restrictive in real embedded systems. Include WCET, overhead, interrupts, shared resources, and soft aperiodic tasks.",
+      "ai_output_summary": "The AI identified assumptions such as known WCETs, fixed priorities, predictable periodic task parameters, precise server-capacity accounting, negligible scheduling overhead, and soft aperiodic requests. It also noted real embedded issues such as interrupts, cache effects, context-switch overhead, shared-resource blocking, communication delays, and timer granularity.",
+      "verification": {
+        "actions": [
+          "Compared the assumptions with Buttazzo's general discussion of predictability.",
+          "Checked that the list was relevant to PE rather than only generic embedded systems."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [
+          "The broad list was filtered to keep only the most relevant assumptions."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Restrictive assumptions",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This connected the theory to practical embedded-system limitations."
+    },
+    {
+      "id": "e-f2e981e8",
+      "timestamp": "2026-06-03T14:00:00+00:00",
+      "parent_id": null,
+      "objective": "Analyze runtime, memory, scalability, and implementation implications of Priority Exchange in an RTOS context.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Analyze the implementation impact of Priority Exchange in an embedded RTOS. Discuss runtime overhead, memory overhead, scalability, priority queues, timer handling, and server budget tracking.",
+      "ai_output_summary": "The AI explained that PE requires more scheduler bookkeeping than simpler servers. The implementation must store server capacity, remaining budget, server period, pending aperiodic jobs, and capacity preserved at different priority levels. It also noted that scalability becomes harder as the number of priority levels, periodic tasks, and aperiodic requests increases.",
+      "verification": {
+        "actions": [
+          "Checked that the implication follows from capacity movement across priority levels.",
+          "Ensured no unmeasured numerical overhead values were included."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [
+          "Exact overhead depends on RTOS implementation; the report discusses relative complexity."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Implementation implications",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This supported the transfer part of Milestone 3 by linking the algorithm to practical RTOS implementation constraints."
+    },
+    {
+      "id": "e-5b800767",
+      "timestamp": "2026-06-03T14:00:00+00:00",
+      "parent_id": null,
+      "objective": "Check how official FreeRTOS mechanisms are relevant to a practical implementation discussion of Priority Exchange.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Use official open sources to check how a practical RTOS such as FreeRTOS handles priority-based scheduling and timers. Explain how this is relevant for implementing Priority Exchange.",
+      "ai_output_summary": "The AI used official FreeRTOS documentation to explain that FreeRTOS is priority-based and that timer functionality has specific implementation mechanisms. This was used only to support the practical transfer discussion: implementing Priority Exchange would require careful priority management, capacity accounting, and timer-based replenishment.",
+      "verification": {
+        "actions": [
+          "Checked that the sources were official FreeRTOS documentation.",
+          "Used FreeRTOS only as implementation context, not as a source defining PE."
+        ],
+        "level": "secondary-source-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [
+          "FreeRTOS documentation does not describe PE directly; it is only used as RTOS background."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Implementation implications",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This supported the practical transfer discussion using official RTOS documentation."
+    },
+    {
+      "id": "e-f56bc55d",
+      "timestamp": "2026-06-03T14:00:00+00:00",
+      "parent_id": null,
+      "objective": "Generate suitable application examples where Priority Exchange can be useful.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Give suitable application examples for Priority Exchange in embedded real-time systems. Explain why PE is appropriate in each case.",
+      "ai_output_summary": "The AI suggested examples such as industrial monitoring, robot status updates, automotive diagnostics, user interface events, communication messages, and non-critical sensor warnings. The common argument was that hard periodic control tasks remain protected while soft aperiodic requests receive better service than background execution.",
+      "verification": {
+        "actions": [
+          "Checked the examples against the intended use of PE for soft aperiodic service.",
+          "Excluded examples that imply hard safety-critical aperiodic handling."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [
+          "The examples are application-level interpretations, not documented PE industrial case studies."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Suitable applications",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This made the report more applied and easier to understand."
+    },
+    {
+      "id": "e-1250746c",
+      "timestamp": "2026-06-03T14:00:00+00:00",
+      "parent_id": null,
+      "objective": "Generate unsuitable application examples and risk cases where Priority Exchange should not be selected without stronger guarantees.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Give examples where Priority Exchange is unsuitable or risky. Focus on safety-critical aperiodic events, strict hard deadlines, and systems requiring very simple scheduling.",
+      "ai_output_summary": "The AI suggested unsuitable scenarios including airbag triggering, brake-by-wire emergency control, flight stabilization, medical life-support control, very small MCU systems with minimal schedulers, and systems with many shared resources. The reasoning was that PE is designed mainly for soft aperiodic service and has nontrivial bookkeeping complexity.",
+      "verification": {
+        "actions": [
+          "Checked the examples against the limitation that PE is mainly intended for soft aperiodic requests.",
+          "Revised wording to avoid claiming PE is impossible in all safety-critical systems."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [
+          "The examples are cautionary engineering judgments, not experimental results."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Unsuitable applications",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This helped demonstrate scientific judgment by identifying where PE may be inappropriate."
+    }
+  ],
+  "exported_at": "2026-06-03T14:00:00+00:00"
+}
