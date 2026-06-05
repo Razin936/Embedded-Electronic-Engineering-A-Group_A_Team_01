@@ -1,0 +1,418 @@
+{
+  "protocol_version": "0.2",
+  "student_id": "1230473",
+  "course": "Real Time Systems",
+  "milestone": "Milestone 3",
+  "topic": "Sporadic Server",
+  "entries": [
+    {
+      "id": "e-00a8eb23",
+      "timestamp": "2026-06-05T16:15:31+00:00",
+      "parent_id": null,
+      "objective": "To understand what Milestone 3 requires for the Real-Time Systems seminar topic Sporadic Server.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "My topic is Sporadic Server. Milestone 3 is called Critical Evaluation and Transfer. Explain what I actually have to do in this milestone. Do not write the final report for me; guide me on the required sections and what kind of scientific judgment is expected.",
+      "ai_output_summary": "The LLM explained that Milestone 3 is not mainly about describing the Sporadic Server again. Instead, it should critically evaluate the approach by discussing strengths, limitations, assumptions, runtime and memory implications, suitability for embedded systems, unsuitable cases, and possible extensions or open research questions.",
+      "verification": {
+        "actions": [
+          "I compared the AI guidance with the Milestone 3 task description provided by the lecturer.",
+          "I checked that the suggested sections match the expected output: strengths, limitations, assumptions, implementation implications, application examples, and open questions."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The AI output was useful for planning the structure, but it did not replace reading the original technical sources.",
+          "I still need to verify all technical claims about Sporadic Server from academic references."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Milestone 3 planning and structure",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction helped me understand the difference between Milestone 3 and the earlier milestones. I learned that the focus should be scientific judgment and transfer to realistic embedded systems, not only explanation of the algorithm."
+    },
+    {
+      "id": "e-b0e222be",
+      "timestamp": "2026-06-05T16:15:31+00:00",
+      "parent_id": null,
+      "objective": "To identify the main strengths of Sporadic Server for real-time systems.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "For Milestone 3, help me identify the main strengths of the Sporadic Server approach. Focus on why it is useful compared with simpler aperiodic service mechanisms, especially in fixed-priority real-time systems. Give points that I can verify and rewrite in my own words.",
+      "ai_output_summary": "The AI identified strengths such as improved response time for aperiodic jobs, controlled interference with hard periodic tasks, better use of reserved capacity than Polling Server, and more disciplined replenishment behavior than Deferrable Server. It also suggested connecting these strengths to systems that combine periodic control tasks with irregular event handling.",
+      "verification": {
+        "actions": [
+          "I checked the strengths against my Milestone 1 and Milestone 2 notes.",
+          "I compared the claims with the known motivation for server-based scheduling: improving aperiodic response while protecting periodic task schedulability."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The AI presented the strengths in simplified form, so I need to avoid using them as unverified final claims.",
+          "The comparison with Deferrable Server and Polling Server needs source verification before final submission."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Strengths of the approach",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction helped me formulate what makes Sporadic Server valuable. I will use the ideas as a checklist, but I will write the report in my own words and support the claims with references."
+    },
+    {
+      "id": "e-9038c618",
+      "timestamp": "2026-06-05T16:15:31+00:00",
+      "parent_id": null,
+      "objective": "To identify limitations and risks of Sporadic Server beyond the basic algorithm explanation.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "For my Sporadic Server Milestone 3 report, list important limitations and risks. Focus on what can go wrong in practical embedded systems, such as implementation complexity, replenishment handling, overload, timing assumptions, and scheduler overhead.",
+      "ai_output_summary": "The AI explained that Sporadic Server has risks related to implementation complexity, budget accounting, replenishment event management, timer accuracy, context switching, overload behavior, and incorrect configuration of server capacity and period. It also noted that a wrong implementation can reduce the protection intended for hard periodic tasks.",
+      "verification": {
+        "actions": [
+          "I checked whether the listed risks are consistent with the mechanism of budget consumption and delayed replenishment.",
+          "I compared the practical risks with embedded-system concerns such as timer resolution, interrupt overhead, and limited processor capacity."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The risk list was useful but broad.",
+          "I need to decide which limitations are most relevant for my final report instead of including every possible issue."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Limitations and risks",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction helped me move from simply praising the approach to evaluating where it can become difficult. I will include selected limitations that are directly connected to Sporadic Server and embedded implementation."
+    },
+    {
+      "id": "e-927d04a8",
+      "timestamp": "2026-06-05T16:15:31+00:00",
+      "parent_id": null,
+      "objective": "To evaluate assumptions of Sporadic Server that may be restrictive or unrealistic in real embedded systems.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Help me analyze which assumptions behind Sporadic Server may be unrealistic or restrictive. I want to discuss assumptions about known periodic tasks, WCET, accurate budget tracking, timer precision, and ideal scheduler behavior.",
+      "ai_output_summary": "The AI suggested several assumptions to evaluate: known task periods and priorities, reliable worst-case execution time estimates, accurate server budget enforcement, bounded scheduler overhead, sufficiently precise timers, and predictable aperiodic request handling. It also explained that real systems may violate these assumptions due to interrupts, shared resources, communication delays, and hardware timing effects.",
+      "verification": {
+        "actions": [
+          "I checked that these assumptions are related to real-time schedulability analysis.",
+          "I compared them with typical embedded constraints such as limited timer precision, OS overhead, and blocking due to shared resources."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The AI did not provide formal proof or exact schedulability equations.",
+          "The final report should clearly separate theoretical assumptions from practical implementation concerns."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Restrictive or unrealistic assumptions",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction helped me identify the hidden conditions under which Sporadic Server is useful. I will use this to show scientific judgment instead of presenting the algorithm as universally applicable."
+    },
+    {
+      "id": "e-f2e95611",
+      "timestamp": "2026-06-05T16:15:31+00:00",
+      "parent_id": null,
+      "objective": "To understand runtime overhead and implementation implications of Sporadic Server.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Explain the runtime and implementation overhead of Sporadic Server. Focus on scheduler operations such as budget tracking, replenishment queues, timers, context switches, and the difference between a theoretical algorithm and implementation in an RTOS.",
+      "ai_output_summary": "The AI explained that the runtime overhead comes from updating server budget, managing replenishment times, checking whether the server is eligible to execute, handling aperiodic queues, and potentially causing additional context switches. It also mentioned that implementation in an RTOS requires careful timer and data-structure design.",
+      "verification": {
+        "actions": [
+          "I checked whether each overhead point follows from the Sporadic Server mechanism.",
+          "I compared this with the professor's seminar instruction that the elaboration should include runtime and overhead of the algorithm."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The AI gave qualitative overhead analysis, not measured runtime values.",
+          "If I include quantitative complexity, I need to verify it carefully from implementation details or sources."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Runtime and implementation implications",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction clarified that overhead is not only CPU time but also implementation complexity. I will discuss overhead qualitatively and avoid unsupported numerical claims."
+    },
+    {
+      "id": "e-1dafa358",
+      "timestamp": "2026-06-05T16:15:31+00:00",
+      "parent_id": null,
+      "objective": "To analyze memory and scalability implications of Sporadic Server.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "For Milestone 3, help me discuss memory and scalability of Sporadic Server. Consider replenishment queues, aperiodic job queues, multiple servers, many aperiodic sources, and small microcontrollers.",
+      "ai_output_summary": "The AI explained that memory overhead may come from storing pending aperiodic requests and future replenishment events. It also noted that one server is usually manageable, but multiple servers or many replenishment events can increase complexity. For small microcontrollers, the extra data structures and timing management may be a practical limitation.",
+      "verification": {
+        "actions": [
+          "I checked that memory overhead is connected to actual implementation needs: job queues and replenishment records.",
+          "I reviewed whether scalability concerns are relevant for embedded systems with limited RAM and simple schedulers."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The AI did not give exact memory bounds.",
+          "The final report should describe scalability qualitatively unless I find reliable source material or implementation measurements."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Memory and scalability implications",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction helped me include memory and scalability, which are important for embedded systems. I will not overstate the problem, but I will explain why these aspects matter in small systems."
+    },
+    {
+      "id": "e-dc04a95b",
+      "timestamp": "2026-06-05T16:15:31+00:00",
+      "parent_id": null,
+      "objective": "To identify embedded-system applications where Sporadic Server is suitable.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Give examples of embedded-system contexts where Sporadic Server is suitable. Focus on systems with periodic hard real-time tasks and irregular aperiodic events, such as automotive, robotics, industrial control, or communication gateways.",
+      "ai_output_summary": "The AI suggested suitable applications including automotive ECUs handling diagnostics, industrial controllers reacting to alarms, robotic systems handling event-based obstacle information, and embedded gateways processing sporadic network packets. The common pattern is that regular periodic tasks must meet deadlines while irregular events need reasonably fast service.",
+      "verification": {
+        "actions": [
+          "I checked whether each example actually has a mix of periodic and aperiodic workload.",
+          "I selected only examples that can be explained clearly in the final report."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "Some examples are generic and need careful wording to avoid sounding like unsupported claims.",
+          "The final report should explain why each example fits the Sporadic Server model."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Suitable application examples",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction helped me transfer the algorithm from theory to practical embedded contexts. I will use only a few strong examples and explain the workload pattern behind them."
+    },
+    {
+      "id": "e-bbade637",
+      "timestamp": "2026-06-05T16:15:31+00:00",
+      "parent_id": null,
+      "objective": "To identify situations where Sporadic Server may be unsuitable or not worth the complexity.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "For Milestone 3, give examples where Sporadic Server is unsuitable. I want to discuss systems with continuous overload, very small microcontrollers, soft real-time systems where simpler methods are enough, and systems where timing assumptions cannot be guaranteed.",
+      "ai_output_summary": "The AI suggested that Sporadic Server is less suitable for continuous aperiodic overload, extremely resource-limited microcontrollers, systems without accurate timer support, systems where aperiodic jobs dominate the workload, and simple soft real-time applications where the complexity is unnecessary.",
+      "verification": {
+        "actions": [
+          "I checked whether each unsuitable case conflicts with the assumptions or goals of Sporadic Server.",
+          "I compared the examples with practical embedded constraints such as limited RAM, timer support, and workload predictability."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The AI output needs careful integration because unsuitable does not always mean impossible.",
+          "I should phrase this section as conditions where the approach becomes less attractive, not as absolute rejection."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Unsuitable application examples",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction helped me make the evaluation balanced. I will show that Sporadic Server is useful under certain assumptions but not the best solution for every embedded system."
+    },
+    {
+      "id": "e-ffcfe828",
+      "timestamp": "2026-06-05T16:15:31+00:00",
+      "parent_id": null,
+      "objective": "To develop possible extensions, adaptations, and open research questions for Sporadic Server.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Suggest possible extensions or open research questions for Sporadic Server in modern embedded systems. Include ideas like adaptive capacity, overload handling, energy awareness, formal verification in UPPAAL, and implementation on FreeRTOS or embedded Linux.",
+      "ai_output_summary": "The AI suggested extensions such as adaptive server capacity, overload-aware scheduling, energy-aware variants, integration with resource-sharing protocols, formal verification in UPPAAL, and practical measurements on RTOS platforms. It also suggested asking how large the gap is between theoretical schedulability guarantees and behavior on real hardware.",
+      "verification": {
+        "actions": [
+          "I checked that the proposed extensions are connected to actual limitations discussed earlier.",
+          "I selected open questions that fit the scope of a student seminar report."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "Some proposed research questions are too broad for my seminar paper.",
+          "I need to keep the final section focused and avoid pretending to solve open research problems."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Possible extensions and open research questions",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction helped me finish the Milestone 3 report with forward-looking scientific questions. I will use these as discussion points, not as final solved results."
+    },
+    {
+      "id": "e-a910c81f",
+      "timestamp": "2026-06-05T16:15:31+00:00",
+      "parent_id": null,
+      "objective": "To create a logical report structure for Milestone 3.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Create a clean structure for my Milestone 3 report on Sporadic Server. The structure should follow the expected output: strengths, limitations, assumptions, runtime/memory/scalability, suitable examples, unsuitable examples, extensions, and conclusion.",
+      "ai_output_summary": "The AI proposed a report structure with sections for short recap, strengths, limitations and risks, restrictive assumptions, runtime/memory/scalability implications, suitable application contexts, unsuitable contexts, extensions and open questions, and a short conclusion.",
+      "verification": {
+        "actions": [
+          "I compared the structure with the Milestone 3 expected output.",
+          "I checked that the structure does not repeat too much of Milestone 1 or Milestone 2."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The structure is useful, but I still need to fill it with my own text and source-based technical arguments.",
+          "The final report must not be a copied AI outline."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Milestone 3 report organization",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction helped me organize the report before writing. It made clear that the report should be evaluative and not only descriptive."
+    },
+    {
+      "id": "e-1bab2485",
+      "timestamp": "2026-06-05T16:15:31+00:00",
+      "parent_id": null,
+      "objective": "To check whether the planned report has enough scientific judgment and does not sound only descriptive.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Review my planned Milestone 3 content conceptually. Does it show critical evaluation and transfer, or does it still sound like only an explanation of Sporadic Server? Give short feedback and tell me what to improve.",
+      "ai_output_summary": "The AI advised that the report should not spend too much space explaining the basic algorithm. It recommended strengthening the critical parts by explicitly discussing assumptions, failure cases, implementation risks, and the difference between theoretical schedulability and real embedded-system behavior.",
+      "verification": {
+        "actions": [
+          "I compared this feedback with the scientific purpose of Milestone 3.",
+          "I checked whether my planned sections answer when the approach is useful, where it may fail, and how it transfers to embedded systems."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The AI feedback was mainly structural and stylistic.",
+          "I still need to verify all technical content through references and my own reasoning."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Milestone 3 self-review",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction helped me avoid writing another Milestone 1-style explanation. I will make sure that the final report clearly evaluates the method instead of only defining it."
+    },
+    {
+      "id": "e-c2e5a0b0",
+      "timestamp": "2026-06-05T16:15:31+00:00",
+      "parent_id": null,
+      "objective": "To check responsible AI use and avoid plagiarism in the Milestone 3 workflow.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "I used AI to help plan my Milestone 3 report on Sporadic Server. How should I document this honestly in my AI usage protocol, and how can I avoid copying AI-generated wording into the final report?",
+      "ai_output_summary": "The AI recommended documenting each interaction with objective, prompt, output summary, verification, evaluation, integration, and reflection. It emphasized that the AI output should be used for planning and checking, not as a primary source or copied final text. It also suggested verifying technical claims with academic references and writing the final report in my own words.",
+      "verification": {
+        "actions": [
+          "I compared this advice with the seminar requirement that every sentence of the paper must be my own intellectual work and plagiarism must be avoided.",
+          "I checked that my AI protocol records whether direct text was reused and how the output was verified."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The AI can help with documentation structure, but academic responsibility remains mine.",
+          "I must make sure the final report cites real academic sources, not AI."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "AI usage protocol and academic honesty",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction helped me document AI use responsibly. I will use the JSON file as a transparency record and make sure my final report is written in my own words with proper references."
+    }
+  ],
+  "exported_at": "2026-06-05T16:15:31+00:00"
+}
