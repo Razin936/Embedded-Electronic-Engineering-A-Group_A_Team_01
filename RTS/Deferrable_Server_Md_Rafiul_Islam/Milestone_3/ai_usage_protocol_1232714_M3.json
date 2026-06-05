@@ -1,0 +1,407 @@
+{
+  "protocol_version": "0.2",
+  "student_id": "1232714",
+  "course": "Real-Time Systems",
+  "milestone": "M3",
+  "topic": "Deferrable Server",
+  "exported_at": "2026-06-05T00:00:00+02:00",
+  "entries": [
+    {
+      "id": "e-m3-001",
+      "timestamp": "2026-06-05T00:00:00+02:00",
+      "parent_id": null,
+      "objective": "Understand what Milestone 3 requires and identify how it differs from Milestone 1 and Milestone 2.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Explain what I need to do for Milestone 3: Critical Evaluation and Transfer for my topic Deferrable Server. Do not repeat only the algorithm; tell me what kind of scientific judgement is expected.",
+      "ai_output_summary": "The AI explained that Milestone 3 should move beyond explanation and comparison. It should critically evaluate strengths, limitations, assumptions, risks, implementation implications, suitable and unsuitable applications, and possible extensions of the Deferrable Server.",
+      "verification": {
+        "actions": [
+          "Compared the AI output with the official Milestone 3 checklist.",
+          "Checked that the required items include strengths, limitations, assumptions, runtime/memory/scalability, suitable and unsuitable applications, and extensions.",
+          "Confirmed that the focus is critical judgement, not only summary."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Overall structure of Milestone 3",
+        "usage_type": "requirements engineering-support",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction helped me understand that Milestone 3 is not another literature summary. It requires evaluation of when the Deferrable Server is useful, risky, or unsuitable."
+    },
+    {
+      "id": "e-m3-002",
+      "timestamp": "2026-06-05T00:00:00+02:00",
+      "parent_id": null,
+      "objective": "Identify concrete strengths of the Deferrable Server instead of writing generic advantages.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Give me concrete strengths of the Deferrable Server for a critical evaluation report. Avoid generic sentences and connect each strength to real-time embedded systems.",
+      "ai_output_summary": "The AI identified several strengths: better aperiodic response than Polling Server, simple budget model, low memory overhead, compatibility with fixed-priority scheduling, and usefulness for small embedded systems.",
+      "verification": {
+        "actions": [
+          "Checked the strengths against Milestone 1 and Milestone 2 notes.",
+          "Verified that DS preserves unused budget within the server period.",
+          "Checked that the listed strengths are connected to the actual mechanism of DS."
+        ],
+        "level": "secondary-source-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [
+          "Initial wording was slightly too positive, so I kept the strengths but planned to balance them with limitations."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Strengths of the Deferrable Server",
+        "usage_type": "argument-critique",
+        "direct_text_reused": false
+      },
+      "reflection": "This helped me make the strengths more concrete. I learned that every advantage must be linked to the DS budget-preservation mechanism."
+    },
+    {
+      "id": "e-m3-003",
+      "timestamp": "2026-06-05T00:00:00+02:00",
+      "parent_id": null,
+      "objective": "Evaluate the main technical limitation of the Deferrable Server: the double-hit effect.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Explain the double-hit problem of the Deferrable Server in a way suitable for a critical evaluation. Why is it a risk for periodic tasks?",
+      "ai_output_summary": "The AI explained that preserved budget may be used near the end of one server period and then the budget may be replenished at the start of the next period. This can create almost 2Q of high-priority execution in a short interval, causing extra interference for periodic tasks.",
+      "verification": {
+        "actions": [
+          "Compared the explanation with my Milestone 2 discussion of budget preservation and double-hit.",
+          "Checked that the explanation distinguishes DS from a normal periodic task.",
+          "Verified that this limitation affects schedulability of lower-priority periodic tasks."
+        ],
+        "level": "primary-source-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Limitations and Risks",
+        "usage_type": "terminology-clarification",
+        "direct_text_reused": false
+      },
+      "reflection": "This was one of the most important interactions because the double-hit effect is the central weakness of the Deferrable Server."
+    },
+    {
+      "id": "e-m3-004",
+      "timestamp": "2026-06-05T00:00:00+02:00",
+      "parent_id": null,
+      "objective": "Understand the schedulability tradeoff caused by server utilization.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Explain the tradeoff between server utilization and periodic schedulability for the Deferrable Server. Use the idea that more aperiodic bandwidth can reduce the schedulability margin of periodic tasks.",
+      "ai_output_summary": "The AI explained that increasing the server budget improves aperiodic response time, but also increases interference for periodic tasks. A larger server utilization Us leaves less guaranteed utilization for periodic hard real-time tasks.",
+      "verification": {
+        "actions": [
+          "Checked the relation with the utilization expression used in Milestone 2.",
+          "Verified that the tradeoff is consistent with fixed-priority schedulability analysis.",
+          "Confirmed that the explanation does not claim that DS is always unsafe, only that parameter choice is critical."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [
+          "The AI initially simplified the bound, so I used it only as an explanation of the tradeoff and not as a full proof."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Reduced Schedulability Margin and Parameter Selection Risk",
+        "usage_type": "argument-critique",
+        "direct_text_reused": false
+      },
+      "reflection": "This helped me present the DS not only as an algorithm but as a design tradeoff between responsiveness and safety."
+    },
+    {
+      "id": "e-m3-005",
+      "timestamp": "2026-06-05T00:00:00+02:00",
+      "parent_id": null,
+      "objective": "Identify assumptions behind the Deferrable Server that may be unrealistic in real embedded systems.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "List the assumptions behind Deferrable Server analysis that may be unrealistic or restrictive in practical embedded systems.",
+      "ai_output_summary": "The AI identified assumptions such as single preemptive processor, known WCETs, negligible scheduling overhead, independent tasks, no blocking, and predictable release behavior. It also explained why these assumptions are fragile in real systems.",
+      "verification": {
+        "actions": [
+          "Compared the assumptions with my Milestone 2 assumption list.",
+          "Checked whether each assumption has a practical explanation.",
+          "Removed assumptions that were too general or not directly connected to DS."
+        ],
+        "level": "secondary-source-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Assumptions and Their Practical Weaknesses",
+        "usage_type": "comparison-structuring",
+        "direct_text_reused": false
+      },
+      "reflection": "This helped me show scientific judgement by not accepting the theoretical model blindly. I learned to question whether the model assumptions hold in real embedded systems."
+    },
+    {
+      "id": "e-m3-006",
+      "timestamp": "2026-06-05T00:00:00+02:00",
+      "parent_id": null,
+      "objective": "Evaluate runtime and memory implications of implementing the Deferrable Server.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Evaluate the runtime and memory implications of the Deferrable Server for small embedded systems. Compare it briefly with Sporadic Server and Slack Stealing.",
+      "ai_output_summary": "The AI explained that DS has low memory overhead because it mainly needs a budget counter, timer, and aperiodic queue. Runtime overhead is also moderate, but not zero. It is simpler than Sporadic Server and much simpler than Slack Stealing.",
+      "verification": {
+        "actions": [
+          "Checked that the implementation elements match the DS algorithm.",
+          "Verified that the comparison with SS and Slack Stealing is consistent with Milestone 2.",
+          "Ensured that the evaluation includes both advantages and remaining overhead."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [
+          "Needed to avoid claiming that DS has zero overhead."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Runtime, Memory, Scalability, and Implementation Implications",
+        "usage_type": "comparison-structuring",
+        "direct_text_reused": false
+      },
+      "reflection": "This helped me connect scheduling theory with embedded implementation cost, which is important for Milestone 3."
+    },
+    {
+      "id": "e-m3-007",
+      "timestamp": "2026-06-05T00:00:00+02:00",
+      "parent_id": null,
+      "objective": "Find suitable application examples where the Deferrable Server is appropriate.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Give realistic embedded-system examples where the Deferrable Server is suitable. Explain why the approach fits those examples.",
+      "ai_output_summary": "The AI suggested examples such as an embedded motor-control system with diagnostic commands, an industrial monitoring node with irregular network requests, and educational prototype systems. It explained that DS is suitable when aperiodic tasks are soft and periodic tasks must remain protected.",
+      "verification": {
+        "actions": [
+          "Checked that each example contains both periodic and aperiodic work.",
+          "Verified that the aperiodic work is soft or firm, not hard safety-critical.",
+          "Removed examples where DS would be too risky as the only mechanism."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Suitable Application Examples",
+        "usage_type": "idea-generation",
+        "direct_text_reused": false
+      },
+      "reflection": "This helped me make the transfer part concrete. I understood that a suitable application must match the assumptions and strengths of DS."
+    },
+    {
+      "id": "e-m3-008",
+      "timestamp": "2026-06-05T00:00:00+02:00",
+      "parent_id": null,
+      "objective": "Find unsuitable or problematic application examples for the Deferrable Server.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Give examples where the Deferrable Server is unsuitable or problematic. Explain the technical reason, not just a general warning.",
+      "ai_output_summary": "The AI identified safety-critical emergency actions, highly loaded periodic systems, and complex multicore systems as problematic cases. The reasons were missing hard aperiodic guarantees, reduced schedulability margin, and weak transfer of uniprocessor assumptions to multicore platforms.",
+      "verification": {
+        "actions": [
+          "Checked that each unsuitable example is linked to a specific DS weakness.",
+          "Verified that the emergency braking example requires hard worst-case response, not just good average latency.",
+          "Confirmed that high utilization is risky because of reduced schedulability margin and double-hit interference."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [
+          "The AI examples were useful, but I had to make sure they were not written as absolute statements. DS may still be used if strict analysis and protection are added."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Unsuitable or Problematic Application Examples",
+        "usage_type": "argument-critique",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction helped me show balanced judgement. I learned that a critical evaluation must clearly explain where the approach should not be used."
+    },
+    {
+      "id": "e-m3-009",
+      "timestamp": "2026-06-05T00:00:00+02:00",
+      "parent_id": null,
+      "objective": "Compare DS with Sporadic Server and EDF-based reservation methods for critical judgement.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "For Milestone 3, compare the Deferrable Server with Sporadic Server and EDF-based reservation methods. Focus on when DS is preferable and when alternatives are safer.",
+      "ai_output_summary": "The AI explained that DS is preferable when simplicity and fast soft aperiodic response are important. Sporadic Server is safer when interference must be more controlled. EDF-based reservation methods can be better when stronger temporal isolation or higher utilization is needed.",
+      "verification": {
+        "actions": [
+          "Compared this with the neighboring approaches from Milestone 2.",
+          "Checked that the comparison does not overstate DS.",
+          "Verified that the alternatives are discussed as design choices, not as unrelated topics."
+        ],
+        "level": "secondary-source-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Overall Critical Judgment and Possible Alternatives",
+        "usage_type": "comparison-structuring",
+        "direct_text_reused": false
+      },
+      "reflection": "This helped me position DS in a broader design space and explain why another server may be more suitable in safety-critical or high-utilization systems."
+    },
+    {
+      "id": "e-m3-010",
+      "timestamp": "2026-06-05T00:00:00+02:00",
+      "parent_id": null,
+      "objective": "Develop possible extensions, adaptations, and open research questions for the Deferrable Server.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Suggest meaningful extensions, adaptations, or open research questions for the Deferrable Server in embedded systems.",
+      "ai_output_summary": "The AI suggested combining DS with response-time analysis, using hybrid server designs, adaptive budget tuning, and investigating DS-like budget preservation on multicore systems.",
+      "verification": {
+        "actions": [
+          "Checked that each extension is connected to a limitation identified earlier.",
+          "Removed suggestions that sounded too speculative or unrelated.",
+          "Confirmed that adaptive budget tuning would need additional worst-case analysis."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "Adaptive budget tuning is interesting but may be hard to guarantee in a real-time system.",
+          "Multicore transfer is an open direction but may be beyond the scope of the milestone."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Possible Extensions and Adaptations",
+        "usage_type": "idea-generation",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction helped me add forward-looking content without losing the critical focus of the report."
+    },
+    {
+      "id": "e-m3-011",
+      "timestamp": "2026-06-05T00:00:00+02:00",
+      "parent_id": null,
+      "objective": "Create a critical judgement paragraph that summarizes the scientific evaluation of DS.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Write a critical judgement for the Deferrable Server. It should be balanced: useful for simple fixed-priority systems with soft aperiodic tasks, but risky for safety-critical or high-utilization systems.",
+      "ai_output_summary": "The AI produced a balanced judgement: DS is a lightweight compromise with low memory overhead and good soft aperiodic responsiveness, but it requires careful parameter selection and explicit analysis of double-hit interference.",
+      "verification": {
+        "actions": [
+          "Checked that the judgement includes both strengths and limitations.",
+          "Verified that it does not claim DS is universally good or universally bad.",
+          "Rewrote the wording in my own style before using it."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "revised",
+        "issues": [
+          "The original output was polished but too close to final report style, so I used it only as structure and rewrote the final text myself."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Overall Critical Judgment",
+        "usage_type": "text-revision",
+        "direct_text_reused": false
+      },
+      "reflection": "This helped me formulate the final evaluation more clearly. I avoided copying directly and used the idea to write my own conclusion."
+    },
+    {
+      "id": "e-m3-012",
+      "timestamp": "2026-06-05T00:00:00+02:00",
+      "parent_id": null,
+      "objective": "Check whether the Milestone 3 report satisfies all official checklist items.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Check my Milestone 3 structure against this checklist: concrete strengths, concrete limitations, unrealistic assumptions, runtime/memory/scalability implications, suitable application, unsuitable application, possible extension or open question.",
+      "ai_output_summary": "The AI mapped each checklist item to a report section and suggested adding a final checklist mapping table to make compliance visible.",
+      "verification": {
+        "actions": [
+          "Compared the final structure with the official Milestone 3 checklist.",
+          "Checked that every checklist item appears at least once in the report.",
+          "Added a mapping table to make the structure transparent."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Milestone 3 Checklist Mapping",
+        "usage_type": "verification-support",
+        "direct_text_reused": false
+      },
+      "reflection": "This final check helped me ensure that the report is complete and aligned with the expected output of Milestone 3."
+    }
+  ]
+}
