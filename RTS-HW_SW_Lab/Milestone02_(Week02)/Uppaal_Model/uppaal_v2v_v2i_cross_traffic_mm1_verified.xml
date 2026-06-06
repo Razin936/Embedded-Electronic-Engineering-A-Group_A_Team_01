@@ -8,7 +8,7 @@
 chan request1;
 chan request2;
 chan request3;
-chan request4;
+chan request4; 
 chan grant1;
 chan grant2;
 chan grant3;
