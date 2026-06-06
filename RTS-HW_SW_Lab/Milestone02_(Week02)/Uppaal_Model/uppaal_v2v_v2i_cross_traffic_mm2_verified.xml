@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="utf-8"?>
+<nta>
+<declaration>// ===== Global Declarations =====
+// Compact UPPAAL model for V2V/V2I cross-traffic verification.
+// Same simple structure as the working demo file.
+
+// V2I channels: vehicle request, RSU grant, crossing complete
+chan request1;
+chan request2;
+chan request3;
+chan request4;
+chan grant1;
+chan grant2;
+chan grant3;
+chan grant4;
+chan complete1;
+chan complete2;
+chan complete3;
+chan complete4;
+
+// V2V intention beacon channels
+chan beacon1;
+chan beacon2;
+chan beacon3;
+chan beacon4;
+
+// Clocks
+clock decisionClock;
+
+// Small abstract times for fast verification.
+// In the report these represent scaled timing bounds.
+const int MAX_DECISION_TIME = 2;
+const int CROSSING_TIME = 3;
+const int PHASE_TIME = 5;
+
+// Server capacity: 1 = M/M/1 abstraction, 2 = M/M/2 abstraction.
+const int SERVER_CAP = 2;
+
+// Phase order: 0=RIGHT_1, 1=STRAIGHT_NS, 2=RIGHT_2, 3=STRAIGHT_EW
+int phase = 0;
+
+// Shared RSU state
+int activeCount = 0;
+bool v1Waiting = false;
+bool v2Waiting = false;
+bool v3Waiting = false;
+bool v4Waiting = false;
+bool v1Inside = false;
+bool v2Inside = false;
+bool v3Inside = false;
+bool v4Inside = false;
+bool v1Beaconed = false;
+bool v2Beaconed = false;
+bool v3Beaconed = false;
+bool v4Beaconed = false;
+</declaration>
+<template>
+<name x="5" y="5">Vehicle1_Template</name>
+<declaration>clock x;</declaration>
+<location id="id0" x="-620" y="0">
+<name x="-655" y="-34">Approaching</name>
+</location>
+<location id="id1" x="-450" y="0">
+<name x="-485" y="-34">V2V_Beacon</name>
+</location>
+<location id="id2" x="-280" y="0">
+<name x="-315" y="-34">Requesting</name>
+</location>
+<location id="id3" x="-110" y="0">
+<name x="-145" y="-34">Waiting</name>
+</location>
+<location id="id4" x="60" y="0">
+<name x="25" y="-34">Crossing</name>
+<label kind="invariant" x="5" y="17">x &lt;= CROSSING_TIME</label>
+</location>
+<location id="id5" x="250" y="0">
+<name x="215" y="-34">Completed</name>
+</location>
+<location id="id6" x="420" y="0">
+<name x="385" y="-34">Done</name>
+</location>
+<init ref="id0"/>
+<transition id="id7">
+<source ref="id0"/>
+<target ref="id1"/>
+<label kind="assignment" x="-600" y="-25">x = 0</label>
+</transition>
+<transition id="id8">
+<source ref="id1"/>
+<target ref="id2"/>
+<label kind="synchronisation" x="-430" y="-25">beacon1!</label>
+<label kind="assignment" x="-430" y="-9">v1Beaconed = true</label>
+</transition>
+<transition id="id9">
+<source ref="id2"/>
+<target ref="id3"/>
+<label kind="synchronisation" x="-260" y="-25">request1!</label>
+</transition>
+<transition id="id10">
+<source ref="id3"/>
+<target ref="id4"/>
+<label kind="synchronisation" x="-90" y="-25">grant1?</label>
+<label kind="assignment" x="-90" y="-9">x = 0</label>
+</transition>
+<transition id="id11">
+<source ref="id4"/>
+<target ref="id5"/>
+<label kind="guard" x="90" y="-25">x &gt;= CROSSING_TIME</label>
+</transition>
+<transition id="id12">
+<source ref="id5"/>
+<target ref="id6"/>
+<label kind="synchronisation" x="275" y="-25">complete1!</label>
+</transition>
+<transition id="id13">
+<source ref="id6"/>
+<target ref="id6"/>
+<nail x="460" y="-60"/>
+<nail x="380" y="-60"/>
+</transition>
+</template>
+<template>
+<name x="5" y="5">Vehicle2_Template</name>
+<declaration>clock x;</declaration>
+<location id="id20" x="-620" y="0">
+<name x="-655" y="-34">Approaching</name>
+</location>
+<location id="id21" x="-450" y="0">
+<name x="-485" y="-34">V2V_Beacon</name>
+</location>
+<location id="id22" x="-280" y="0">
+<name x="-315" y="-34">Requesting</name>
+</location>
+<location id="id23" x="-110" y="0">
+<name x="-145" y="-34">Waiting</name>
+</location>
+<location id="id24" x="60" y="0">
+<name x="25" y="-34">Crossing</name>
+<label kind="invariant" x="5" y="17">x &lt;= CROSSING_TIME</label>
+</location>
+<location id="id25" x="250" y="0">
+<name x="215" y="-34">Completed</name>
+</location>
+<location id="id26" x="420" y="0">
+<name x="385" y="-34">Done</name>
+</location>
+<init ref="id20"/>
+<transition id="id27">
+<source ref="id20"/>
+<target ref="id21"/>
+<label kind="assignment" x="-600" y="-25">x = 0</label>
+</transition>
+<transition id="id28">
+<source ref="id21"/>
+<target ref="id22"/>
+<label kind="synchronisation" x="-430" y="-25">beacon2!</label>
+<label kind="assignment" x="-430" y="-9">v2Beaconed = true</label>
+</transition>
+<transition id="id29">
+<source ref="id22"/>
+<target ref="id23"/>
+<label kind="synchronisation" x="-260" y="-25">request2!</label>
+</transition>
+<transition id="id30">
+<source ref="id23"/>
+<target ref="id24"/>
+<label kind="synchronisation" x="-90" y="-25">grant2?</label>
+<label kind="assignment" x="-90" y="-9">x = 0</label>
+</transition>
+<transition id="id31">
+<source ref="id24"/>
+<target ref="id25"/>
+<label kind="guard" x="90" y="-25">x &gt;= CROSSING_TIME</label>
+</transition>
+<transition id="id32">
+<source ref="id25"/>
+<target ref="id26"/>
+<label kind="synchronisation" x="275" y="-25">complete2!</label>
+</transition>
+<transition id="id33">
+<source ref="id26"/>
+<target ref="id26"/>
+<nail x="460" y="-60"/>
+<nail x="380" y="-60"/>
+</transition>
+</template>
+<template>
+<name x="5" y="5">Vehicle3_Template</name>
+<declaration>clock x;</declaration>
+<location id="id40" x="-620" y="0">
+<name x="-655" y="-34">Approaching</name>
+</location>
+<location id="id41" x="-450" y="0">
+<name x="-485" y="-34">V2V_Beacon</name>
+</location>
+<location id="id42" x="-280" y="0">
+<name x="-315" y="-34">Requesting</name>
+</location>
+<location id="id43" x="-110" y="0">
+<name x="-145" y="-34">Waiting</name>
+</location>
+<location id="id44" x="60" y="0">
+<name x="25" y="-34">Crossing</name>
+<label kind="invariant" x="5" y="17">x &lt;= CROSSING_TIME</label>
+</location>
+<location id="id45" x="250" y="0">
+<name x="215" y="-34">Completed</name>
+</location>
+<location id="id46" x="420" y="0">
+<name x="385" y="-34">Done</name>
+</location>
+<init ref="id40"/>
+<transition id="id47">
+<source ref="id40"/>
+<target ref="id41"/>
+<label kind="assignment" x="-600" y="-25">x = 0</label>
+</transition>
+<transition id="id48">
+<source ref="id41"/>
+<target ref="id42"/>
+<label kind="synchronisation" x="-430" y="-25">beacon3!</label>
+<label kind="assignment" x="-430" y="-9">v3Beaconed = true</label>
+</transition>
+<transition id="id49">
+<source ref="id42"/>
+<target ref="id43"/>
+<label kind="synchronisation" x="-260" y="-25">request3!</label>
+</transition>
+<transition id="id50">
+<source ref="id43"/>
+<target ref="id44"/>
+<label kind="synchronisation" x="-90" y="-25">grant3?</label>
+<label kind="assignment" x="-90" y="-9">x = 0</label>
+</transition>
+<transition id="id51">
+<source ref="id44"/>
+<target ref="id45"/>
+<label kind="guard" x="90" y="-25">x &gt;= CROSSING_TIME</label>
+</transition>
+<transition id="id52">
+<source ref="id45"/>
+<target ref="id46"/>
+<label kind="synchronisation" x="275" y="-25">complete3!</label>
+</transition>
+<transition id="id53">
+<source ref="id46"/>
+<target ref="id46"/>
+<nail x="460" y="-60"/>
+<nail x="380" y="-60"/>
+</transition>
+</template>
+<template>
+<name x="5" y="5">Vehicle4_Template</name>
+<declaration>clock x;</declaration>
+<location id="id60" x="-620" y="0">
+<name x="-655" y="-34">Approaching</name>
+</location>
+<location id="id61" x="-450" y="0">
+<name x="-485" y="-34">V2V_Beacon</name>
+</location>
+<location id="id62" x="-280" y="0">
+<name x="-315" y="-34">Requesting</name>
+</location>
+<location id="id63" x="-110" y="0">
+<name x="-145" y="-34">Waiting</name>
+</location>
+<location id="id64" x="60" y="0">
+<name x="25" y="-34">Crossing</name>
+<label kind="invariant" x="5" y="17">x &lt;= CROSSING_TIME</label>
+</location>
+<location id="id65" x="250" y="0">
+<name x="215" y="-34">Completed</name>
+</location>
+<location id="id66" x="420" y="0">
+<name x="385" y="-34">Done</name>
+</location>
+<init ref="id60"/>
+<transition id="id67">
+<source ref="id60"/>
+<target ref="id61"/>
+<label kind="assignment" x="-600" y="-25">x = 0</label>
+</transition>
+<transition id="id68">
+<source ref="id61"/>
+<target ref="id62"/>
+<label kind="synchronisation" x="-430" y="-25">beacon4!</label>
+<label kind="assignment" x="-430" y="-9">v4Beaconed = true</label>
+</transition>
+<transition id="id69">
+<source ref="id62"/>
+<target ref="id63"/>
+<label kind="synchronisation" x="-260" y="-25">request4!</label>
+</transition>
+<transition id="id70">
+<source ref="id63"/>
+<target ref="id64"/>
+<label kind="synchronisation" x="-90" y="-25">grant4?</label>
+<label kind="assignment" x="-90" y="-9">x = 0</label>
+</transition>
+<transition id="id71">
+<source ref="id64"/>
+<target ref="id65"/>
+<label kind="guard" x="90" y="-25">x &gt;= CROSSING_TIME</label>
+</transition>
+<transition id="id72">
+<source ref="id65"/>
+<target ref="id66"/>
+<label kind="synchronisation" x="275" y="-25">complete4!</label>
+</transition>
+<transition id="id73">
+<source ref="id66"/>
+<target ref="id66"/>
+<nail x="460" y="-60"/>
+<nail x="380" y="-60"/>
+</transition>
+</template>
+
+<template>
+<name x="5" y="5">V2VBus_Template</name>
+<location id="id80" x="0" y="0"><name x="-20" y="-34">Listen</name></location>
+<init ref="id80"/>
+<transition id="id81"><source ref="id80"/><target ref="id80"/><label kind="synchronisation" x="-80" y="-70">beacon1?</label><nail x="-80" y="-50"/><nail x="80" y="-50"/></transition>
+<transition id="id82"><source ref="id80"/><target ref="id80"/><label kind="synchronisation" x="-80" y="-30">beacon2?</label><nail x="-120" y="-20"/><nail x="120" y="-20"/></transition>
+<transition id="id83"><source ref="id80"/><target ref="id80"/><label kind="synchronisation" x="-80" y="40">beacon3?</label><nail x="-120" y="50"/><nail x="120" y="50"/></transition>
+<transition id="id84"><source ref="id80"/><target ref="id80"/><label kind="synchronisation" x="-80" y="80">beacon4?</label><nail x="-80" y="90"/><nail x="80" y="90"/></transition>
+</template>
+
+<template>
+<name>RSU_Controller</name>
+<location id="id100" x="-620" y="100"><name x="-650" y="116">Control</name></location>
+<location id="id101" x="-430" y="-150"><name x="-470" y="-184">ReceiveV1</name><committed/></location>
+<location id="id102" x="-430" y="-50"><name x="-470" y="-84">ReceiveV2</name><committed/></location>
+<location id="id103" x="-430" y="150"><name x="-470" y="116">ReceiveV3</name><committed/></location>
+<location id="id104" x="-430" y="250"><name x="-470" y="216">ReceiveV4</name><committed/></location>
+<location id="id105" x="-170" y="100"><name x="-205" y="66">Decision</name><label kind="invariant" x="-270" y="116">decisionClock &lt;= MAX_DECISION_TIME</label></location>
+<location id="id106" x="120" y="-150"><name x="90" y="-184">GrantV1</name><committed/></location>
+<location id="id107" x="120" y="-50"><name x="90" y="-84">GrantV2</name><committed/></location>
+<location id="id108" x="120" y="150"><name x="90" y="116">GrantV3</name><committed/></location>
+<location id="id109" x="120" y="250"><name x="90" y="216">GrantV4</name><committed/></location>
+<init ref="id100"/>
+
+<!-- Receive V2I requests -->
+<transition id="id110"><source ref="id100"/><target ref="id101"/><label kind="synchronisation" x="-620" y="-120">request1?</label><label kind="assignment" x="-620" y="-104">v1Waiting = true, decisionClock = 0</label></transition>
+<transition id="id111"><source ref="id100"/><target ref="id102"/><label kind="synchronisation" x="-620" y="-20">request2?</label><label kind="assignment" x="-620" y="-4">v2Waiting = true, decisionClock = 0</label></transition>
+<transition id="id112"><source ref="id100"/><target ref="id103"/><label kind="synchronisation" x="-620" y="170">request3?</label><label kind="assignment" x="-620" y="186">v3Waiting = true, decisionClock = 0</label></transition>
+<transition id="id113"><source ref="id100"/><target ref="id104"/><label kind="synchronisation" x="-620" y="260">request4?</label><label kind="assignment" x="-620" y="276">v4Waiting = true, decisionClock = 0</label></transition>
+<transition id="id114"><source ref="id101"/><target ref="id105"/></transition>
+<transition id="id115"><source ref="id102"/><target ref="id105"/></transition>
+<transition id="id116"><source ref="id103"/><target ref="id105"/></transition>
+<transition id="id117"><source ref="id104"/><target ref="id105"/></transition>
+
+<!-- Retry decision when a request is already waiting -->
+<transition id="id118"><source ref="id100"/><target ref="id105"/><label kind="guard" x="-550" y="330">v1Waiting || v2Waiting || v3Waiting || v4Waiting</label><label kind="assignment" x="-550" y="346">decisionClock = 0</label><nail x="-620" y="350"/><nail x="-170" y="350"/></transition>
+
+<!-- If current phase/capacity does not allow a grant, return to Control and retry later. -->
+<transition id="id119"><source ref="id105"/><target ref="id100"/><label kind="guard" x="-420" y="-260">decisionClock &gt;= MAX_DECISION_TIME</label><label kind="assignment" x="-420" y="-244">decisionClock = 0</label><nail x="-170" y="-270"/><nail x="-620" y="-270"/></transition>
+
+<!-- Grant logic: V1 and V2 are compatible right-turn vehicles; V3 and V4 are straight/conflicting vehicles. -->
+<transition id="id120"><source ref="id105"/><target ref="id106"/><label kind="guard" x="-90" y="-190">v1Waiting &amp;&amp; activeCount &lt; SERVER_CAP &amp;&amp; (phase == 0 || phase == 2) &amp;&amp; !v3Inside &amp;&amp; !v4Inside</label><label kind="assignment" x="-90" y="-174">v1Waiting = false, v1Inside = true, activeCount = activeCount + 1</label></transition>
+<transition id="id121"><source ref="id105"/><target ref="id107"/><label kind="guard" x="-90" y="-70">v2Waiting &amp;&amp; activeCount &lt; SERVER_CAP &amp;&amp; (phase == 0 || phase == 2) &amp;&amp; !v3Inside &amp;&amp; !v4Inside</label><label kind="assignment" x="-90" y="-54">v2Waiting = false, v2Inside = true, activeCount = activeCount + 1</label></transition>
+<transition id="id122"><source ref="id105"/><target ref="id108"/><label kind="guard" x="-90" y="150">v3Waiting &amp;&amp; activeCount == 0 &amp;&amp; phase == 1</label><label kind="assignment" x="-90" y="166">v3Waiting = false, v3Inside = true, activeCount = activeCount + 1</label></transition>
+<transition id="id123"><source ref="id105"/><target ref="id109"/><label kind="guard" x="-90" y="270">v4Waiting &amp;&amp; activeCount == 0 &amp;&amp; phase == 3</label><label kind="assignment" x="-90" y="286">v4Waiting = false, v4Inside = true, activeCount = activeCount + 1</label></transition>
+<transition id="id124"><source ref="id106"/><target ref="id100"/><label kind="synchronisation" x="140" y="-170">grant1!</label></transition>
+<transition id="id125"><source ref="id107"/><target ref="id100"/><label kind="synchronisation" x="140" y="-70">grant2!</label></transition>
+<transition id="id126"><source ref="id108"/><target ref="id100"/><label kind="synchronisation" x="140" y="140">grant3!</label></transition>
+<transition id="id127"><source ref="id109"/><target ref="id100"/><label kind="synchronisation" x="140" y="240">grant4!</label></transition>
+
+<!-- Release server slots after vehicles complete crossing. -->
+<transition id="id128"><source ref="id100"/><target ref="id100"/><label kind="guard" x="-760" y="-30">v1Inside</label><label kind="synchronisation" x="-760" y="-14">complete1?</label><label kind="assignment" x="-760" y="2">v1Inside = false, activeCount = activeCount - 1</label><nail x="-760" y="-60"/><nail x="-620" y="-60"/></transition>
+<transition id="id129"><source ref="id100"/><target ref="id100"/><label kind="guard" x="-800" y="40">v2Inside</label><label kind="synchronisation" x="-800" y="56">complete2?</label><label kind="assignment" x="-800" y="72">v2Inside = false, activeCount = activeCount - 1</label><nail x="-820" y="20"/><nail x="-620" y="20"/></transition>
+<transition id="id130"><source ref="id100"/><target ref="id100"/><label kind="guard" x="-800" y="160">v3Inside</label><label kind="synchronisation" x="-800" y="176">complete3?</label><label kind="assignment" x="-800" y="192">v3Inside = false, activeCount = activeCount - 1</label><nail x="-820" y="190"/><nail x="-620" y="190"/></transition>
+<transition id="id131"><source ref="id100"/><target ref="id100"/><label kind="guard" x="-760" y="250">v4Inside</label><label kind="synchronisation" x="-760" y="266">complete4?</label><label kind="assignment" x="-760" y="282">v4Inside = false, activeCount = activeCount - 1</label><nail x="-760" y="280"/><nail x="-620" y="280"/></transition>
+</template>
+
+<template>
+<name>Phase_Controller</name>
+<declaration>clock p;</declaration>
+<location id="id150" x="-480" y="0"><name x="-510" y="-34">Right1</name><label kind="invariant" x="-530" y="17">p &lt;= PHASE_TIME</label></location>
+<location id="id151" x="-180" y="0"><name x="-230" y="-34">StraightNS</name><label kind="invariant" x="-230" y="17">p &lt;= PHASE_TIME</label></location>
+<location id="id152" x="120" y="0"><name x="90" y="-34">Right2</name><label kind="invariant" x="70" y="17">p &lt;= PHASE_TIME</label></location>
+<location id="id153" x="420" y="0"><name x="370" y="-34">StraightEW</name><label kind="invariant" x="370" y="17">p &lt;= PHASE_TIME</label></location>
+<init ref="id150"/>
+<transition id="id154"><source ref="id150"/><target ref="id151"/><label kind="guard" x="-390" y="-30">p &gt;= PHASE_TIME</label><label kind="assignment" x="-390" y="-14">phase = 1, p = 0</label></transition>
+<transition id="id155"><source ref="id151"/><target ref="id152"/><label kind="guard" x="-90" y="-30">p &gt;= PHASE_TIME</label><label kind="assignment" x="-90" y="-14">phase = 2, p = 0</label></transition>
+<transition id="id156"><source ref="id152"/><target ref="id153"/><label kind="guard" x="210" y="-30">p &gt;= PHASE_TIME</label><label kind="assignment" x="210" y="-14">phase = 3, p = 0</label></transition>
+<transition id="id157"><source ref="id153"/><target ref="id150"/><label kind="guard" x="-50" y="120">p &gt;= PHASE_TIME</label><label kind="assignment" x="-50" y="136">phase = 0, p = 0</label><nail x="420" y="150"/><nail x="-480" y="150"/></transition>
+</template>
+
+<system>// Instantiate processes
+Vehicle1 = Vehicle1_Template();
+Vehicle2 = Vehicle2_Template();
+Vehicle3 = Vehicle3_Template();
+Vehicle4 = Vehicle4_Template();
+RSU = RSU_Controller();
+Phase = Phase_Controller();
+V2VBus = V2VBus_Template();
+
+// Composition: four vehicles, one RSU, one phase controller, one V2V channel bus
+system Vehicle1, Vehicle2, Vehicle3, Vehicle4, RSU, Phase, V2VBus;
+</system>
+<queries>
+<query><formula>A[] not deadlock</formula><comment>No deadlock in the compact V2V/V2I timed-automata network.</comment></query>
+<query><formula>E&lt;&gt; Vehicle1.Done</formula><comment>Vehicle 1 can complete crossing.</comment></query>
+<query><formula>E&lt;&gt; Vehicle2.Done</formula><comment>Vehicle 2 can complete crossing.</comment></query>
+<query><formula>E&lt;&gt; Vehicle3.Done</formula><comment>Vehicle 3 can complete crossing.</comment></query>
+<query><formula>E&lt;&gt; Vehicle4.Done</formula><comment>Vehicle 4 can complete crossing.</comment></query>
+<query><formula>A[] activeCount &lt;= SERVER_CAP</formula><comment>Server capacity is never exceeded.</comment></query>
+<query><formula>A[] RSU.Decision imply decisionClock &lt;= MAX_DECISION_TIME</formula><comment>RSU decision time stays bounded.</comment></query>
+<query><formula>E&lt;&gt; (Vehicle1.Crossing &amp;&amp; Vehicle2.Crossing)</formula><comment>M/M/2: two compatible right-turn vehicles can cross together.</comment></query>
+<query><formula>A[] not (Vehicle3.Crossing &amp;&amp; (Vehicle1.Crossing || Vehicle2.Crossing || Vehicle4.Crossing))</formula><comment>Straight NS route does not overlap with conflicting vehicles.</comment></query>
+<query><formula>A[] not (Vehicle4.Crossing &amp;&amp; (Vehicle1.Crossing || Vehicle2.Crossing || Vehicle3.Crossing))</formula><comment>Straight EW route does not overlap with conflicting vehicles.</comment></query>
+<query><formula>E&lt;&gt; (v1Beaconed &amp;&amp; v2Beaconed &amp;&amp; v3Beaconed &amp;&amp; v4Beaconed)</formula><comment>All vehicles can send V2V beacon messages.</comment></query>
+<query><formula>E&lt;&gt; phase == 3</formula><comment>The phase controller can reach the STRAIGHT_EW phase.</comment></query>
+</queries>
+</nta>
