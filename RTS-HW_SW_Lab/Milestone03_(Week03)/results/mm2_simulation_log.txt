@@ -1,0 +1,51 @@
+========================================================================
+Milestone 03 abstract implementation run: mode=MM2
+SERVER_CAP = 2
+V2V: beacon | V2I: request, grant, complete | Controller: RSU
+========================================================================
+t=00 | V2V   | Vehicle1: BEACON(route=N2E, side=N)
+t=00 | V2I   | Vehicle1 -> RSU: REQUEST(route=N2E, group=RIGHT)
+t=00 | V2V   | Vehicle2: BEACON(route=E2S, side=E)
+t=00 | V2I   | Vehicle2 -> RSU: REQUEST(route=E2S, group=RIGHT)
+t=00 | V2I   | RSU -> Vehicle1: GRANT(activeCount=1/2, phase=RIGHT_1)
+t=00 | V2I   | RSU -> Vehicle2: GRANT(activeCount=2/2, phase=RIGHT_1)
+t=00 | MOVE  | Vehicle1 crossing route=N2E, remaining=1
+t=00 | MOVE  | Vehicle2 crossing route=E2S, remaining=1
+t=01 | MOVE  | Vehicle1 crossing route=N2E, remaining=0
+t=01 | V2I   | Vehicle1 -> RSU: COMPLETE(activeCount=1/2)
+t=01 | MOVE  | Vehicle2 crossing route=E2S, remaining=0
+t=01 | V2I   | Vehicle2 -> RSU: COMPLETE(activeCount=0/2)
+t=02 | V2V   | Vehicle3: BEACON(route=N2S, side=N)
+t=02 | V2I   | Vehicle3 -> RSU: REQUEST(route=N2S, group=STRAIGHT_NS)
+t=02 | WAIT  | Vehicle3 waits: phase RIGHT_1 does not allow STRAIGHT_NS
+t=03 | WAIT  | Vehicle3 waits: phase RIGHT_1 does not allow STRAIGHT_NS
+t=04 | PHASE | switched to STRAIGHT_NS
+t=04 | V2I   | RSU -> Vehicle3: GRANT(activeCount=1/2, phase=STRAIGHT_NS)
+t=04 | MOVE  | Vehicle3 crossing route=N2S, remaining=1
+t=05 | MOVE  | Vehicle3 crossing route=N2S, remaining=0
+t=05 | V2I   | Vehicle3 -> RSU: COMPLETE(activeCount=0/2)
+t=06 | V2V   | Vehicle4: BEACON(route=E2W, side=E)
+t=06 | V2I   | Vehicle4 -> RSU: REQUEST(route=E2W, group=STRAIGHT_EW)
+t=06 | WAIT  | Vehicle4 waits: phase STRAIGHT_NS does not allow STRAIGHT_EW
+t=07 | WAIT  | Vehicle4 waits: phase STRAIGHT_NS does not allow STRAIGHT_EW
+t=08 | PHASE | switched to RIGHT_2
+t=08 | WAIT  | Vehicle4 waits: phase RIGHT_2 does not allow STRAIGHT_EW
+t=09 | WAIT  | Vehicle4 waits: phase RIGHT_2 does not allow STRAIGHT_EW
+t=10 | WAIT  | Vehicle4 waits: phase RIGHT_2 does not allow STRAIGHT_EW
+t=11 | WAIT  | Vehicle4 waits: phase RIGHT_2 does not allow STRAIGHT_EW
+t=12 | PHASE | switched to STRAIGHT_EW
+t=12 | V2I   | RSU -> Vehicle4: GRANT(activeCount=1/2, phase=STRAIGHT_EW)
+t=12 | MOVE  | Vehicle4 crossing route=E2W, remaining=1
+t=13 | MOVE  | Vehicle4 crossing route=E2W, remaining=0
+t=13 | V2I   | Vehicle4 -> RSU: COMPLETE(activeCount=0/2)
+t=13 | END   | All vehicles completed successfully.
+------------------------------------------------------------------------
+Summary metrics
+completed_vehicles=4/4
+total_wait_time=8
+average_wait_time=2.00
+max_wait_time=6
+total_simulation_time=13
+simultaneous_crossing_events=2
+conflict_violations=0
+------------------------------------------------------------------------
