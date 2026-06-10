@@ -1,0 +1,385 @@
+{
+  "protocol_version": "0.2",
+  "student_name": "Faysal Ahammed Tonmoy",
+  "student_id": "1230473",
+  "course": "Real Time Systems",
+  "milestone": "Milestone 4",
+  "topic": "Sporadic Server",
+  "entries": [
+    {
+      "id": "e-09108f0d",
+      "timestamp": "2026-06-10T18:30:00+00:00",
+      "parent_id": null,
+      "objective": "To understand the expected outcome of Milestone 4 for the Sporadic Server seminar topic.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "My topic is Sporadic Server. Milestone 4 is Scientific Communication: Paper and Talk. Explain what the professor expects as outcome. Do not write the final paper for me; guide me on the required deliverables.",
+      "ai_output_summary": "The AI explained that Milestone 4 mainly requires a final scientific paper, final talk or slides, and possibly an AI usage protocol. It clarified that the paper should synthesize Milestones 1 to 3, while the talk should communicate the central technical idea, tradeoffs, critical evaluation, and application discussion clearly.",
+      "verification": {
+        "actions": [
+          "I compared the AI guidance with the Milestone 4 task description.",
+          "I checked that the expected outputs match the listed requirements: final paper, talk/slides, citations, and AI usage transparency."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The AI guidance was useful for workflow planning, but the final paper and slides still need to be written and checked by me.",
+          "The AI output cannot replace the official milestone description."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Milestone 4 planning",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction helped me understand that Milestone 4 is about scientific communication, not a new technical milestone."
+    },
+    {
+      "id": "e-b9e71314",
+      "timestamp": "2026-06-10T18:30:00+00:00",
+      "parent_id": null,
+      "objective": "To plan how Milestones 1, 2, and 3 should be synthesized into the final paper.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Guide me on how to combine my previous milestones on Sporadic Server into one final scientific paper. Milestone 1 was technical understanding, Milestone 2 was contextualization and tradeoffs, and Milestone 3 was critical evaluation.",
+      "ai_output_summary": "The AI suggested using Milestone 1 for the basic technical explanation, Milestone 2 for related approaches and tradeoffs, and Milestone 3 for critical evaluation, assumptions, limitations, runtime and memory implications, and application examples. It recommended organizing these parts into a coherent final paper instead of copying the milestones one after another.",
+      "verification": {
+        "actions": [
+          "I checked whether the proposed synthesis follows the purpose of Milestone 4.",
+          "I compared the suggested structure with my existing milestone content."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The AI suggested a useful mapping, but I must decide what content is strong enough for the final paper.",
+          "I need to avoid simply merging old text without improving coherence."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Final paper synthesis",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction helped me understand how to reuse previous work scientifically and turn it into one coherent final paper."
+    },
+    {
+      "id": "e-ac362303",
+      "timestamp": "2026-06-10T18:30:00+00:00",
+      "parent_id": null,
+      "objective": "To create a final paper structure for the Sporadic Server topic.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Create a clean final paper structure for my Sporadic Server seminar paper. It should include motivation, background, core technical idea, related approaches, tradeoffs, critical evaluation, application discussion, open questions, conclusion, references, and AI usage note.",
+      "ai_output_summary": "The AI proposed a paper structure with sections for introduction, problem setting, background, core idea of Sporadic Server, comparison with related approaches, critical evaluation, embedded application discussion, open questions, AI usage note, and conclusion.",
+      "verification": {
+        "actions": [
+          "I checked that the structure covers the expected Milestone 4 paper content.",
+          "I checked whether the structure includes scientific context, tradeoffs, critical evaluation, citations, and AI transparency."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The structure is useful, but the final text must be written in my own words.",
+          "The section order may need adjustment depending on the page limit and professor expectations."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Final paper outline",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction helped me organize the final paper before writing. I will use the structure as a guide and not as final submitted text."
+    },
+    {
+      "id": "e-f7875710",
+      "timestamp": "2026-06-10T18:30:00+00:00",
+      "parent_id": null,
+      "objective": "To identify what should be explained in the technical core of the final paper.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "For the final paper on Sporadic Server, what technical core must be explained clearly? Focus on budget, period, replenishment, aperiodic request handling, and protection of periodic tasks.",
+      "ai_output_summary": "The AI explained that the technical core should cover server budget, server period, how aperiodic jobs consume capacity, how consumed capacity is replenished later, and why this limits interference with periodic hard real-time tasks. It also suggested keeping the explanation concise and supported by diagrams or formal sketches.",
+      "verification": {
+        "actions": [
+          "I checked that these points match the technical content from Milestone 1.",
+          "I will verify the replenishment mechanism with academic sources before finalizing the paper."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The explanation is simplified and does not provide a complete formal proof.",
+          "The final paper must cite real-time scheduling references for technical claims."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Core technical idea",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction helped me decide what must be explained so that the reader understands the main mechanism before the evaluation."
+    },
+    {
+      "id": "e-cda9e51d",
+      "timestamp": "2026-06-10T18:30:00+00:00",
+      "parent_id": null,
+      "objective": "To decide how related approaches should be presented in the final paper.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "How should I present related approaches for Sporadic Server in the final paper? I want to include Background Scheduling, Polling Server, and Deferrable Server, but not make the paper too long.",
+      "ai_output_summary": "The AI suggested presenting related approaches briefly as comparison points. Background Scheduling should show the baseline with poor aperiodic response time. Polling Server should show a simple server that may waste capacity. Deferrable Server should show improved responsiveness but possible higher interference. Sporadic Server should then be positioned as a more controlled approach.",
+      "verification": {
+        "actions": [
+          "I compared the suggested related approaches with the content from Milestone 2.",
+          "I checked that these approaches are relevant for explaining why Sporadic Server was introduced."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The comparison needs academic verification before final use.",
+          "The final paper should avoid overgeneralized claims about one approach always being better than another."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Related approaches and tradeoffs",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction helped me keep the related-work section focused on motivation and tradeoffs rather than writing a long survey."
+    },
+    {
+      "id": "e-454d9fc1",
+      "timestamp": "2026-06-10T18:30:00+00:00",
+      "parent_id": null,
+      "objective": "To integrate the critical evaluation from Milestone 3 into the final paper.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "How should I integrate my Milestone 3 critical evaluation into the final paper on Sporadic Server? Include strengths, limitations, assumptions, runtime overhead, memory overhead, scalability, suitable and unsuitable applications.",
+      "ai_output_summary": "The AI recommended using the Milestone 3 evaluation as a major section in the final paper. It suggested organizing the evaluation into strengths, limitations and risks, restrictive assumptions, implementation implications, and application transfer. It emphasized that the evaluation should show scientific judgment and not only describe the algorithm.",
+      "verification": {
+        "actions": [
+          "I checked the recommendation against my Milestone 3 report.",
+          "I verified that the proposed categories match the Milestone 4 requirement for critical evaluation and application discussion."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The AI helped with organization but not with final technical validation.",
+          "I need to select the most important points because the final paper has limited space."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Critical evaluation section",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction helped me understand that Milestone 3 is central to the final paper and should show my own scientific judgment."
+    },
+    {
+      "id": "e-93198dc0",
+      "timestamp": "2026-06-10T18:30:00+00:00",
+      "parent_id": null,
+      "objective": "To plan the final talk/slides for a 10-minute scientific presentation.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Create a 10-minute talk structure for my Sporadic Server seminar presentation. The talk should not simply repeat the paper. It should communicate motivation, technical idea, tradeoffs, critical assessment, application examples, and open questions.",
+      "ai_output_summary": "The AI proposed a slide structure with title, problem setting, why aperiodic tasks are difficult, basic server idea, Sporadic Server mechanism, comparison with Polling and Deferrable Server, strengths and tradeoffs, limitations and practical risks, embedded-system example, and conclusion with open questions.",
+      "verification": {
+        "actions": [
+          "I checked that the slide structure matches the Milestone 4 talk requirements.",
+          "I checked that the talk focuses on communication of the key idea rather than repeating the full paper."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The structure is useful, but I need to create my own diagrams and examples.",
+          "The final talk must be adjusted to the actual time limit."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Talk and slide planning",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction helped me separate the purpose of the presentation from the paper. The slides should be visual and explanatory, not text-heavy."
+    },
+    {
+      "id": "e-0611754f",
+      "timestamp": "2026-06-10T18:30:00+00:00",
+      "parent_id": null,
+      "objective": "To identify diagrams and examples that can explain Sporadic Server clearly in the talk.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Suggest diagrams or visual examples for explaining Sporadic Server in my seminar talk. I want to show periodic tasks, aperiodic arrivals, server budget, budget consumption, and replenishment in a simple way.",
+      "ai_output_summary": "The AI suggested using a timeline diagram showing periodic tasks, aperiodic request arrivals, server execution while budget is available, budget exhaustion, and later replenishment. It also suggested a comparison diagram between Background Scheduling, Polling Server, Deferrable Server, and Sporadic Server.",
+      "verification": {
+        "actions": [
+          "I checked whether the suggested diagrams match the technical mechanism.",
+          "I will verify that any diagram I create does not misrepresent replenishment timing."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The AI did not generate a formally verified diagram.",
+          "I need to ensure the final slide diagram is technically accurate and not only visually attractive."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Presentation visuals",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction helped me think visually about the topic. A timeline diagram can make budget and replenishment easier to explain during the talk."
+    },
+    {
+      "id": "e-732ad1e3",
+      "timestamp": "2026-06-10T18:30:00+00:00",
+      "parent_id": null,
+      "objective": "To prepare for possible in-class competency validation questions.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Based on my final paper and talk topic Sporadic Server, what kind of in-class validation questions could the professor ask? Focus on assumptions, tradeoffs, scalability, suitability for embedded systems, unsupported claims, and AI-generated explanation critique.",
+      "ai_output_summary": "The AI suggested possible questions such as explaining a technical assumption, comparing Sporadic Server with Polling Server, critiquing a runtime or scalability claim, evaluating whether the approach fits an embedded scenario, identifying unsupported claims, and revising an overgeneralized AI-generated explanation.",
+      "verification": {
+        "actions": [
+          "I compared the suggested questions with the listed in-class competency validation task types.",
+          "I selected the questions that are most likely to test real understanding of my milestone work."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The AI cannot predict the exact questions from the professor.",
+          "I need to prepare by understanding the concepts, not by memorizing prepared answers."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "In-class validation preparation",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction helped me prepare for oral reasoning. The goal is to explain and defend my own work under controlled conditions."
+    },
+    {
+      "id": "e-2349b840",
+      "timestamp": "2026-06-10T18:30:00+00:00",
+      "parent_id": null,
+      "objective": "To check whether the planned final paper and slides are scientifically balanced.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Review my planned final paper and slide structure conceptually. Does it show understanding, related work, tradeoffs, critical evaluation, and application transfer, or is it too descriptive?",
+      "ai_output_summary": "The AI advised that the final paper and slides should avoid being only descriptive. It recommended highlighting tradeoffs, assumptions, limitations, and practical embedded-system implications. It also suggested making the talk more example-driven and using the conclusion to give a balanced final judgment.",
+      "verification": {
+        "actions": [
+          "I checked the feedback against the Milestone 4 scientific purpose.",
+          "I checked whether my planned structure contains both explanation and critical evaluation."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The feedback was useful but general.",
+          "The final quality depends on my own technical reasoning and source verification."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Final paper and slide self-review",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction helped me improve the balance between explanation and evaluation. I will revise the final communication so that it shows scientific judgment."
+    },
+    {
+      "id": "e-a278eaf2",
+      "timestamp": "2026-06-10T18:30:00+00:00",
+      "parent_id": null,
+      "objective": "To document responsible AI use for the final paper and talk.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "How should I document AI use for Milestone 4? I used AI for planning the final paper, planning slides, preparing validation questions, and checking whether the structure is balanced. Explain how to document this honestly in the AI usage protocol.",
+      "ai_output_summary": "The AI recommended documenting each AI interaction with objective, prompt, output summary, verification, evaluation, integration, and reflection. It emphasized that AI should be used for planning and review, not as a technical source. It also recommended marking that direct text was not reused and that technical claims were verified with references.",
+      "verification": {
+        "actions": [
+          "I compared this advice with the seminar instruction about scientific writing and avoiding plagiarism.",
+          "I checked that my protocol entries include verification, evaluation, integration, and reflection."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The AI can help organize the protocol, but academic responsibility remains mine.",
+          "I must ensure that the final paper cites academic references, not AI."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "AI usage protocol and academic honesty",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction helped me document AI use transparently. I will submit or keep the JSON protocol as required and ensure that the final paper and talk reflect my own understanding."
+    }
+  ],
+  "exported_at": "2026-06-10T18:30:00+00:00"
+}
