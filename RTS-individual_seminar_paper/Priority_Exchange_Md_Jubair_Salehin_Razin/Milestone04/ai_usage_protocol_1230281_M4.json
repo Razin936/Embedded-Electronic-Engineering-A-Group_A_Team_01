@@ -1,0 +1,520 @@
+{
+  "protocol_version": "0.2",
+  "student_id": "1230281",
+  "student_name": "Md Jubair Salehin Razin",
+  "course": "Embedded Electronic Engineering A – Real-Time Systems",
+  "milestone": "M4",
+  "topic": "Priority Exchange",
+  "entries": [
+    {
+      "id": "e-ef1284b7",
+      "timestamp": "2026-06-11T23:05:10+00:00",
+      "parent_id": null,
+      "objective": "Plan the Milestone 4 synthesis step by converting the previous milestone work on Priority Exchange into a coherent final seminar paper and presentation instead of treating the paper as an independent AI-written artifact.",
+      "ai_tool": {
+        "name": "Anthropic Claude",
+        "model": "Claude Opus 4.8 Max"
+      },
+      "prompt": "Reconstructed prompt: I have completed the earlier milestones for the RTS seminar topic Priority Exchange. Help me plan the final Milestone 4 paper and talk so that it integrates M1 technical understanding, M2 context/trade-offs, and M3 critical evaluation. Keep the structure scientific and not text-heavy.",
+      "ai_output_summary": "Claude proposed a final-paper structure with introduction, system model, Priority Exchange algorithm, worked example, schedulability analysis, dynamic-priority extensions, context/trade-off analysis, critical evaluation, conclusion, and AI-usage appendix. It also suggested a presentation flow from motivation to mechanism, example, analysis, trade-offs, critique, and conclusion.",
+      "verification": {
+        "actions": [
+          "Compared the proposed structure with the Milestone 4 checklist requirement that the final paper integrates M1–M3 rather than being generated independently.",
+          "Checked that the suggested paper and slide structure covered motivation, core technical idea, assumptions/trade-offs, strengths/limitations, and open issues."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [
+          "The structure was used as an outline only; technical claims still required source verification."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Paper structure and slide storyline",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This helped keep Milestone 4 connected to the earlier milestone reasoning and avoided producing a polished but disconnected final text."
+    },
+    {
+      "id": "e-ff518e85",
+      "timestamp": "2026-06-11T23:05:10+00:00",
+      "parent_id": null,
+      "objective": "Draft the final paper introduction and problem framing around the conflict between guaranteed hard periodic deadlines and responsive soft aperiodic service.",
+      "ai_tool": {
+        "name": "Anthropic Claude",
+        "model": "Claude Opus 4.8 Max"
+      },
+      "prompt": "Reconstructed prompt: Draft an IEEE-style introduction for a seminar paper on Priority Exchange. Explain the problem of hard periodic tasks sharing the processor with unpredictable soft aperiodic requests. Contrast background scheduling and the polling server as motivating baselines.",
+      "ai_output_summary": "Claude generated an introduction explaining that embedded systems contain hard periodic activities such as control loops and soft aperiodic activities such as operator commands, alarms, and sensor events. It framed the central problem as serving aperiodic requests quickly without jeopardising periodic schedulability and used background scheduling and polling as baseline limitations.",
+      "verification": {
+        "actions": [
+          "Checked that the problem statement matched the paper's scope: hard periodic tasks plus soft aperiodic jobs, not hard aperiodic guarantees.",
+          "Compared the baseline descriptions with Buttazzo's treatment of background and polling service.",
+          "Revised the wording so the claims remained qualitative where no measured response-time data was provided."
+        ],
+        "level": "primary-source-check"
+      },
+      "evaluation": {
+        "status": "revised",
+        "issues": [
+          "Some original wording sounded too broad and was narrowed to the seminar scope."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Paper I.A Problem Statement and Motivation; slides 'The Challenge' and 'Why Not the Simple Options'",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This established the audience motivation: PE is not introduced as an abstract algorithm but as a response to a concrete scheduling tension."
+    },
+    {
+      "id": "e-cb00092e",
+      "timestamp": "2026-06-11T23:05:10+00:00",
+      "parent_id": null,
+      "objective": "Develop the final explanation of the Priority Exchange core mechanism in comparison with the Deferrable Server.",
+      "ai_tool": {
+        "name": "Anthropic Claude",
+        "model": "Claude Opus 4.8 Max"
+      },
+      "prompt": "Reconstructed prompt: Explain the core technical idea of the fixed-priority Priority Exchange server. Compare it with the Deferrable Server: DS holds budget at high priority, while PE exchanges unused high-priority budget with lower-priority periodic execution.",
+      "ai_output_summary": "Claude produced a formal explanation that PE preserves unused server budget by trading it for the execution time of the highest-priority pending periodic task. The periodic task is advanced at the server's priority while equal budget is parked at the periodic task's lower priority. This was contrasted with the Deferrable Server, which keeps capacity at the original high priority.",
+      "verification": {
+        "actions": [
+          "Checked against Buttazzo Chapter 5.5 and the Lehoczky–Sha–Strosnider origin of PE/DS.",
+          "Ensured the wording did not imply that PE creates additional processor time; it only relocates already reserved budget.",
+          "Verified the distinction between holding high-priority budget and exchanging budget downward."
+        ],
+        "level": "primary-source-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [
+          "The explanation required careful wording because 'exchange' can sound like the server gains extra time if described casually."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Paper I.B Core Technical Idea; slides 'The Key Idea'",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This became the central conceptual sentence of the paper and talk: PE preserves budget by trading it, not by holding it."
+    },
+    {
+      "id": "e-463e07e2",
+      "timestamp": "2026-06-11T23:05:10+00:00",
+      "parent_id": null,
+      "objective": "Draft the system model and assumptions for the final paper, including periodic utilization, server utilization, fixed-priority and dynamic-priority models, and explicit scope limitations.",
+      "ai_tool": {
+        "name": "Anthropic Claude",
+        "model": "Claude Opus 4.8 Max"
+      },
+      "prompt": "Reconstructed prompt: Write a concise system model for the Priority Exchange paper. Include periodic tasks with Ci and Ti, soft aperiodic jobs, server capacity Cs and period Ts, Up and Us, RM and EDF settings, and assumptions such as preemptive uniprocessor, independent tasks, no blocking, negligible overhead, and known WCET.",
+      "ai_output_summary": "Claude drafted the task and server model used in the paper: independent periodic tasks with WCET and period, soft aperiodic jobs without hard deadlines, a server with capacity and period, and utilization definitions Up and Us. It also listed the modelling assumptions and explicitly placed jitter, precedence constraints, blocking, mixed-criticality, and multiprocessors outside the paper scope.",
+      "verification": {
+        "actions": [
+          "Checked that the formulas Up = sum(Ci/Ti) and Us = Cs/Ts were dimensionally correct and consistent with standard utilization definitions.",
+          "Compared the assumptions with the conditions required by classical fixed-priority server analysis.",
+          "Moved unrealistic assumptions into the later critical-evaluation section rather than hiding them."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [
+          "The model is intentionally simplified; the report later criticises its realism."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Paper II System Model and Assumptions",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This section made the analysis boundary explicit, which is important because the algorithm's guarantees depend strongly on these assumptions."
+    },
+    {
+      "id": "e-a44b6f1f",
+      "timestamp": "2026-06-11T23:05:10+00:00",
+      "parent_id": null,
+      "objective": "Convert the Priority Exchange algorithm into clear rules suitable for the final paper and slides.",
+      "ai_tool": {
+        "name": "Anthropic Claude",
+        "model": "Claude Opus 4.8 Max"
+      },
+      "prompt": "Reconstructed prompt: Summarise the fixed-priority Priority Exchange algorithm as a small set of operational rules: replenishment, service if aperiodic work is pending, exchange if no request is pending, and discard/degrade only when otherwise idle.",
+      "ai_output_summary": "Claude expressed PE through three operational rules: replenish the server capacity at each server period; serve pending aperiodic jobs if budget is the highest-priority entity; otherwise exchange the unused budget with the highest-priority active periodic task and park equivalent budget at that task's priority level; discard only when the processor would otherwise be idle.",
+      "verification": {
+        "actions": [
+          "Traced the rules against the formal mechanism in Buttazzo and the worked schedule.",
+          "Checked that 'discard' was not described as occurring merely at the end of a polling instant.",
+          "Simplified the wording for slides without removing the essential distinction between service and exchange."
+        ],
+        "level": "primary-source-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [
+          "The slide wording was compressed; the paper keeps the fuller explanation."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Paper III.A The Exchange Mechanism; slide 'Mechanism'",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "Turning the algorithm into rules made the mechanism explainable in the presentation and easier to defend in questions."
+    },
+    {
+      "id": "e-c8b6049b",
+      "timestamp": "2026-06-11T23:05:10+00:00",
+      "parent_id": null,
+      "objective": "Generate and verify a small worked schedule for the fixed-priority Priority Exchange server and use it as a figure/example in both paper and presentation.",
+      "ai_tool": {
+        "name": "Anthropic Claude",
+        "model": "Claude Opus 4.8 Max"
+      },
+      "prompt": "Reconstructed prompt: Implement a short discrete-time simulator for a fixed-priority Priority Exchange server with Cs = 1, Ts = 5 and periodic tasks tau1 = (2,10), tau2 = (6,20). Include aperiodic jobs J1 and J2 and generate a schedule figure showing execution, exchanged budget, degradation, and idle discard.",
+      "ai_output_summary": "Claude assisted with producing a unit-time simulation and figure for the example used in the paper and slide deck. The example shows budget exchanged with tau1 at t = 0, budget degrading to tau2's level, J1 served immediately at t = 5, budget discarded at the idle instant t = 9, and J2 served later from reclaimed budget at tau1's priority.",
+      "verification": {
+        "actions": [
+          "Manually traced the timeline to check that periodic work, aperiodic service, budget parking, and budget discard were consistent.",
+          "Checked that total CPU time did not exceed one unit per unit-time slot.",
+          "Confirmed that the figure illustrated PE's qualitative mechanism rather than claiming a general performance measurement."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [
+          "The simulator is used for explanation and validation of one example only, not for statistical performance evaluation."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Paper III.B Worked Example and Figure 1; slide 'Worked Example'",
+        "usage_type": "other",
+        "direct_text_reused": true
+      },
+      "reflection": "The generated example was useful because it made the otherwise abstract exchange of capacity visible and checkable."
+    },
+    {
+      "id": "e-5c732a77",
+      "timestamp": "2026-06-11T23:05:10+00:00",
+      "parent_id": null,
+      "objective": "Draft and verify the fixed-priority schedulability analysis for the PE server under rate-monotonic scheduling.",
+      "ai_tool": {
+        "name": "Anthropic Claude",
+        "model": "Claude Opus 4.8 Max"
+      },
+      "prompt": "Reconstructed prompt: Derive and explain the fixed-priority schedulability bound for a Priority Exchange server placed at the highest priority. Show why it behaves like a periodic task and include the utilization bound using Us, Up, n, and K = 2/(Us+1).",
+      "ai_output_summary": "Claude drafted the analytical statement that, in the worst case, PE behaves like a periodic task because high-priority server time is either spent on aperiodic service within budget or returned as advanced periodic execution. It produced the RM least-upper-bound expression and the equivalent guarantee condition for Up as a function of Us and n.",
+      "verification": {
+        "actions": [
+          "Checked the equations against the primary reference in Buttazzo and the known RM utilization-bound form.",
+          "Verified the limiting case Us -> 0 reduces to the Liu and Layland bound n(2^(1/n)-1).",
+          "Checked that the paper states the bound as a guarantee/sufficient schedulability condition rather than an empirical result."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [
+          "The mathematical notation required manual cleaning after drafting to ensure consistency between paper and slides."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Paper III.C Schedulability Analysis; slide 'Schedulability · Fixed Priority'",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This was the most important formula-checking step because the PE-versus-DS argument depends on the bound."
+    },
+    {
+      "id": "e-ae3846bc",
+      "timestamp": "2026-06-11T23:05:10+00:00",
+      "parent_id": null,
+      "objective": "Add the dynamic-priority extensions of the exchange idea: Dynamic Priority Exchange and Improved Priority Exchange under EDF.",
+      "ai_tool": {
+        "name": "Anthropic Claude",
+        "model": "Claude Opus 4.8 Max"
+      },
+      "prompt": "Reconstructed prompt: Extend the discussion from fixed-priority PE to Dynamic Priority Exchange and Improved Priority Exchange under EDF. Explain deadline-tagged capacity, the bound Up + Us <= 1 for DPE, and Up <= 1 for IPE with offline EDL idle-time precomputation.",
+      "ai_output_summary": "Claude generated a concise explanation of DPE and IPE. DPE trades runtime under EDF by tagging capacity with deadlines and preserves feasibility with the exact processor-demand condition Up + Us <= 1. IPE precomputes EDL idle times offline, can run at the highest priority, and uses the residual bandwidth when Up <= 1, giving near-optimal aperiodic response.",
+      "verification": {
+        "actions": [
+          "Checked the DPE and IPE claims against Buttazzo's dynamic-priority server sections and Spuri/Buttazzo references.",
+          "Verified that DPE and IPE were presented as extensions of the exchange idea rather than the main fixed-priority PE algorithm.",
+          "Kept the slide version short and moved proof details to the paper."
+        ],
+        "level": "primary-source-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [
+          "The exact proof of DPE feasibility was summarised rather than reproduced in full due to paper length."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Paper III.D–III.E; slide 'Dynamic Priority · EDF'",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "Including DPE/IPE helped show that Priority Exchange is historically important beyond the fixed-priority algorithm itself."
+    },
+    {
+      "id": "e-cb8c356e",
+      "timestamp": "2026-06-11T23:05:10+00:00",
+      "parent_id": null,
+      "objective": "Create a compact trade-off table comparing Priority Exchange with other aperiodic service algorithms for the paper and slides.",
+      "ai_tool": {
+        "name": "Anthropic Claude",
+        "model": "Claude Opus 4.8 Max"
+      },
+      "prompt": "Reconstructed prompt: Build a comparison table for background scheduling, Polling Server, Deferrable Server, Priority Exchange, Sporadic Server, Dynamic Priority Exchange, Total Bandwidth Server, and Improved Priority Exchange. Compare priority model, periodic bound, aperiodic response, overhead, and whether budget is preserved.",
+      "ai_output_summary": "Claude helped prepare the design-space table comparing representative fixed-priority and dynamic-priority aperiodic service algorithms. The table positions PE as a fixed-priority server with preserved exchanged budget, full periodic-task bound, good aperiodic responsiveness, and overhead that grows with the number of periodic tasks.",
+      "verification": {
+        "actions": [
+          "Checked each row against the cited sources and the earlier M2/M3 trade-off analysis.",
+          "Revised qualitative labels such as 'good' or 'near-optimal' to avoid implying measured values where none were provided.",
+          "Ensured the table did not claim PE dominates Sporadic Server or Total Bandwidth Server."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [
+          "The table uses qualitative categories, so it is a design summary rather than a benchmark."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Paper Table I and IV.A–IV.E; slide 'The Design Space'",
+        "usage_type": "other",
+        "direct_text_reused": true
+      },
+      "reflection": "The table made the trade-off analysis clearer and showed why the algorithm choice depends on the design goal."
+    },
+    {
+      "id": "e-ade9d621",
+      "timestamp": "2026-06-11T23:05:10+00:00",
+      "parent_id": null,
+      "objective": "Sharpen the head-to-head comparison between Priority Exchange and the Deferrable Server for both paper and presentation.",
+      "ai_tool": {
+        "name": "Anthropic Claude",
+        "model": "Claude Opus 4.8 Max"
+      },
+      "prompt": "Reconstructed prompt: Write a precise PE versus Deferrable Server comparison. Emphasise that DS is simpler and often slightly more responsive, while PE has a stronger periodic schedulability bound but higher budget-tracking overhead.",
+      "ai_output_summary": "Claude drafted the direct comparison: DS keeps capacity at high priority and is easier to implement with overhead independent of task count; PE exchanges capacity downward, which preserves the periodic-task bound but requires per-level budget accounting and scheduling-time exchanges. The comparison was framed as responsiveness versus schedulability versus overhead.",
+      "verification": {
+        "actions": [
+          "Checked against Buttazzo's PE/DS comparison and the paper's formula section.",
+          "Removed any claim that PE is universally better than DS.",
+          "Aligned the wording between the paper and the slide 'Head-to-Head'."
+        ],
+        "level": "primary-source-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [
+          "The phrase 'slightly better responsiveness' for DS was kept qualitative because no new simulation was performed."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Paper IV.B; slide 'Head-to-Head'",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This gave the talk a clear comparison point and showed scientific balance instead of only promoting the assigned algorithm."
+    },
+    {
+      "id": "e-c5159b16",
+      "timestamp": "2026-06-11T23:05:10+00:00",
+      "parent_id": null,
+      "objective": "Integrate the Milestone 3 critical evaluation into the final paper and slide deck without repeating it mechanically.",
+      "ai_tool": {
+        "name": "Anthropic Claude",
+        "model": "Claude Opus 4.8 Max"
+      },
+      "prompt": "Reconstructed prompt: Convert the M3 critical evaluation into final-paper and slide content. Include concrete strengths, limitations, unrealistic assumptions, implementation implications, suitable applications, unsuitable applications, and open questions for Priority Exchange.",
+      "ai_output_summary": "Claude reorganised the critical evaluation into strengths, limitations and risks, restrictive assumptions, runtime/memory implications, suitable and unsuitable application examples, and open research questions. The slide deck used a compressed strengths/limitations version, while the paper kept the detailed discussion.",
+      "verification": {
+        "actions": [
+          "Compared the output against the M3 checklist and earlier M3 protocol entries.",
+          "Checked that critical statements were framed as engineering judgments when not directly measured.",
+          "Ensured the unsuitable-application section did not overclaim that PE is impossible in safety-critical systems, only that it is not sufficient for hard aperiodic guarantees."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [
+          "Some examples are application-level interpretations, not documented industrial case studies."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Paper V Critical Evaluation; slides 'Critical Evaluation — Strengths' and 'Limitations & Risks'",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This section demonstrates the seminar competence: evaluating assumptions, risks, transferability, and not just explaining the algorithm."
+    },
+    {
+      "id": "e-79845916",
+      "timestamp": "2026-06-11T23:05:10+00:00",
+      "parent_id": null,
+      "objective": "Prepare and verify the related-work lineage and reference list used in the final paper and final slide.",
+      "ai_tool": {
+        "name": "Anthropic Claude",
+        "model": "Claude Opus 4.8 Max"
+      },
+      "prompt": "Reconstructed prompt: Compile the key references for a final seminar paper on Priority Exchange: Liu and Layland, Buttazzo, Lehoczky/Sha/Strosnider, Sprunt/Sha/Lehoczky, Spuri/Buttazzo, Davis/Tindell/Burns, Davis/Wellings. Explain why each is included.",
+      "ai_output_summary": "Claude suggested the final reference set and a short related-work rationale: foundational RM schedulability, Buttazzo as the primary textbook reference, original PE/DS paper, Sporadic Server, dynamic PE/IPE papers, slack stealing, and dual-priority scheduling. This also supported the final slide's key sources list.",
+      "verification": {
+        "actions": [
+          "Checked the bibliographic details against the published record where available and against the paper's reference list.",
+          "Confirmed that each cited work served a clear purpose in the argument.",
+          "Avoided adding weakly related references only to make the bibliography longer."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [
+          "The paper relies heavily on Buttazzo as the primary source, which is appropriate because the seminar topic is assigned from that book chapter."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "References; Paper IV.F; slide 'References & Method'",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This helped justify why some related work is included and why other areas, such as multiprocessor servers, are outside scope."
+    },
+    {
+      "id": "e-4907c11c",
+      "timestamp": "2026-06-11T23:05:10+00:00",
+      "parent_id": null,
+      "objective": "Draft a concise final conclusion that states the lasting importance of Priority Exchange without overstating its practical dominance.",
+      "ai_tool": {
+        "name": "Anthropic Claude",
+        "model": "Claude Opus 4.8 Max"
+      },
+      "prompt": "Reconstructed prompt: Write a conclusion for the Priority Exchange paper and presentation. Emphasise the counter-intuitive idea of preserving budget by exchanging it, the full RM schedulability bound, the EDF extensions, and the fact that PE is largely superseded in practice but remains conceptually important.",
+      "ai_output_summary": "Claude produced a conclusion framing PE as a counter-intuitive and historically important algorithm: high-priority budget is preserved by trading it for lower-priority work; the fixed-priority server obtains the full periodic-task bound; the idea generalises to DPE/IPE; and modern practice often prefers Sporadic Server or Total Bandwidth Server because they provide similar guarantees with lower overhead.",
+      "verification": {
+        "actions": [
+          "Checked that the conclusion matched the evidence presented in the paper and did not introduce new unsupported claims.",
+          "Ensured the conclusion acknowledged both strengths and practical limitations.",
+          "Compressed the conclusion into four presentation takeaways for the final slide."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [
+          "The conclusion is interpretive, so it was kept explicitly tied to the earlier trade-off analysis."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Paper VI Conclusion; slide 'Conclusion'",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This helped end the paper and talk with a balanced scientific message instead of only summarising mechanics."
+    },
+    {
+      "id": "e-01973357",
+      "timestamp": "2026-06-11T23:05:10+00:00",
+      "parent_id": null,
+      "objective": "Transform the final paper into a concise presentation that explains the concept visually and supports an expert-audience talk.",
+      "ai_tool": {
+        "name": "Anthropic Claude",
+        "model": "Claude Opus 4.8 Max"
+      },
+      "prompt": "Reconstructed prompt: Create a presentation outline and slide text for Priority Exchange based on the final paper. Keep slides concise, focus on explanation and discussion rather than reproducing the full paper, and include the challenge, key idea, mechanism, worked example, schedulability, dynamic priority extensions, design-space table, PE-vs-DS, critical evaluation, conclusion, and references/method.",
+      "ai_output_summary": "Claude helped convert the paper into a slide deck with a clear narrative: two workloads share a processor; simple baselines fail; PE preserves budget by trading it; the mechanism is shown with three rules and a worked example; schedulability and EDF extensions are summarised; a design-space table and head-to-head comparison support the critical evaluation; the final slide documents sources and AI usage.",
+      "verification": {
+        "actions": [
+          "Checked the slide deck against the Milestone 4 requirement that slides should communicate the central idea, trade-offs, assumptions, strengths, and limitations rather than repeat the paper.",
+          "Removed or shortened text-heavy wording for oral presentation.",
+          "Checked consistency between paper formulas and slide formulas."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [
+          "The slide deck necessarily omits some proof detail; these details remain in the paper."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Priority_exchange_Jubair.pptx",
+        "usage_type": "other",
+        "direct_text_reused": true
+      },
+      "reflection": "This converted the written analysis into a talk structure that can be explained to the professor and classmates."
+    },
+    {
+      "id": "e-9842dcae",
+      "timestamp": "2026-06-11T23:05:10+00:00",
+      "parent_id": null,
+      "objective": "Write a transparent AI-usage appendix and method slide that separate AI assistance from author verification and responsibility.",
+      "ai_tool": {
+        "name": "Anthropic Claude",
+        "model": "Claude Opus 4.8 Max"
+      },
+      "prompt": "Reconstructed prompt: Draft a documented AI usage protocol appendix for the final paper and a short method note for the slides. State that AI was used as a drafting and tooling aid, list what it assisted with, and clearly state what the author verified independently.",
+      "ai_output_summary": "Claude helped draft the AI usage appendix and slide note. The appendix states that Anthropic Claude was used for organising the paper, drafting sections, synthesising relevant material, implementing the short simulator, and generating LaTeX/figure material. It also states that the author verified cited results, references, formulas, the simulated schedule, and final technical claims.",
+      "verification": {
+        "actions": [
+          "Checked the appendix against the actual workflow and removed anything that would imply AI made final intellectual decisions independently.",
+          "Ensured the author-verification part explicitly includes formulas, citations, schedule tracing, and technical claims.",
+          "Aligned the shorter slide note with the longer paper appendix."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [
+          "The exact raw Claude transcript was not attached, so this protocol records the workflow at a structured summary level."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Paper Appendix A; slide 'References & Method'",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This is important for professional AI use: the paper states what AI helped with, what was independently checked, and where responsibility remains."
+    }
+  ],
+  "exported_at": "2026-06-11T23:05:10+00:00"
+}
