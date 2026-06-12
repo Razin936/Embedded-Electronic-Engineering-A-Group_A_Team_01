@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.6//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_6.dtd'>
+<nta>
+	<declaration>broadcast chan tick;          // discrete clock tick (Clock -&gt; Scheduler)
+
+// ---- Parameters ----
+const int Tp   = 4;           // periodic task: period
+const int Cp   = 1;           // periodic task: worst-case execution time
+const int Dp   = 4;           // periodic task: relative deadline
+const int Cs   = 2;           // server capacity
+const int Ts   = 5;           // server period
+const int QMAX = 3;           // aperiodic queue capacity
+const int H    = 22;          // horizon (bounds the verification state space)
+
+// ---- Periodic task state (HIGH priority) ----
+int  pRem = 0;                // remaining execution of current job
+int  pDl  = 0;                // ticks left until current job's deadline
+bool pAct = false;            // is a periodic job pending?
+
+// ---- Sporadic Server + aperiodic state (LOWER priority) ----
+int  budget   = Cs;           // current server capacity
+int  queue    = 0;            // pending aperiodic jobs  (THE QUEUE)
+int  apRem    = 0;            // remaining execution of job in service
+int  consumed = 0;            // capacity used in current active period
+int  replCd   = 0;            // ticks until pending replenishment (0 = none)
+int  replAmt  = 0;            // amount to restore
+bool srvAct   = false;        // is a server active period open?
+
+// ---- Observation ----
+int  now    = 0;              // current discrete time
+bool miss   = false;          // true once any deadline is missed
+int  served = 0;              // aperiodic jobs completed
+
+// Deterministic aperiodic arrival schedule: number of jobs arriving at time t.
+int arrivals(int t) {
+    if (t == 3)  return 2;
+    if (t == 12) return 1;
+    return 0;
+}
+
+// One atomic time step.
+void tick_update() {
+    int a;
+    if (now &gt; H) return;                          // freeze after the horizon
+
+    // (1) replenishment fires
+    if (replCd &gt; 0) {
+        replCd--;
+        if (replCd == 0) { budget += replAmt; replAmt = 0; }
+    }
+    // (2) periodic release
+    if (now % Tp == 0) {
+        if (pRem &gt; 0) miss = true;                // previous job unfinished
+        pRem = Cp; pDl = Dp; pAct = true;
+    }
+    // (3) aperiodic arrivals -&gt; enqueue (bounded by QMAX)
+    a = arrivals(now);
+    while (a &gt; 0) {
+        if (queue &lt; QMAX) queue++;
+        a--;
+    }
+    // (4) schedule ONE unit of work, fixed priority: periodic &gt; server
+    if (pAct &amp;&amp; pRem &gt; 0) {
+        pRem--;
+        if (pRem == 0) pAct = false;
+        // server stays ACTIVE during higher-priority preemption (no consumption)
+    } else {
+        if (apRem == 0 &amp;&amp; queue &gt; 0) { queue--; apRem = 1; }   // take next job
+        if (apRem &gt; 0 &amp;&amp; budget &gt; 0) {
+            if (!srvAct &amp;&amp; replCd == 0) {         // open a new active period
+                srvAct = true; consumed = 0; replCd = Ts;      // RT = now + Ts
+            }
+            apRem--; budget--; consumed++; replAmt = consumed; // RA = consumed
+            if (apRem == 0) served++;
+        }
+        if (srvAct &amp;&amp; apRem == 0 &amp;&amp; queue == 0) srvAct = false; // server idle
+    }
+    // (5) deadline check
+    if (pAct &amp;&amp; pRem &gt; 0) {
+        pDl--;
+        if (pDl &lt; 0) miss = true;
+    }
+    now++;
+}
+</declaration>
+	<template>
+		<name>Clock</name>
+		<declaration>clock c;</declaration>
+		<location id="id0" x="0" y="0">
+			<name x="-10" y="-34">T</name>
+			<label kind="invariant" x="-40" y="17">c &lt;= 1</label>
+		</location>
+		<init ref="id0"/>
+		<transition id="id1">
+			<source ref="id0"/>
+			<target ref="id0"/>
+			<label kind="guard" x="150" y="-70">c == 1 &amp;&amp; now &lt;= H</label>
+			<label kind="synchronisation" x="150" y="-54">tick!</label>
+			<label kind="assignment" x="150" y="-38">c = 0</label>
+			<nail x="76" y="-51"/>
+			<nail x="144" y="85"/>
+		</transition>
+	</template>
+	<template>
+		<name>Scheduler</name>
+		<location id="id2" x="-272" y="0">
+			<name x="-282" y="-34">Start</name>
+			<committed/>
+		</location>
+		<location id="id3" x="8" y="-85">
+			<name x="-2" y="-119">Wait</name>
+		</location>
+		<location id="id4" x="280" y="0">
+			<name x="270" y="-34">Crit</name>
+			<committed/>
+		</location>
+		<init ref="id2"/>
+		<transition id="id5">
+			<source ref="id2"/>
+			<target ref="id3"/>
+			<label kind="assignment" x="-200" y="-20">tick_update()</label>
+		</transition>
+		<transition id="id6">
+			<source ref="id3"/>
+			<target ref="id4"/>
+			<label kind="synchronisation" x="80" y="-20">tick?</label>
+		</transition>
+		<transition id="id7">
+			<source ref="id4"/>
+			<target ref="id3"/>
+			<label kind="assignment" x="40" y="90">tick_update()</label>
+			<nail x="220" y="80"/>
+			<nail x="0" y="80"/>
+		</transition>
+	</template>
+	<system>
+clk   = Clock();
+sched = Scheduler();
+system clk, sched;
+</system>
+	<queries>
+		<query>
+			<formula>A[] (budget &gt;= 0 &amp;&amp; budget &lt;= Cs)</formula>
+			<comment>Safety: the server budget never leaves [0, Cs].</comment>
+			<result outcome="success" type="quality" timestamp="2026-06-12 19:48:24 +0200">
+			</result>
+		</query>
+		<query>
+			<formula>A[] not miss</formula>
+			<comment>The periodic task never misses a deadline.</comment>
+			<result outcome="success" type="quality" timestamp="2026-06-12 19:48:31 +0200">
+			</result>
+		</query>
+		<query>
+			<formula>A[] queue &lt;= QMAX</formula>
+			<comment>The aperiodic queue never overflows.</comment>
+			<result outcome="success" type="quality" timestamp="2026-06-12 12:56:39 +0200">
+			</result>
+		</query>
+		<query>
+			<formula>E&lt;&gt; srvAct</formula>
+			<comment>The server active state is reachable (mechanism is exercised).</comment>
+			<result outcome="success" type="quality" timestamp="2026-06-12 19:48:33 +0200">
+			</result>
+		</query>
+		<query>
+			<formula>E&lt;&gt; budget == 0</formula>
+			<comment>The budget can be fully consumed (the limit is reachable).</comment>
+			<result outcome="success" type="quality" timestamp="2026-06-12 12:56:42 +0200">
+			</result>
+		</query>
+		<query>
+			<formula>E&lt;&gt; served &gt;= 3</formula>
+			<comment>All three aperiodic jobs can be completed.</comment>
+			<result outcome="success" type="quality" timestamp="2026-06-12 12:56:43 +0200">
+			</result>
+		</query>
+	</queries>
+</nta>
