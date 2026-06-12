@@ -1,0 +1,156 @@
+% ==========================================================================
+% references.bib  —  Priority Exchange seminar (Real-Time Systems, HSHL)
+% Md Jubair Salehin Razin
+%
+% Per the seminar instructions, every reference carries an `annote` field
+% giving a short note on HOW it relates to the Priority Exchange topic.
+% (Zotero / Citavi import this as the item Note; JabRef shows it as Annote.)
+% ==========================================================================
+
+@article{liu73,
+  author  = {Liu, C. L. and Layland, J. W.},
+  title   = {Scheduling Algorithms for Multiprogramming in a Hard-Real-Time Environment},
+  journal = {Journal of the ACM},
+  volume  = {20},
+  number  = {1},
+  pages   = {46--61},
+  month   = jan,
+  year    = {1973},
+  annote  = {Foundational result. Establishes the rate-monotonic utilization
+             bound n(2^{1/n}-1) that a Priority Exchange server inherits: the
+             paper's PE guarantee (Eq. 5) reduces exactly to this bound in the
+             limit U_s -> 0, i.e. when the server vanishes. Provides the
+             schedulability baseline against which PE is measured.}
+}
+
+@book{buttazzo,
+  author    = {Buttazzo, Giorgio C.},
+  title     = {Hard Real-Time Computing Systems: Predictable Scheduling
+               Algorithms and Applications},
+  edition   = {3rd},
+  publisher = {Springer},
+  address   = {New York, NY, USA},
+  year      = {2011},
+  annote    = {Primary / unifying reference for this seminar. Source for the
+             fixed-priority PE exchange mechanism, the DPE and IPE servers, the
+             schedulability bounds (Eqs. 5, 7, 8), and the PE-versus-Deferrable-
+             Server comparison. Every bound and comparison reproduced in the
+             paper was verified against this monograph.}
+}
+
+@inproceedings{lss87,
+  author    = {Lehoczky, J. P. and Sha, L. and Strosnider, J. K.},
+  title     = {Enhanced Aperiodic Responsiveness in Hard Real-Time Environments},
+  booktitle = {Proc. IEEE Real-Time Systems Symposium (RTSS)},
+  pages     = {261--270},
+  month     = dec,
+  year      = {1987},
+  annote    = {Origin of the topic. The paper that introduced BOTH the Priority
+             Exchange server and its sibling the Deferrable Server. Defines the
+             exchange-of-budget idea that is the central subject of this
+             seminar; the primary historical source.}
+}
+
+@inproceedings{epe88,
+  author    = {Sprunt, B. and Lehoczky, J. P. and Sha, L.},
+  title     = {Exploiting Unused Periodic Time for Aperiodic Service Using the
+               Extended Priority Exchange Algorithm},
+  booktitle = {Proc. 9th IEEE Real-Time Systems Symposium (RTSS)},
+  pages     = {251--258},
+  year      = {1988},
+  annote    = {Direct extension of the topic. The Extended Priority Exchange
+             (EPE) server augments PE to reclaim unused periodic (run-time)
+             slack -- precisely the capability plain PE lacks. Cited in the
+             evaluation as the natural answer to PE's no-runtime-reclaim
+             limitation and in the open-questions discussion.}
+}
+
+@article{sprunt89,
+  author  = {Sprunt, B. and Sha, L. and Lehoczky, J. P.},
+  title   = {Aperiodic Task Scheduling for Hard Real-Time Systems},
+  journal = {Real-Time Systems},
+  volume  = {1},
+  number  = {1},
+  pages   = {27--60},
+  month   = jun,
+  year    = {1989},
+  annote  = {Key competitor. Introduces the Sporadic Server, which attains the
+             same periodic bound as PE but with low, task-count-independent
+             overhead, and is the only aperiodic-server policy admitted by
+             POSIX. Central to the paper's argument that PE has been superseded
+             in fixed-priority practice.}
+}
+
+@article{strosnider95,
+  author  = {Strosnider, J. K. and Lehoczky, J. P. and Sha, L.},
+  title   = {The Deferrable Server Algorithm for Enhanced Aperiodic
+             Responsiveness in Hard Real-Time Environments},
+  journal = {IEEE Transactions on Computers},
+  volume  = {44},
+  number  = {1},
+  pages   = {73--91},
+  month   = jan,
+  year    = {1995},
+  annote  = {Main comparison point. Full journal treatment of the Deferrable
+             Server, the algorithm PE is repeatedly contrasted with: DS holds
+             capacity at high priority (simpler, weaker bound) whereas PE
+             exchanges it down (full bound, higher overhead). Supports the
+             PE-vs-DS trade-off analysis.}
+}
+
+@inproceedings{slack93,
+  author    = {Davis, R. I. and Tindell, K. W. and Burns, A.},
+  title     = {Scheduling Slack Time in Fixed-Priority Pre-emptive Systems},
+  booktitle = {Proc. IEEE Real-Time Systems Symposium (RTSS)},
+  pages     = {222--231},
+  month     = dec,
+  year      = {1993},
+  annote    = {Orthogonal alternative. Slack-stealing reclaims the run-time
+             spare capacity (jobs finishing early) that PE cannot recover except
+             at idle. Cited as the better-suited mechanism for that specific
+             reclaiming problem and as a contrast to the reserved-budget server
+             approach.}
+}
+
+@inproceedings{spuri94,
+  author    = {Spuri, M. and Buttazzo, G. C.},
+  title     = {Efficient Aperiodic Service under Earliest Deadline Scheduling},
+  booktitle = {Proc. IEEE Real-Time Systems Symposium (RTSS)},
+  month     = dec,
+  year      = {1994},
+  annote    = {Dynamic-priority extension of the topic. Introduces the Dynamic
+             Priority Exchange (DPE) and Improved Priority Exchange (IPE)
+             servers, which carry the exchange idea into EDF. The conference
+             source for the paper's Section III-D/E results.}
+}
+
+@inproceedings{davis95,
+  author    = {Davis, R. I. and Wellings, A. J.},
+  title     = {Dual Priority Scheduling},
+  booktitle = {Proc. 16th IEEE Real-Time Systems Symposium (RTSS)},
+  address   = {Pisa, Italy},
+  pages     = {100--109},
+  month     = dec,
+  year      = {1995},
+  annote    = {Critical counterpoint. Reclaims spare capacity by priority
+             promotion rather than a reserved budget, and explicitly observes
+             that offline methods such as DS and PE can only offer such slack as
+             a background opportunity; reports dual priority outperforming even
+             EPE at lower overhead. Grounds the paper's critique of PE's
+             reclaiming limits.}
+}
+
+@article{spuri96,
+  author  = {Spuri, M. and Buttazzo, G. C.},
+  title   = {Scheduling Aperiodic Tasks in Dynamic Priority Systems},
+  journal = {Real-Time Systems},
+  volume  = {10},
+  number  = {2},
+  pages   = {179--210},
+  year    = {1996},
+  annote  = {Definitive dynamic-priority source. Journal version with the full
+             analysis and proofs of the DPE (U_p+U_s<=1) and IPE (U_p<=1)
+             bounds and the optimal EDL server. Main reference for the
+             dynamic-priority rows of the comparison table and the exact/near-
+             optimal bound claims.}
+}
