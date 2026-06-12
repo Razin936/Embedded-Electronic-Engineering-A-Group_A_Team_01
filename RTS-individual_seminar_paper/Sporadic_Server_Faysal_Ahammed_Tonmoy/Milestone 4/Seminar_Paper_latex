@@ -1,0 +1,152 @@
+\documentclass[conference]{IEEEtran}
+
+\usepackage{cite}
+\usepackage{amsmath}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{url}
+\usepackage{graphicx}
+\usepackage[hidelinks]{hyperref}
+
+% Compact spacing for strict 5-page target
+\setlength{\textfloatsep}{6pt plus 1pt minus 1pt}
+\setlength{\floatsep}{5pt plus 1pt minus 1pt}
+\setlength{\intextsep}{5pt plus 1pt minus 1pt}
+
+\title{The Sporadic Server}
+
+\author{
+	\IEEEauthorblockN{Faysal Ahammed Tonmoy}
+	\IEEEauthorblockA{
+		Student ID: 1230473\\
+		Real-Time Systems\\
+		Hochschule Hamm-Lippstadt\\
+		Seminar Paper}
+}
+
+\begin{document}
+	
+	\maketitle
+	
+	\begin{abstract}
+		Real-time systems often combine predictable periodic activities with irregular aperiodic requests. If aperiodic work is executed without control, it can disturb hard real-time deadlines; if it is executed only in background time, response time may become unacceptable. The Sporadic Server is a fixed-priority server mechanism designed to serve aperiodic requests while preserving the temporal protection of periodic hard real-time tasks. This paper explains the server-capacity and replenishment idea, presents a compact UPPAAL model of the main budget-consumption mechanism, compares the Sporadic Server with related fixed-priority servers, and evaluates its assumptions, overheads, and application limits. The conclusion is that the Sporadic Server is useful but assumption-dependent: it improves aperiodic responsiveness while bounding interference, but it requires correct replenishment handling, accurate timing information, bounded workload, and manageable scheduler overhead.
+	\end{abstract}
+	
+	\begin{IEEEkeywords}
+		Real-time systems, fixed-priority scheduling, aperiodic tasks, Sporadic Server, scheduling servers, UPPAAL.
+	\end{IEEEkeywords}
+	
+	\section{Introduction}
+	
+	Hard real-time systems are designed under the condition that missing a deadline can violate system correctness. In real-time computing, correctness depends not only on the logical value of a result but also on the time at which the result is produced; therefore, predictability is more important than high average throughput \cite[Sec.~1.2]{buttazzo2011hard}. Classical scheduling theory provides the basis for analyzing such systems, especially for periodic hard real-time tasks \cite{liu1973scheduling}. However, realistic embedded systems also receive irregular requests, such as diagnostic messages, alarm events, communication packets, or operator commands.
+	
+	This creates a scheduling problem. Aperiodic requests should be served quickly, but they must not consume processor time in a way that invalidates periodic timing guarantees. Executing them only as background work is simple and safe but may lead to poor response time. Executing them at high priority without control improves responsiveness but may endanger periodic deadlines. The Sporadic Server addresses this problem by reserving bounded execution capacity for aperiodic work and replenishing consumed capacity in a controlled way \cite{sprunt1989aperiodic}.
+	
+	The purpose of this paper is to explain the Sporadic Server, position it among related fixed-priority servers, demonstrate its main mechanism in UPPAAL, and critically evaluate when it is useful in embedded real-time systems.
+	
+	\section{Background and Problem Setting}
+	
+	A periodic task releases jobs at regular intervals and is usually described by a period, deadline, and worst-case execution time. This model fits many control and monitoring functions. Aperiodic tasks, in contrast, arrive irregularly; their exact arrival times are not known in advance. These task models form the basis for server-based scheduling in real-time systems \cite[Sec.~2.2]{buttazzo2011hard}. The combination of hard periodic tasks with soft or irregular aperiodic requests is the main motivation for fixed-priority server mechanisms \cite{sprunt1989aperiodic}.
+	
+	Background scheduling is the simplest solution: aperiodic work executes only when no periodic task is ready. This protects periodic tasks, but aperiodic response time can become large. A server improves this by reserving a controlled amount of processor capacity for aperiodic work. The challenge is to manage this capacity so that aperiodic response improves without destroying the schedulability assumptions of the periodic task set.
+	
+	The Sporadic Server is normally discussed in a fixed-priority preemptive context. The server itself receives a priority and is analyzed as part of the workload. This is important because the server must not behave like an uncontrolled high-priority task; its budget and replenishment rule must bound the processor demand it can create \cite{sprunt1989aperiodic}.
+	
+	\section{Core Idea of the Sporadic Server}
+	
+	The Sporadic Server is characterized by a server capacity $C_s$ and a server period $T_s$. The capacity is the maximum processor time the server may use for aperiodic jobs before its budget is exhausted. The period governs the replenishment rule that restores consumed capacity after a delay. Aperiodic jobs may execute at the server priority only while capacity remains \cite{sprunt1989aperiodic}.
+	
+	The distinctive feature is replenishment. Unlike the Polling and Deferrable Servers, which restore capacity to full value at period boundaries, the Sporadic Server replenishes only the capacity that has actually been consumed \cite[Sec.~5.6]{buttazzo2011hard}. When the server becomes active while capacity remains, the next replenishment time is associated with that activation. The amount restored later equals the capacity consumed during the corresponding interval. This delayed, consumption-based replenishment bounds the processor demand generated by aperiodic work.
+	
+	Because consumed capacity is restored only after a delay, the server can be accounted for in fixed-priority schedulability analysis like a controlled workload. Under the model assumptions, the periodic utilization bound is preserved, and an upper bound on the admissible server size can be derived \cite[Sec.~5.6, Eq.~(5.24)]{buttazzo2011hard}. Thus, the server is responsive when budget exists but prevents aperiodic work from continuously taking processor time.
+	
+	\section{UPPAAL Model of the Main Mechanism}
+	\label{sec:uppaal_model}
+	
+	To demonstrate the main feature of the Sporadic Server, a simplified UPPAAL model was developed. The model is not a complete implementation of the original algorithm; it is a formal demonstration of bounded server budget, delayed replenishment, aperiodic request service, and protection of a higher-priority periodic task.
+	
+	The model contains two templates. A \textit{Clock} template generates a discrete \texttt{tick} every time unit, similar to a timer interrupt in a real-time kernel. A \textit{Scheduler} template receives this tick and performs one atomic update: replenishment handling, periodic release, aperiodic arrival, scheduling decision, budget consumption, and deadline checking. The fixed-priority order is
+	\[
+	\text{Periodic task} > \text{Sporadic Server}.
+	\]
+	Therefore, the periodic task executes before the server whenever it is active. The server executes aperiodic work only if the aperiodic queue is non-empty and the server budget is positive.
+	
+	\begin{center}
+		\includegraphics[width=0.95\linewidth]{clock.png}
+		
+		\vspace{0.4cm}
+		
+		\includegraphics[width=0.95\linewidth]{scheduler.png}
+		
+		\vspace{0.2cm}
+		
+		\textbf{Figure:} UPPAAL implementation components: Clock automaton and Scheduler automaton.
+	\end{center}
+	
+	The model parameters are $T_p=4$, $C_p=1$, $D_p=4$, $C_s=2$, $T_s=5$, $QMAX=3$, and $H=22$. Two aperiodic requests arrive at $t=3$, and one request arrives at $t=12$. The UPPAAL queries check that the server budget remains within bounds, the periodic task never misses its deadline, the queue remains bounded, the server can become active, the budget can be exhausted, and all three modeled aperiodic jobs can be served. This supports the implementation discussion by showing that the main Sporadic Server behaviour can be represented as timed state updates with explicit scheduler state.
+	
+	\section{Related Approaches and Tradeoffs}
+	
+	Buttazzo treats background scheduling, the Polling Server, the Deferrable Server, Priority Exchange, the Sporadic Server, and Slack Stealing as fixed-priority server approaches for hybrid workloads consisting of hard periodic and soft or firm aperiodic activity \cite[Ch.~5]{buttazzo2011hard}. They address the same basic problem but differ in how reserved capacity is preserved, consumed, and replenished.
+	
+	Background scheduling is very simple and strongly protects periodic jobs because it only uses idle time. Its weakness is poor aperiodic response time, especially when periodic utilization is high \cite[Sec.~5.2]{buttazzo2011hard}. The Polling Server periodically checks for pending aperiodic work and serves it using its capacity, but capacity can be lost if no request is pending at the polling instant \cite[Sec.~5.3]{buttazzo2011hard}. The Deferrable Server preserves capacity within its period, improving responsiveness, but this creates a different interference pattern that must be analyzed carefully \cite{strosnider1995deferrable}, \cite[Sec.~5.4]{buttazzo2011hard}.
+	
+	Priority Exchange preserves otherwise-unused server capacity by trading it down to lower-priority periodic execution, requiring more involved bookkeeping across priority levels \cite[Sec.~5.5]{buttazzo2011hard}. Slack Stealing is more aggressive because it uses available slack in the periodic schedule, often giving strong average response but requiring computation of slack \cite[Sec.~5.7]{buttazzo2011hard}.
+	
+	The Sporadic Server is therefore best understood as a balance between responsiveness and analyzability, not as the universally fastest method. Buttazzo's performance discussion indicates that Deferrable Server, Priority Exchange, and Sporadic Server all reduce average aperiodic response compared with background and polling service, while the Sporadic Server may be slightly slower on average than Deferrable Server and Priority Exchange because consumed capacity is restored only one server period $T_s$ after consumption \cite[Sec.~5.9]{buttazzo2011hard}.
+	
+	\begin{table}[htbp]
+		\centering
+		\caption{Qualitative comparison of fixed-priority aperiodic service approaches}
+		\label{tab:comparison}
+		\small
+		\begin{tabular}{p{0.26\linewidth}p{0.28\linewidth}p{0.32\linewidth}}
+			\toprule
+			\textbf{Approach} & \textbf{Response} & \textbf{Main limitation} \\
+			\midrule
+			Background & Poor & Only uses idle time \\
+			Polling Server & Limited & Capacity may be wasted \\
+			Deferrable Server & Good & More complex interference \\
+			Priority Exchange & Good & Bookkeeping across priorities \\
+			Sporadic Server & Good & Replenishment accounting \\
+			Slack Stealing & Very good & High computation cost \\
+			\bottomrule
+		\end{tabular}
+		\\[2pt]
+		\footnotesize Based on \cite[Sec.~5.2--5.10]{buttazzo2011hard}; qualitative, not a universal ranking.
+	\end{table}
+	
+	\section{Critical Evaluation}
+	
+	The main strength of the Sporadic Server is that it provides bounded processor capacity for aperiodic work, improving response time over background execution while protecting periodic hard real-time tasks \cite{sprunt1989aperiodic}. The parameters $C_s$ and $T_s$ give the designer a concrete way to reason about how much processor time is reserved for irregular requests. A second strength is analyzability: since the server has defined capacity and replenishment behaviour, it can be included in fixed-priority timing analysis under the assumptions of the model \cite{liu1973scheduling}.
+	
+	The most important limitation is implementation complexity. The scheduler must track remaining capacity, reduce it during aperiodic execution, create replenishment events, restore capacity at the correct time, and manage pending requests. Timing inaccuracy is another risk. Timer resolution, interrupt latency, context-switch cost, and operating-system overhead can disturb the ideal replenishment model. Restoring capacity too early or measuring consumed capacity too coarsely can make the real server interfere more than expected.
+	
+	The Sporadic Server also does not solve overload. It bounds how much service aperiodic work receives, but if aperiodic demand continuously exceeds the reserved capacity, the queue grows and response time degrades. Buttazzo treats overload as a separate problem requiring explicit handling mechanisms \cite[Ch.~9]{buttazzo2011hard}. In addition, shared resources must be controlled. If periodic and aperiodic tasks share locks, buffers, or devices, blocking and priority inversion may affect timing; protocols such as priority inheritance and priority ceiling are therefore relevant \cite{sha1990priorityinheritance}.
+	
+	Buttazzo emphasizes that fixed-priority servers should be compared not only by response-time performance but also by computational complexity, memory requirement, and implementation complexity \cite[Sec.~5.10]{buttazzo2011hard}. The UPPAAL model in Section~\ref{sec:uppaal_model} illustrates these overhead sources abstractly: even the simplified model needs variables for current budget, queue length, consumed capacity, replenishment countdown, and served jobs. Practical implementation additionally depends on kernel overhead, which must be considered in guarantee tests \cite[Sec.~10.7]{buttazzo2011hard}.
+	
+	\section{Embedded-System Application Discussion}
+	
+	A suitable application is an automotive electronic control unit with periodic control tasks and irregular diagnostic communication. The periodic functions require predictable timing, while diagnostic or status messages arrive irregularly. The Sporadic Server is useful if these messages require better-than-background response but must remain bounded so control tasks stay protected. A second example is an industrial controller whose periodic loops sample sensors and update actuators while alarms or operator commands occur sporadically. The UPPAAL model represents this pattern abstractly: one hard periodic task models the protected control activity, while aperiodic arrivals represent irregular diagnostic or alarm requests served through bounded server capacity.
+	
+	The approach is less suitable under sustained aperiodic overload, highly dynamic workloads, or very small microcontrollers with simple schedulers and limited timer support. In such systems, the cost of budget accounting and replenishment management may outweigh the benefit. The method is strongest when the periodic core is predictable and the irregular workload is bounded.
+	
+	\section{Open Issues and Possible Extensions}
+	
+	One open issue is the gap between the theoretical server model and a real RTOS implementation. A practical study could measure the effect of timer granularity, interrupt latency, and context-switch overhead on server behaviour. Another direction is overload-aware service: the server controls how much processor time aperiodic work receives, but it does not decide which jobs should be dropped, delayed, or degraded during overload. A natural extension is the dynamic-priority counterpart under EDF, where the replenishment idea appears as the Dynamic Sporadic Server \cite[Sec.~6.3]{buttazzo2011hard}. Finally, real systems should evaluate server behaviour together with resource-access protocols, otherwise blocking can invalidate timing assumptions.
+	
+	\section{AI Usage and Protocol}
+	
+	AI assistance was used only for planning, structuring, language review, and checking whether the argumentation was balanced. It was not used as a technical source. The technical claims in this paper are based on the cited academic references, especially the original Sporadic Server paper, Buttazzo's textbook, classical scheduling literature, Deferrable Server work, and synchronization literature. The AI interactions are documented separately in the submitted AI usage protocol.
+	
+	\section{Conclusion}
+	
+	The Sporadic Server is a useful mechanism for fixed-priority hard real-time systems that must serve aperiodic requests without sacrificing the timing protection of periodic tasks. Its strength is the combination of reserved service capacity and delayed, consumption-based replenishment, which improves aperiodic response over background execution while keeping interference analyzable. It is not universally best: on average response time it can fall slightly behind the Deferrable Server and Priority Exchange, while Slack Stealing can outperform all of them at high aperiodic load.
+	
+	The approach is well suited to embedded systems with a predictable periodic core and bounded irregular events, such as controllers with occasional diagnostics or alarms. It is less suited to continuous aperiodic overload, highly dynamic systems, or platforms without accurate timing support. Its practical value depends on known task parameters, bounded execution times, accurate budget accounting, correct replenishment handling, and manageable scheduler overhead.
+	
+	\bibliographystyle{IEEEtran}
+	\bibliography{references}
+	
+\end{document}
