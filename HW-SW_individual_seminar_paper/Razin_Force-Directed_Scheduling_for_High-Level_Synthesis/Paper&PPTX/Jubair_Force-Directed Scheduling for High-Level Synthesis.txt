@@ -1,0 +1,535 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage{array}
+\usepackage{listings}
+
+
+\lstset{
+  basicstyle=\ttfamily\scriptsize,
+  breaklines=true,
+  columns=fullflexible,
+  keepspaces=true,
+  showstringspaces=false,
+  frame=single,
+  framesep=5pt,
+  framerule=0.4pt,
+  xleftmargin=3pt,
+  xrightmargin=2pt,
+  captionpos=b,
+  abovecaptionskip=8pt,
+  belowcaptionskip=16pt,
+  aboveskip=14pt,
+  belowskip=10pt
+}
+
+
+\begin{document}
+
+\title{Force-Directed Scheduling for High-Level Synthesis:\\
+Mechanism, Comparative Context, and Critical Evaluation}
+
+\author{\IEEEauthorblockN{Md Jubair Salehin Razin\\1230281
+}
+\IEEEauthorblockA{\textit{Department of Electronic Engineering} \\
+\textit{Hochschule Hamm-Lippstadt}\\
+Lippstadt, Germany \\
+md-jubair-salehin.razin@stud.hshl.de
+}}
+
+\maketitle
+
+\begin{abstract}
+High-level synthesis turns a behavioral description of a digital system into a register-transfer-level design, and one of its central tasks is scheduling: deciding in which clock cycle each operation of a data-flow graph executes. This paper gives a self-contained account of force-directed scheduling, the heuristic introduced by Paulin and Knight for the time-constrained problem of meeting a fixed latency with the fewest functional units. We explain the full mechanism: as-soon-as-possible and as-late-as-possible analyses produce a time frame and a mobility for every operation; treating each operation as uniformly distributed over its frame yields a distribution graph that estimates the expected demand on each resource type per cycle; and a spring-like force, combining a self term with predecessor and successor terms, scores every candidate placement so that the schedule which flattens demand is built one decision at a time. We support the account with a compact C++ implementation whose output is used as the worked example, and we show how the resulting schedule maps onto an RTL netlist of VHDL entities. We then place the method in context against unconstrained bounding schedules, greedy list scheduling, and exact integer linear programming, summarizing the tradeoffs in a single comparison. Finally we evaluate force-directed scheduling critically, separating its concrete strengths from its hidden assumptions, its scalability, the embedded cases where it does and does not fit, and one extension we propose. We argue that the method is a deliberate middle ground that gains a global view without the cost of exact search, but that per-decision recomputation, the absence of backtracking, and its reliance on uniform distributions and data-independent delays bound its use to small and medium datapaths.
+\end{abstract}
+
+\begin{IEEEkeywords}
+high-level synthesis, scheduling, force-directed scheduling, resource minimization, data-flow graph, architectural synthesis
+\end{IEEEkeywords}
+
+\section{Introduction}
+High-level synthesis (HLS) compiles a behavioral specification of a digital
+system into a register-transfer-level (RTL) implementation---a netlist of RTL
+components such as functional units, registers and a controller, each of which
+can be realized as a VHDL entity---raising design productivity by letting the
+designer reason about algorithms rather than gates~\cite{b2},~\cite{b3}. Within
+HLS, \emph{architectural synthesis} turns a data-flow or sequencing graph into a
+datapath and a controller through two coupled tasks: \emph{scheduling}, which
+assigns each operation to a control step (clock cycle), and \emph{binding},
+which maps operations and values onto physical resources such as functional
+units and registers~\cite{b2}. Scheduling fixes the temporal concurrency of the
+design and therefore largely determines how many resources the binding step
+will need.
+
+Two dual formulations dominate. In \emph{resource-constrained} scheduling the
+number of functional units is fixed and latency is minimized; in
+\emph{time-constrained} scheduling the latency (number of control steps) is
+fixed and the resource count is minimized. The time-constrained case is the
+natural model for fixed-throughput signal-processing datapaths, where the
+sample period pins the latency and the designer wants the cheapest hardware
+that meets it.
+
+Simple bounding schedules---\emph{as soon as possible} (ASAP) and \emph{as late
+as possible} (ALAP)---minimize latency while ignoring resources~\cite{b2}.
+\emph{List scheduling} handles the resource-constrained problem with a fast
+greedy priority rule, and \emph{integer linear programming} (ILP) solves either
+problem exactly at exponential worst-case cost~\cite{b2}. Force-directed
+scheduling (FDS), introduced by Paulin and Knight~\cite{b1},~\cite{b4}, targets
+the time-constrained problem with a constructive heuristic that balances
+operation concurrency \emph{globally} rather than greedily.
+
+This paper consolidates a technical account of FDS (Section~\ref{sec:fds}),
+positions it against the alternatives (Section~\ref{sec:landscape}), and
+evaluates it critically (Section~\ref{sec:eval}). Throughout we separate
+textbook facts and reported results (cited) from our own interpretation,
+critique, and explicitly flagged speculation.
+
+\section{The Force-Directed Scheduling Algorithm}\label{sec:fds}
+
+\subsection{Problem statement and assumptions}
+Let the behavior be a data-flow graph $G(V,E)$ in which each vertex
+$v_i \in V$ is an operation and each edge $(v_i,v_j)\in E$ is a data dependency
+requiring $v_i$ to finish before $v_j$ starts. FDS solves the following: given
+a latency bound $\lambda$ (the number of available control steps), assign a
+start step to every operation so that all dependencies hold, the schedule fits
+in $\lambda$ steps, and the number of functional units of each type is as small
+as possible~\cite{b1}.
+
+The classical formulation assumes (i)~\emph{data-independent delays}---operation
+latencies are known constants and there are no schedule-altering conditional
+branches; (ii)~each operation occupies a \emph{single control step} and one
+functional unit of its type, with multi-cycle operations, operation chaining,
+and pipelined units admitted through documented extensions~\cite{b1}; and
+(iii)~a fixed, feasible $\lambda$ that is at least the critical-path length.
+Under these assumptions, minimizing the per-type peak concurrency over the
+schedule is a sound proxy for minimizing functional units, and this is exactly
+what FDS attacks.
+
+\subsection{Time frames and mobility}
+FDS first computes the two bounding schedules. The ASAP schedule $t_S(v_i)$
+places each operation at the earliest step its dependencies permit (the longest
+path from the sources); the ALAP schedule $t_L(v_i)$ places it at the latest
+step that $\lambda$ permits~\cite{b2}. The interval
+$[\,t_S(v_i),\,t_L(v_i)\,]$ is the \emph{time frame} of $v_i$, and its width
+\begin{equation}
+\mu(v_i) = t_L(v_i) - t_S(v_i)
+\label{eq:mobility}
+\end{equation}
+is the \emph{mobility} (slack). Operations with $\mu = 0$ lie on the critical
+path and cannot move; operations with $\mu > 0$ can be shifted to relieve
+resource pressure. Table~\ref{tab:frames} lists the time frames for the running
+example of Fig.~\ref{fig:dfg} ($\lambda = 4$).
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[
+    >={Stealth[length=2mm]},
+    op/.style={circle, draw, thick, minimum size=7mm, inner sep=0pt,
+               font=\small}]
+  \node[op] (v1) at (0,0)      {$\times_1$};
+  \node[op] (v2) at (1.4,0)    {$\times_2$};
+  \node[op] (v3) at (3.3,0)    {$\times_3$};
+  \node[op] (v4) at (0.7,-1.4) {$+_4$};
+  \node[op] (v5) at (2.0,-2.8) {$+_5$};
+  \draw[->] (v1) -- (v4);
+  \draw[->] (v2) -- (v4);
+  \draw[->] (v4) -- (v5);
+  \draw[->] (v3) -- (v5);
+\end{tikzpicture}
+\caption{Running example: a data-flow graph with three multiplications
+($\times_1,\times_2,\times_3$) and two additions ($+_4,+_5$). The critical path
+is $\times_1\!\to\!+_4\!\to\!+_5$ (length 3); the latency bound is $\lambda=4$.}
+\label{fig:dfg}
+\end{figure}
+
+\begin{table}[t]
+\caption{Time frames for the example of Fig.~\ref{fig:dfg} ($\lambda=4$).}
+\label{tab:frames}
+\centering
+\footnotesize
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{c c c c c}
+\hline
+Operation & Type & $t_S$ & $t_L$ & $\mu$ \\
+\hline
+$v_1$ & $\times$ & 1 & 2 & 1 \\
+$v_2$ & $\times$ & 1 & 2 & 1 \\
+$v_3$ & $\times$ & 1 & 3 & 2 \\
+$v_4$ & $+$       & 2 & 3 & 1 \\
+$v_5$ & $+$       & 3 & 4 & 1 \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Distribution graphs}
+FDS models an as-yet-unscheduled operation as \emph{uniformly distributed} over
+its time frame: the probability that $v_i$ occupies step $l$ is
+\begin{equation}
+p_i(l) =
+\begin{cases}
+\dfrac{1}{\mu(v_i)+1}, & t_S(v_i)\le l\le t_L(v_i),\\[2mm]
+0, & \text{otherwise.}
+\end{cases}
+\label{eq:prob}
+\end{equation}
+For each resource type $k$, the \emph{distribution graph} (DG) sums these
+probabilities over all operations $V_k$ of that type,
+\begin{equation}
+\mathrm{DG}_k(l) = \sum_{v_i \in V_k} p_i(l),
+\label{eq:dg}
+\end{equation}
+giving the \emph{expected} number of type-$k$ operations in step $l$. In the
+example, $v_3$ (a multiplier with $\mu=2$) contributes $1/3$ to each of
+$s_1,s_2,s_3$, while $v_1$ and $v_2$ ($\mu=1$) each contribute $1/2$ to $s_1$
+and $s_2$. Under the ASAP schedule all three multiplications would start in
+$s_1$, demanding three multipliers; the distribution graph instead spreads the
+expected demand, peaking at $1.33$ in $s_1$ and $s_2$
+(Fig.~\ref{fig:dg}, ``initial'').
+
+\subsection{Forces}
+The distribution graph is read as a system of springs. A spring's restoring
+force is its stiffness times its displacement; here the stiffness is the local
+DG value (high where a step is already crowded) and the displacement is the
+change in an operation's probability caused by a tentative scheduling
+decision~\cite{b1}. Scheduling $v_i$ into step $j$ replaces its distribution by
+a unit impulse at $j$; the resulting \emph{self-force} is
+\begin{equation}
+F^{\mathrm{self}}(v_i,j)=\sum_{l=t_S(v_i)}^{t_L(v_i)}
+   \mathrm{DG}_k(l)\,\bigl(\delta_{jl}-p_i(l)\bigr),
+\label{eq:self}
+\end{equation}
+where $\delta_{jl}=1$ if $l=j$ and $0$ otherwise. A positive self-force means
+the assignment pushes probability into already-busy steps (undesirable); a
+negative self-force means it moves work toward idle steps (desirable). For the
+example, assigning $v_3$ to the crowded $s_1$ gives
+$F^{\mathrm{self}}(v_3,s_1)=+0.33$, whereas assigning it to the near-empty $s_3$
+gives $F^{\mathrm{self}}(v_3,s_3)=-0.67$.
+
+Because dependencies couple operations, fixing $v_i$ may shrink the time frames
+of its predecessors and successors, changing \emph{their} probabilities too.
+Each induced change contributes a \emph{predecessor force} or
+\emph{successor force}, and the quantity FDS actually minimizes is the total
+\begin{equation}
+F(v_i,j)=F^{\mathrm{self}}(v_i,j)+\!\!\sum_{\text{pred/succ}}\!\!
+   F^{\mathrm{ind}}.
+\label{eq:total}
+\end{equation}
+In the example, placing $v_3$ at $s_3$ also forces its successor $v_5$ to $s_4$,
+and the accompanying successor force is likewise negative, reinforcing the
+choice.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    width=\columnwidth,
+    height=4.2cm,
+    ybar=1.2pt,
+    bar width=7pt,
+    enlarge x limits=0.18,
+    ymin=0, ymax=1.6,
+    ylabel={Expected mult.\ ops},
+    symbolic x coords={s1,s2,s3,s4},
+    xtick=data,
+    xticklabels={$s_1$,$s_2$,$s_3$,$s_4$},
+    tick label style={font=\footnotesize},
+    ylabel style={font=\footnotesize},
+    legend style={font=\footnotesize, at={(0.5,1.03)}, anchor=south,
+                  legend columns=2, draw=none},
+]
+\addplot+[draw=blue!70!black, fill=blue!30]
+    coordinates {(s1,1.333)(s2,1.333)(s3,0.333)(s4,0)};
+\addlegendentry{initial DG}
+\addplot+[draw=orange!80!black, fill=orange!45]
+    coordinates {(s1,1)(s2,1)(s3,1)(s4,0)};
+\addlegendentry{after $v_3{\to}s_3$}
+\end{axis}
+\end{tikzpicture}
+\caption{Multiplier distribution graph for the example. The initial graph is
+peaked in $s_1$--$s_2$; committing $v_3\!\to\!s_3$ flattens it to one expected
+operation per step, which a single multiplier can serve.}
+\label{fig:dg}
+\end{figure}
+
+\subsection{The scheduling loop}\label{ssec:loop}
+FDS is constructive. At each iteration it (1)~recomputes time frames and
+distribution graphs, (2)~evaluates the total force~\eqref{eq:total} for every
+unscheduled operation in every step of its frame, and (3)~irrevocably commits
+the single operation--step pair of \emph{lowest} force. Committing one
+operation tightens neighboring frames; the loop repeats until every operation
+is scheduled. In the example the first commitment is $v_3\!\to\!s_3$; the
+remaining commitments place $v_2\!\to\!s_1$, $v_1\!\to\!s_2$, $v_4\!\to\!s_3$ and
+$v_5\!\to\!s_4$, so the multiplier demand becomes one operation per step
+(Fig.~\ref{fig:dg}, ``after'') and a single multiplier serves the schedule where
+ASAP would have required three.
+
+\subsection{Runtime and memory}
+The recurring cost is force evaluation, repeated after every one of the
+$O(|V|)$ commitments; each pass touches the operations across their frames and
+propagates frame changes to neighbors. The distribution graphs require
+$O(R\cdot\lambda)$ storage for $R$ resource types plus $O(|V|)$ for the
+frames---modest. Time is the bottleneck: the per-decision recomputation makes
+FDS roughly quadratic-to-cubic in the number of operations, markedly costlier
+than list scheduling yet far below the worst-case-exponential
+ILP~\cite{b1},~\cite{b2}.
+
+\subsection{Reference implementation}\label{ssec:impl}
+To make the mechanism concrete and to check the worked example, FDS was
+implemented in portable C++ as a single self-contained file using only the
+standard library. The data-flow graph is stored as operations carrying their
+type and their predecessor/successor lists; ASAP and ALAP are longest-path
+passes over a topological order; the distribution graph is accumulated from the
+current frames through~\eqref{eq:dg}; and the loop of
+Section~\ref{ssec:loop} commits, at each iteration, the operation--step pair of
+lowest force. The \emph{main feature} is the force routine of
+Listing~\ref{lst:force}: it pins a candidate operation at a candidate step,
+recomputes all time frames, and sums the distribution-weighted change in
+probability over every operation whose frame moves. Because the pin is
+propagated through the ASAP/ALAP passes, the self-force and the
+predecessor/successor force of~\eqref{eq:total} emerge from this one loop rather
+than being coded separately.
+
+\begin{lstlisting}[language=C++,caption={Main feature: total-force evaluation of a candidate pair.},label=lst:force]
+double force(const Problem& p,
+             const vector<int>& fixed_step,
+             int op, int step) {
+  Frames before = compute_frames(p, fixed_step);
+  if (!before.feasible ||
+      step < before.asap[op] ||
+      step > before.alap[op])
+    return numeric_limits<double>::infinity();
+
+  // DG from the CURRENT frames (the spring stiffness)
+  auto dg = distribution_graph(p, before);
+
+  // pin op at step, then recompute every frame
+  vector<int> trial = fixed_step;  trial[op] = step;
+  Frames after = compute_frames(p, trial);
+  if (!after.feasible)
+    return numeric_limits<double>::infinity();
+
+  double total_force = 0.0;
+  for (int u = 0; u < p.n(); ++u) {
+    if (fixed_step[u] != -1 && u != op) continue;
+    int type = p.ops[u].type;
+    for (int s = 1; s <= p.latency; ++s) {
+      double oldP = probability(before, u, s);
+      double newP = probability(after,  u, s);
+      total_force += dg[type][s] * (newP - oldP);
+    }
+  }
+  return total_force;   // self + pred/succ force together
+}
+\end{lstlisting}
+
+Run on the graph of Fig.~\ref{fig:dfg}, the program reproduces the time frames
+of Table~\ref{tab:frames} and the distribution graph of Fig.~\ref{fig:dg}
+exactly. Its first commitment is $v_3\!\to\!s_3$, which carries the most negative
+total force, $-0.917$ (the self-force of $-0.67$ together with a negative
+successor force); the remaining commitments are $v_2\!\to\!s_1$,
+$v_1\!\to\!s_2$, $v_4\!\to\!s_3$ and $v_5\!\to\!s_4$. The multiplier peak falls
+from three under the ASAP schedule to one and the adder peak stays at one,
+confirming the hand analysis.
+
+\subsection{From schedule to an RTL netlist}\label{ssec:rtl}
+The product of HLS is not the schedule itself but the RTL netlist the schedule
+and the resource allocation imply: a set of functional units, the registers
+that carry values across control-step boundaries, and a controller. For the
+scheduled example this netlist is \emph{one multiplier} and \emph{one
+adder/ALU}, both shared across control steps, the registers holding the
+intermediate results $v_1$--$v_4$, and a four-state finite-state controller---
+one state per control step---that in each step drives the operand multiplexers
+of the shared units and latches their outputs. Each functional unit is a
+separate VHDL entity; Listing~\ref{lst:vhdl} shows the multiplier entity. The
+controller activates the units exactly as the schedule prescribes: $s_1$
+computes $v_2$ and $s_2$ computes $v_1$ on the shared multiplier, $s_3$ computes
+$v_3$ on the multiplier and $v_4$ on the adder in parallel, and $s_4$ computes
+$v_5$ on the adder. Against the ASAP baseline, which would instantiate three
+multipliers, the force-directed schedule yields a netlist with a single
+multiplier at the same latency.
+
+\begin{lstlisting}[language=VHDL,caption={Shared multiplier as a VHDL entity.},label=lst:vhdl]
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+entity mul_unit is
+  port( a : in  signed(31 downto 0);
+        b : in  signed(31 downto 0);
+        y : out signed(63 downto 0) );
+end entity;
+
+architecture rtl of mul_unit is
+begin
+  y <= a * b;
+end architecture;
+\end{lstlisting}
+
+\begin{table*}[t]
+\caption{Scheduling methods for high-level synthesis, compared along three tradeoff axes.}
+\label{tab:compare}
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{>{\raggedright\arraybackslash}p{2.0cm}
+                >{\raggedright\arraybackslash}p{3.5cm}
+                >{\raggedright\arraybackslash}p{3.1cm}
+                >{\raggedright\arraybackslash}p{4.0cm}
+                >{\raggedright\arraybackslash}p{3.2cm}}
+\hline
+\textbf{Method} & \textbf{Problem solved} & \textbf{Optimality} &
+\textbf{Scope of each decision} & \textbf{Relative cost} \\
+\hline
+ASAP / ALAP          & Unconstrained, minimize latency        & Exact bounds; no resource view & Per operation                     & Very low (linear) \\
+List scheduling      & Resource-constrained, minimize latency & Heuristic, greedy              & Local; one control step at a time & Low (near-linear) \\
+ILP                  & Either problem, exact                  & Optimal                        & Global, exhaustive search         & Very high (worst-case exponential) \\
+Force-directed (FDS) & Time-constrained, minimize resources   & Heuristic, near-optimal        & Global balancing with look-ahead  & Moderate (quadratic--cubic) \\
+\hline
+\end{tabular}
+\end{table*}
+
+\section{FDS in the Scheduling Landscape}\label{sec:landscape}
+
+\subsection{Unconstrained bounds: ASAP and ALAP}
+Both run in time linear in the graph and minimize latency while disregarding
+resources; they are not solutions to the resource-minimization problem but the
+\emph{inputs} FDS consumes to build time frames~\cite{b2}.
+
+\subsection{Resource-constrained greedy: list scheduling}
+Given a fixed number of units, list scheduling walks the control steps in
+order and, at each step, dispatches ready operations to free units in the order
+of a priority---commonly urgency, i.e.\ inverse mobility~\cite{b2}. It is fast
+and is the workhorse of production tools, but its decisions are \emph{local}:
+it never looks beyond the current step, so it can build avoidable concurrency
+peaks.
+
+\subsection{Exact: integer linear programming}
+ILP encodes a binary variable for every legal operation--step pair, with
+dependency, resource, and latency constraints and an objective of minimal
+resources or latency~\cite{b2}. It returns provably optimal schedules, but its
+worst-case cost is exponential, confining it to small kernels or to calibrating
+heuristics.
+
+\subsection{Tradeoffs}
+Table~\ref{tab:compare} arranges the four methods along three axes that, in our
+reading, fully separate them: \emph{heuristic vs.\ optimal} (FDS and list are
+heuristic, ILP optimal); \emph{which quantity is fixed} (FDS fixes latency and
+minimizes resources, list fixes resources and minimizes latency); and
+\emph{global balancing vs.\ greedy locality} (FDS weighs every step through the
+distribution graph before each move, while list commits per step). FDS is thus
+the natural choice when latency is given, resources are precious, and the
+instance is too large for ILP yet large enough that greedy peaks hurt.
+
+\subsection{On the sparseness of related work}
+For FDS itself the primary literature is essentially a single thread---Paulin
+and Knight's conference and journal papers~\cite{b4},~\cite{b1}---while the
+comparison methods are standard textbook material~\cite{b2},~\cite{b3}. We
+therefore keep the reference set deliberately small: a longer citation list
+would pad rather than inform, because the conceptual neighbors of FDS are
+precisely the four methods compared above.
+
+\section{Critical Evaluation}\label{sec:eval}
+
+\subsection{Strengths}
+The force is a \emph{principled, instance-specific} cost: instead of an
+ad-hoc priority, every candidate move is scored by its measured effect on
+global balance, which is why FDS reaches near-optimal resource counts on
+time-constrained datapaths where greedy list scheduling leaves
+peaks~\cite{b1}. The distribution-graph machinery is also \emph{extensible}---
+multi-cycle operations, operation chaining, mutually exclusive operations, and
+pipelined units are folded in by adjusting how probabilities enter
+\eqref{eq:dg} and \eqref{eq:self}~\cite{b1}---so one framework covers a family
+of problems rather than a single case.
+
+\subsection{Limitations and hidden assumptions}
+Three concerns stand out. First, \emph{cost}: the force must be recomputed
+after each commitment, the source of the quadratic-to-cubic runtime; on large
+graphs this dominates. Second, and in our assessment more fundamental, FDS is
+\emph{greedy at the meta-level}: although each move is globally informed, the
+algorithm commits one operation per iteration and never backtracks, so a
+locally minimal force can steer it into a globally suboptimal schedule. Third,
+the \emph{uniform-distribution} premise of~\eqref{eq:prob} is a modeling
+convenience, not a fact about optimal placements; where the true distribution
+is skewed by dependency structure, the distribution graph mis-estimates
+pressure and the forces are correspondingly biased. Underlying all of this is
+the \emph{data-independent-delay} assumption: once control flow alters timing,
+the notion of a fixed per-step expected occupancy weakens.
+
+\subsection{Scalability}
+Memory scales benignly ($O(R\lambda+|V|)$), but runtime does not scale
+linearly, so FDS is comfortable on the tens-to-low-hundreds of operations
+typical of arithmetic kernels and is strained well before the operation counts
+of large, control-dominated blocks.
+
+\subsection{Application fit}
+FDS fits \emph{fixed-rate DSP datapaths}---FIR/IIR filters, transforms, and the
+differential-equation kind of kernel used in the original study~\cite{b1}---
+where the sample period fixes $\lambda$ and the goal is to minimize multipliers
+and adders; this is its home ground. It fits \emph{poorly} where behavior is
+\emph{control-dominated} with data-dependent branching and variable latency
+(the assumptions break), and where the design is large enough that per-decision
+force recomputation is prohibitive. For a hard-real-time block whose
+requirement is a guaranteed worst case under a fixed resource budget, the
+resource-constrained formulation---list scheduling, or ILP for small
+cases---is a better match than time-constrained FDS.
+
+\subsection{An extension and an open question}
+A practical extension, partially explored in the scheduling literature, is to
+use the force only as the \emph{priority} inside an otherwise greedy list
+scheduler (``force-directed list scheduling''), trading some global accuracy
+for a single linear pass; alternatively, FDS can be followed by a
+local-search or annealing refinement that reintroduces the backtracking the
+base method lacks. As an open question we \emph{conjecture} (speculation) that
+the weakest link is the uniform-probability model of~\eqref{eq:prob}: a
+dependency-aware---or even data-driven---probability estimate could yield
+distribution graphs that track true contention more faithfully and, with it,
+better schedules at the same asymptotic cost.
+
+\section{Conclusion}
+Force-directed scheduling is a deliberate middle ground in time-constrained
+high-level synthesis: it buys the global view that greedy list scheduling lacks
+without paying the exponential price of exact optimization, and it does so
+through a single, intuitive idea---balance the expected per-step resource
+demand by treating the distribution graph as a system of springs. A compact C++
+implementation reproduced the worked example, and the resulting schedule mapped
+directly onto an RTL netlist of one multiplier, one adder and a four-state
+controller. The method's strengths (a principled, extensible cost; near-optimal
+results on small-to-medium datapaths) and its limits (per-decision
+recomputation, no backtracking, and reliance on uniform distributions and
+data-independent delays) both follow directly from that central idea. It remains
+a reference point for scheduling research and a clear lens through which to
+understand the resource--latency tradeoff.
+
+\section*{Acknowledgment}
+The author thanks Prof.\ Dr.\ Achim Rettberg and M.Sc.\ Ali Alhalabi for their
+supervision of this seminar.
+
+\section*{Declaration on the Use of AI Tools}
+In preparing this paper, a large language model (Claude, Anthropic)
+% >>> state the exact model version and the date(s) of use
+was used to assist with structuring, drafting, and \LaTeX{} formatting, and with
+describing the author's own C++ and VHDL. All technical statements were checked
+against the cited sources, and the C++ implementation was executed by the author
+to verify every numerical result. The comparative positioning and the critical
+evaluation---the choice of tradeoff axes, the strengths and limitations asserted,
+the application-fit judgement, and the proposed extension---are the author's own.
+Fact, interpretation, critique, and speculation are kept separate throughout the
+text, and the author is solely responsible for the content.
+
+\begin{thebibliography}{00}
+\bibitem{b1} P. G. Paulin and J. P. Knight, ``Force-directed scheduling for the behavioral synthesis of ASIC's,'' \textit{IEEE Trans. Comput.-Aided Design Integr. Circuits Syst.}, vol. 8, no. 6, pp. 661--679, Jun. 1989.
+\bibitem{b2} G. De Micheli, \textit{Synthesis and Optimization of Digital Circuits}. New York, NY, USA: McGraw-Hill, 1994.
+\bibitem{b3} J. Teich, \textit{Digitale Hardware/Software-Systeme: Synthese und Optimierung}. Berlin, Germany: Springer-Verlag, 1997.
+\bibitem{b4} P. G. Paulin and J. P. Knight, ``Force-directed scheduling in automatic data path synthesis,'' in \textit{Proc. 24th ACM/IEEE Design Automation Conf. (DAC)}, Miami Beach, FL, USA, 1987, pp. 195--202.
+\end{thebibliography}
+
+\end{document}
