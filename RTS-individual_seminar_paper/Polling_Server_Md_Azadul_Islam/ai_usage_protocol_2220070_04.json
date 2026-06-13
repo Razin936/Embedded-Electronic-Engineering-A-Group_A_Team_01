@@ -1,0 +1,231 @@
+{
+  "protocol_version": "0.2",
+  "student_id": "2220070",
+  "course": "HW/SW Co design",
+  "milestone": "04",
+  "topic": "The Polling Server (Final Seminar Paper)",
+  "entries": [
+    {
+      "id": "e-7a1c3f02",
+      "timestamp": "2026-06-12T21:08:00+02:00",
+      "parent_id": null,
+      "objective": "Produce a complete 5-page IEEE-format LaTeX seminar paper on the Polling Server, including a UPPAAL timed-automata model description, transition and timeline tables, and figures based on four UPPAAL screenshots, following the milestone checklist and seminar rules (IEEE template, 5 pages, references).",
+      "ai_tool": {
+        "name": "Claude",
+        "model": "Claude Sonnet 4.6"
+      },
+      "prompt": "provide me latex code for seminar paper following all given rules, specially refrences and 05 pages also, i will add 4 picture of uppaal to validate my polling server logic.",
+      "ai_output_summary": "Generated a full IEEEtran conference-format LaTeX source (paper.tex) with abstract, introduction, formal Polling Server background, related-server comparison, a UPPAAL model description with three timed-automata templates, a transition table, a deterministic timeline table, four embedded UPPAAL screenshots as figures, a critical evaluation, a conclusion, and a 9-entry IEEE bibliography. Compiled the document with pdflatex (after installing texlive-publishers for IEEEtran.cls) and adjusted table and figure widths until the document rendered as exactly 5 pages.",
+      "verification": {
+        "actions": [
+          "Compiled paper.tex with pdflatex twice and confirmed pdfinfo reported 5 pages.",
+          "Rendered every page to PNG with pdftoppm and visually checked figure placement, table wrapping and citation formatting.",
+          "Cross-checked the UPPAAL transition table and timeline against the uploaded beginner-explanation PDF and the four UPPAAL screenshots for consistency."
+        ],
+        "level": "empirical-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [
+          "None: the generated transitions, guards and timeline matched the uploaded UPPAAL model description exactly."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Whole document (Sections I-VII, Tables I-III, Figures 1-4, References)",
+        "usage_type": "code-generation",
+        "direct_text_reused": true
+      },
+      "reflection": "Using an AI assistant to scaffold the full IEEEtran source and immediately compile and render it made it possible to check formatting and page count interactively instead of guessing LaTeX layout by hand. The main lesson was that providing the actual UPPAAL screenshots and the beginner-explanation PDF as ground truth kept the generated technical description (templates, guards, timeline) accurate, rather than producing a generic textbook description of a Polling Server."
+    },
+    {
+      "id": "e-2d9b6e44",
+      "timestamp": "2026-06-12T21:35:00+02:00",
+      "parent_id": "e-7a1c3f02",
+      "objective": "Revise the tone of the draft paper so that it reads less like AI-generated prose, and reformat all tables from the open booktabs style into fully boxed (gridded) tables.",
+      "ai_tool": {
+        "name": "Claude",
+        "model": "Claude Sonnet 4.6"
+      },
+      "prompt": "write more humanize way and also change all table in table-box format to make it look more humanize type",
+      "ai_output_summary": "Rewrote the abstract, introduction, related-work and evaluation sections in a more conversational, first-person-plural style with varied sentence length and fewer em-dash constructions, and converted the trade-off table, the PollingServer transition table and the timeline table from booktabs (open) style to fully bordered grid tables with vertical rules and \\hline on every row. Recompiled to confirm the page count stayed at 5.",
+      "verification": {
+        "actions": [
+          "Recompiled the modified paper.tex and confirmed it still produced 5 pages.",
+          "Visually compared the rendered tables before and after the formatting change to confirm all rows and columns kept full borders."
+        ],
+        "level": "empirical-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Abstract, Section I, Section III, Section VI, Tables I-III",
+        "usage_type": "text-revision",
+        "direct_text_reused": true
+      },
+      "reflection": "This step showed that 'AI-sounding' prose is mostly a few repetitive surface patterns (heavy em-dashes, perfectly parallel 'first/second/third' transitions, symmetric sentence lengths) rather than the technical content itself, so the wording could be made noticeably more natural without losing technical accuracy."
+    },
+    {
+      "id": "e-f13a08c7",
+      "timestamp": "2026-06-12T21:50:00+02:00",
+      "parent_id": "e-2d9b6e44",
+      "objective": "Restructure the whole paper to follow the section structure of a fellow student's Milestone-4 Sporadic Server seminar paper (ten numbered sections including a dedicated AI-usage section, an embedded-systems application discussion, and an open-issues section), instead of the previously used seven-section layout.",
+      "ai_tool": {
+        "name": "Claude",
+        "model": "Claude Sonnet 4.6"
+      },
+      "prompt": "take the structural idea from this paper and generate my one like that (uploaded: milestone4_sporadic_server_paper_faysal_1230473.pdf)",
+      "ai_output_summary": "Reworked the document into: Introduction, Background and Problem Setting, Core Idea of the Polling Server, UPPAAL Model of the Main Mechanism, Related Approaches and Tradeoffs (now also covering Priority Exchange, with a new three-column qualitative comparison table modelled on the peer paper's Table I), Critical Evaluation (extended with overload handling and resource-sharing / priority-inversion discussion), a new Embedded-System Application Discussion section, a new Open Issues and Possible Extensions section, a dedicated AI Usage and Protocol section, and Conclusion. Also matched the peer paper's title-block style (Name / Student ID / Course / Institution / 'Seminar Paper') and added a new reference for priority inheritance protocols.",
+      "verification": {
+        "actions": [
+          "Compared the new section order and table style against the uploaded peer Sporadic Server paper section by section.",
+          "Recompiled and checked the page count after the restructuring (5 pages)."
+        ],
+        "level": "secondary-source-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Entire document structure (Sections I-X)",
+        "usage_type": "comparison-structuring",
+        "direct_text_reused": true
+      },
+      "reflection": "Mirroring a peer's accepted milestone structure was a fast way to check that the seminar's expected sections (application discussion, open issues, explicit AI-usage section) were not missing from my own paper, and it prompted me to add Priority Exchange to the related-work comparison, which had been missing."
+    },
+    {
+      "id": "e-99c452ab",
+      "timestamp": "2026-06-12T22:21:00+02:00",
+      "parent_id": "e-f13a08c7",
+      "objective": "Remove the PollingServer transition table after the restructuring left the paper at 5 pages with an almost-empty final page, and check whether the resulting 4-page document still satisfied the seminar's page-count expectation.",
+      "ai_tool": {
+        "name": "Claude",
+        "model": "Claude Sonnet 4.6"
+      },
+      "prompt": "delet table 1",
+      "ai_output_summary": "Removed the ten-row PollingServer transition table (former Table I) and folded its content into a short sentence referring to Figure 3 instead. Bibliography numbering and all cross-references updated automatically; the document recompiled to 4 well-balanced pages instead of 5 with a nearly empty trailing page.",
+      "verification": {
+        "actions": [
+          "Recompiled and confirmed the document length changed from 5 to 4 pages with both columns of the last page filled."
+        ],
+        "level": "empirical-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Section IV (UPPAAL Model of the Main Mechanism)",
+        "usage_type": "text-revision",
+        "direct_text_reused": true
+      },
+      "reflection": "This was a reminder that a page-count target is not just a word-count target but also depends on float placement; removing one table changed the whole layout, so page-count requirements need to be checked again after every structural edit, not assumed from earlier counts."
+    },
+    {
+      "id": "e-3e80d915",
+      "timestamp": "2026-06-12T22:32:00+02:00",
+      "parent_id": "e-99c452ab",
+      "objective": "Re-ground the paper's citations in the actual assigned textbook (Buttazzo, Hard Real-Time Computing Systems, 3rd ed.) by extracting the real chapter, section, equation, figure and theorem numbers for the Polling Server and related servers, increase citation density throughout the paper, and bring the document back to 5 pages.",
+      "ai_tool": {
+        "name": "Claude",
+        "model": "Claude Sonnet 4.6"
+      },
+      "prompt": "mainly take references from buttazzo book and make 5 pages paper if possible. do not forget add references. make everything citation. citation is mostly important",
+      "ai_output_summary": "Extracted the table of contents and the full text of Chapter 5 ('Fixed-Priority Servers') from the uploaded Buttazzo PDF using pdftotext, and used the real locators (Sec. 2.2.1 / Fig. 2.5 for task models, Sec. 4.3 / Eq. (4.9) for the RM bound, Sec. 5.2-5.10 with Fig. 5.3, Eq. (5.4)-(5.9), Fig. 5.6, Theorem 5.1, Eq. (5.21), Fig. 5.24/5.25 for the servers, Ch. 9 for overload, Sec. 10.7 for kernel overhead, Sec. 7.6 for priority inheritance, Sec. 6.4 for the Total Bandwidth Server) to add precise citations to nearly every technical sentence in Sections II, III, V, VI and VIII. Added a new reference for Sha, Rajkumar and Lehoczky's priority-inheritance paper. Fixed a citation-ordering bug where the cite package attached a Buttazzo section locator to the wrong (higher-numbered) reference when two keys were combined in one cite command, by splitting those into separate cite commands.",
+      "verification": {
+        "actions": [
+          "Ran pdftotext on the uploaded Buttazzo PDF and grepped for 'Polling Server', 'Sporadic Server' and section/equation numbers to confirm every locator added to the paper matches the actual book.",
+          "Recompiled and confirmed the document returned to 5 pages.",
+          "Re-rendered all pages and visually checked that each combined citation (e.g. '[2, Sec. 5.4], [3]') attached the section number to Buttazzo's entry and not to the co-cited paper."
+        ],
+        "level": "primary-source-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [
+          "An initial combined citation such as cite[Sec. 5.4]{buttazzo2011,lehoczkyDS1987} rendered with the section number attached to the wrong (higher-numbered) bibliography entry; corrected by splitting into two separate cite commands."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Sections II, III, V, VI, VIII, References",
+        "usage_type": "literature-search-support",
+        "direct_text_reused": true
+      },
+      "reflection": "Pulling the actual section, equation, figure and theorem numbers from the assigned textbook instead of writing generic citations made the related-work section far more checkable, and it caught a subtle LaTeX citation-formatting bug that would otherwise have silently mis-attributed a section number in the printed PDF."
+    },
+    {
+      "id": "e-5c61f7d3",
+      "timestamp": "2026-06-13T10:35:00+02:00",
+      "parent_id": "e-3e80d915",
+      "objective": "Simplify the language of the Introduction (shorter, plainer sentences) while keeping a citation on almost every claim, then remove the displayed mathematical equations from the Core Idea section and replace them with plain-language descriptions that still cite the exact equation numbers in Buttazzo.",
+      "ai_tool": {
+        "name": "Claude",
+        "model": "Claude Sonnet 4.6"
+      },
+      "prompt": "introduction looks too much theoritical. keep it a bit simole and do not forget to cite each word. add references as well -- followed by -- in this paper there is critical mathematical equations which is not needed. just keep the introduction simple and cite them",
+      "ai_output_summary": "Rewrote the three-paragraph introduction with shorter sentences and a citation on essentially every sentence ([1], [2, Sec. 1.2], [2, Sec. 2.2.1], [2, Sec. 5.1]-[2, Sec. 5.3], etc.), and removed the displayed formulas for the Liu-and-Layland bound, the hyperbolic schedulability test, the response-time recurrence, the server-dimensioning formulas and the aperiodic response-time formula from Section III, replacing each with a short prose sentence that still cites the corresponding Buttazzo equation or section (Eq. (4.9), Eq. (5.4)-(5.6), Eq. (5.7)-(5.8), Eq. (5.9) / Fig. 5.6).",
+      "verification": {
+        "actions": [
+          "Recompiled after each change and confirmed the document remained at 5 pages and contained no leftover unused math packages or dangling references."
+        ],
+        "level": "empirical-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Section I (Introduction), Section III (Core Idea of the Polling Server)",
+        "usage_type": "text-revision",
+        "direct_text_reused": true
+      },
+      "reflection": "Separating 'what the paper claims' from 'the exact formula behind the claim' made the introduction and core-idea sections much easier to read while keeping every statement traceable to a specific page of the textbook -- a good balance between an accessible seminar paper and a verifiable one."
+    },
+    {
+      "id": "e-08b4a6ef",
+      "timestamp": "2026-06-13T10:55:00+02:00",
+      "parent_id": "e-5c61f7d3",
+      "objective": "Replace the Section IV PollingServer-template figure with a newly captured, higher-resolution UPPAAL screenshot, and fill in the author identity (name and student ID) in the title block.",
+      "ai_tool": {
+        "name": "Claude",
+        "model": "Claude Sonnet 4.6"
+      },
+      "prompt": "in figure 3 use this image instead (uploaded: uppaal_Figure3.png) -- followed by -- name: Md Azadul Islam, ID: 2220070, add these information and give me latex file",
+      "ai_output_summary": "Copied the newly uploaded UPPAAL screenshot into the paper's working directory, swapped the includegraphics source for Figure 3 to the new file, and replaced the placeholder author block with 'Md Azadul Islam' and 'Student ID: 2220070'. Recompiled and confirmed the new figure rendered correctly across the full text width and the page count stayed at 5.",
+      "verification": {
+        "actions": [
+          "Verified the new image file format (JPEG, 1918x559) before referencing it in LaTeX.",
+          "Recompiled and visually checked the rendered Figure 3 and the updated title block."
+        ],
+        "level": "empirical-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Title block, Figure 3",
+        "usage_type": "code-generation",
+        "direct_text_reused": true
+      },
+      "reflection": "Small, mechanical edits like swapping a figure file or filling in author metadata are exactly the kind of changes where having the AI directly edit and recompile the LaTeX source avoids the manual error of forgetting to update a cross-reference or leaving a placeholder in the final PDF."
+    }
+  ],
+  "exported_at": "2026-06-13T10:56:00+02:00"
+}
