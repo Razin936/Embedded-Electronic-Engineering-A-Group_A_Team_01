@@ -1,0 +1,241 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <iomanip>
+#include <algorithm>
+#include <limits>
+
+using namespace std;
+
+enum Resource {
+    MUL = 0,
+    ALU = 1
+};
+
+string rname(int r) {
+    if (r == MUL) return "MUL";
+    return "ALU";
+}
+
+struct Node {
+    string name;
+    int type;
+    int delay;
+    vector<int> pred;
+    vector<int> succ;
+    int asap;
+    int alap;
+    bool scheduled;
+    int start;
+
+    Node(string n, int t, int d, vector<int> p, vector<int> s) {
+        name = n;
+        type = t;
+        delay = d;
+        pred = p;
+        succ = s;
+        asap = 0;
+        alap = 0;
+        scheduled = false;
+        start = -1;
+    }
+};
+
+void compute_asap(vector<Node>& g) {
+    for (int i = 0; i < (int)g.size(); ++i) {
+        int earliest = 0;
+
+        for (int p : g[i].pred) {
+            earliest = max(earliest, g[p].asap + g[p].delay);
+        }
+
+        g[i].asap = earliest;
+    }
+}
+
+void compute_alap(vector<Node>& g, int latency) {
+    for (int i = 0; i < (int)g.size(); ++i) {
+        g[i].alap = latency - g[i].delay;
+    }
+
+    for (int i = (int)g.size() - 1; i >= 0; --i) {
+        if (!g[i].succ.empty()) {
+            int latest = latency - g[i].delay;
+
+            for (int s : g[i].succ) {
+                latest = min(latest, g[s].alap - g[i].delay);
+            }
+
+            g[i].alap = latest;
+        }
+    }
+}
+
+vector<vector<double>> build_distribution(const vector<Node>& g, int T, int numTypes) {
+    vector<vector<double>> q(numTypes, vector<double>(T, 0.0));
+
+    for (int i = 0; i < (int)g.size(); ++i) {
+        if (g[i].scheduled) continue;
+
+        int mobility = g[i].alap - g[i].asap;
+        double probability = 1.0 / double(mobility + 1);
+
+        for (int s = g[i].asap; s <= g[i].alap; ++s) {
+            for (int u = s; u < s + g[i].delay && u < T; ++u) {
+                q[g[i].type][u] += probability;
+            }
+        }
+    }
+
+    return q;
+}
+
+double placement_force(const vector<Node>& g, int i, int t,
+                       const vector<vector<double>>& q, int T) {
+    vector<double> oldOcc(T, 0.0);
+    vector<double> newOcc(T, 0.0);
+
+    int mobility = g[i].alap - g[i].asap;
+    double probability = 1.0 / double(mobility + 1);
+
+    for (int s = g[i].asap; s <= g[i].alap; ++s) {
+        for (int u = s; u < s + g[i].delay && u < T; ++u) {
+            oldOcc[u] += probability;
+        }
+    }
+
+    for (int u = t; u < t + g[i].delay && u < T; ++u) {
+        newOcc[u] = 1.0;
+    }
+
+    double force = 0.0;
+
+    for (int u = 0; u < T; ++u) {
+        force += q[g[i].type][u] * (newOcc[u] - oldOcc[u]);
+    }
+
+    return force;
+}
+
+bool ready_at(const vector<Node>& g, int i, int t) {
+    if (g[i].scheduled) return false;
+    if (t < g[i].asap || t > g[i].alap) return false;
+
+    for (int p : g[i].pred) {
+        if (!g[p].scheduled) return false;
+        if (g[p].start + g[p].delay > t) return false;
+    }
+
+    return true;
+}
+
+int main() {
+    const int T = 4;
+    const int numTypes = 2;
+
+    vector<Node> g;
+
+    // Small CDFG example:
+    // v1 and v2 are multiplications.
+    // v3 and v4 depend on them.
+    // v5 depends on v3 and v4.
+    g.push_back(Node("v1", MUL, 1, vector<int>{},    vector<int>{2}));
+    g.push_back(Node("v2", MUL, 1, vector<int>{},    vector<int>{3}));
+    g.push_back(Node("v3", ALU, 1, vector<int>{0},   vector<int>{4}));
+    g.push_back(Node("v4", ALU, 1, vector<int>{1},   vector<int>{4}));
+    g.push_back(Node("v5", ALU, 1, vector<int>{2,3}, vector<int>{}));
+
+    compute_asap(g);
+    compute_alap(g, T);
+
+    cout << "FDLS main-feature demo: mobility, distribution, force-based choice\n\n";
+
+    cout << "Operation windows:\n";
+    for (int i = 0; i < (int)g.size(); ++i) {
+        cout << g[i].name
+             << " type=" << rname(g[i].type)
+             << " ASAP=" << g[i].asap
+             << " ALAP=" << g[i].alap
+             << " mobility=" << (g[i].alap - g[i].asap)
+             << "\n";
+    }
+
+    cout << fixed << setprecision(2);
+
+    for (int t = 0; t < T; ++t) {
+        vector<vector<double>> q = build_distribution(g, T, numTypes);
+
+        cout << "\nBefore step " << t << " resource distribution q:\n";
+
+        for (int r = 0; r < numTypes; ++r) {
+            cout << "  " << rname(r) << ": ";
+
+            for (int u = 0; u < T; ++u) {
+                cout << q[r][u] << " ";
+            }
+
+            cout << "\n";
+        }
+
+        for (int r = 0; r < numTypes; ++r) {
+            int best = -1;
+            double bestForce = numeric_limits<double>::infinity();
+
+            cout << "  Ready " << rname(r) << " candidates: ";
+            bool any = false;
+
+            for (int i = 0; i < (int)g.size(); ++i) {
+                if (g[i].type == r && ready_at(g, i, t)) {
+                    any = true;
+
+                    double f = placement_force(g, i, t, q, T);
+
+                    cout << g[i].name << "(force=" << f << ") ";
+
+                    if (f < bestForce) {
+                        bestForce = f;
+                        best = i;
+                    }
+                }
+            }
+
+            if (!any) {
+                cout << "none";
+            }
+
+            cout << "\n";
+
+            if (best != -1) {
+                g[best].scheduled = true;
+                g[best].start = t;
+
+                cout << "    -> schedule "
+                     << g[best].name
+                     << " on " << rname(r)
+                     << " at step " << t << "\n";
+            }
+        }
+    }
+
+    cout << "\nFinal Gantt-style schedule:\n";
+
+    for (int t = 0; t < T; ++t) {
+        cout << "Step " << t << ": ";
+        bool any = false;
+
+        for (int i = 0; i < (int)g.size(); ++i) {
+            if (g[i].start == t) {
+                cout << g[i].name << "(" << rname(g[i].type) << ") ";
+                any = true;
+            }
+        }
+
+        if (!any) {
+            cout << "idle";
+        }
+
+        cout << "\n";
+    }
+
+    return 0;
+}
