@@ -1,0 +1,1051 @@
+{
+  "protocol_version": "0.2",
+  "student_id": "1230473, 1230281, 1232714, 2220070",
+  "course": "Embedded Electronic Engineering Lab A",
+  "milestone": "Whole research workflow / Week 1-3 with Week 4-5 outlook",
+  "topic": "RSU-based autonomous cross-traffic intersection management using UPPAAL, M/M/1-M/M/2 queueing, V2V/V2I communication, and C abstract implementation",
+  "exported_at": "2026-06-14T09:35:38+00:00",
+  "entries": [
+    {
+      "id": "e-00000001",
+      "timestamp": "2026-06-14T09:26:17+00:00",
+      "parent_id": null,
+      "objective": "Understand the professor's overall task and extract the required project deliverables.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Check the Embedded Electronic Engineering Lab A PDF and tell me what the project requires for the autonomous cross-traffic management topic.",
+      "ai_output_summary": "The AI summarized the required workflow: requirements and use cases, models and diagrams, UPPAAL timed automata, C-code implementation with FreeRTOS later, well-defined model-to-code mapping, Git repository, paper, and presentation.",
+      "verification": {
+        "actions": [
+          "Compared the AI summary against the provided ESLabA lecture PDF, especially the research questions, requirements, and organization slides.",
+          "Checked that Week 1 to Week 5 sequence was preserved."
+        ],
+        "level": "primary-source-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Project scope / requirements",
+        "usage_type": "requirements engineering-support",
+        "direct_text_reused": false
+      },
+      "reflection": "This clarified that Week 3 should not yet be a full FreeRTOS implementation; it should be the first abstract implementation mapped from the model."
+    },
+    {
+      "id": "e-00000002",
+      "timestamp": "2026-06-14T09:26:18+00:00",
+      "parent_id": null,
+      "objective": "Define the project scenario and intersection geometry.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "My idea is main street East-West, side street North-South, RSU controller, main road priority, side road secondary priority, emergency vehicle priority. Help structure the scenario.",
+      "ai_output_summary": "The AI converted the informal idea into a formal scenario: RSU owns the conflict zone, main street is East-West, side street is North-South, and vehicles request grants before crossing.",
+      "verification": {
+        "actions": [
+          "Checked the scenario against the cross-traffic example in the lecture slide.",
+          "Manually confirmed that the chosen geometry matched the UPPAAL model assumptions."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Scenario and objective",
+        "usage_type": "modeling-support",
+        "direct_text_reused": false
+      },
+      "reflection": "The project became easier to explain because the RSU was defined as a central coordinator instead of a traffic light."
+    },
+    {
+      "id": "e-00000003",
+      "timestamp": "2026-06-14T09:26:19+00:00",
+      "parent_id": null,
+      "objective": "Clarify how M/M/1 and M/M/2 should be represented in the model.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Explain M/M/1 and M/M/2 for our intersection and how one or two vehicles can be served safely.",
+      "ai_output_summary": "The AI explained M/M/1 as one vehicle in the conflict zone and M/M/2 as up to two simultaneous vehicles only when their movements are non-conflicting.",
+      "verification": {
+        "actions": [
+          "Compared the explanation against the professor's queueing requirement that the project studies M/M/1 and M/M/2.",
+          "Checked that M/M/2 did not allow arbitrary two-car crossing but only safe non-conflicting pairs."
+        ],
+        "level": "primary-source-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Queueing model / server capacity",
+        "usage_type": "terminology-clarification",
+        "direct_text_reused": false
+      },
+      "reflection": "The key decision was to implement M/M/2 as capacity plus conflict checking, not simply two free slots."
+    },
+    {
+      "id": "e-00000004",
+      "timestamp": "2026-06-14T09:26:20+00:00",
+      "parent_id": null,
+      "objective": "Separate V2V, V2I, and I2V communication responsibilities.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "For autonomous vehicle communication, explain what V2V and V2I do in our RSU model, including emergency cases.",
+      "ai_output_summary": "The AI separated V2I vehicle requests, I2V RSU grants and emergency yield broadcast, and V2V enter/leave notifications among vehicles.",
+      "verification": {
+        "actions": [
+          "Checked against the lecture slide showing Vehicle-to-Vehicle and Vehicle-to-Infrastructure categories.",
+          "Verified that the later C log prints req, grant/yield, V2V_ENTER, and V2V_LEAVE events."
+        ],
+        "level": "secondary-source-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Communication model",
+        "usage_type": "terminology-clarification",
+        "direct_text_reused": false
+      },
+      "reflection": "This helped avoid mixing all communication into one generic message type."
+    },
+    {
+      "id": "e-00000005",
+      "timestamp": "2026-06-14T09:26:21+00:00",
+      "parent_id": null,
+      "objective": "Create initial use cases and priority rules.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "List all important scenarios and conditions before implementation: main street priority, side street waiting, emergency vehicle, right-turn vs left-turn conflict.",
+      "ai_output_summary": "The AI produced a priority order and use-case list: emergency first, then main street, then side street, and right turn before left turn for the critical conflict.",
+      "verification": {
+        "actions": [
+          "Manually compared the priority order with the project idea and the later canGrant logic.",
+          "Checked that the critical North-right and South-left pair was explicitly represented."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The first version was too general and needed to be connected directly to concrete vehicle IDs."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Requirements / use cases",
+        "usage_type": "requirements engineering-support",
+        "direct_text_reused": false
+      },
+      "reflection": "The use cases became useful only after assigning concrete vehicles V0-V5."
+    },
+    {
+      "id": "e-00000006",
+      "timestamp": "2026-06-14T09:26:22+00:00",
+      "parent_id": null,
+      "objective": "Map scenario elements to concrete vehicle instances.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Create a small fixed fleet for the UPPAAL and C model so that emergency, main-road, side-road, and critical-turn cases all appear.",
+      "ai_output_summary": "The AI proposed six vehicles: V0 emergency East straight, V1 East straight, V2 West straight, V3 North straight, V4 North right, and V5 South left.",
+      "verification": {
+        "actions": [
+          "Checked that each important requirement had at least one vehicle witness.",
+          "Verified that V1 and V2 can demonstrate M/M/2 concurrency while V4 and V5 demonstrate a critical conflict."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Vehicle fleet definition",
+        "usage_type": "modeling-support",
+        "direct_text_reused": false
+      },
+      "reflection": "Using a small fleet made the model explainable and testable without becoming too large."
+    },
+    {
+      "id": "e-00000007",
+      "timestamp": "2026-06-14T09:26:23+00:00",
+      "parent_id": null,
+      "objective": "Design the UPPAAL Vehicle automaton states.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Make the UPPAAL vehicle template from scratch with arrival, waiting, crossing, and leaving states.",
+      "ai_output_summary": "The AI structured the vehicle template with Idle, WaitingInQueue, V2V_Enter, Crossing, and V2V_Leave states with a local clock for period and crossing time.",
+      "verification": {
+        "actions": [
+          "Checked that the same state names and behaviour appear in the C implementation as a loc_t enum and scheduler cases.",
+          "Confirmed that committed enter/leave steps should consume no time."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "UPPAAL model / vehicle FSM",
+        "usage_type": "modeling-support",
+        "direct_text_reused": false
+      },
+      "reflection": "This established the finite-state-machine structure that later made the C mapping straightforward."
+    },
+    {
+      "id": "e-00000008",
+      "timestamp": "2026-06-14T09:26:24+00:00",
+      "parent_id": null,
+      "objective": "Design the RSU controller logic in UPPAAL.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Create the RSU controller that receives requests, grants vehicles, checks priority and capacity, and handles emergency yield.",
+      "ai_output_summary": "The AI proposed RSU admission logic around waiting arrays, crossing arrays, capacityAvailableFor, emergencyWaiting, existsBetterGrantable, and canGrant.",
+      "verification": {
+        "actions": [
+          "Manually traced the canGrant conditions against all priority cases.",
+          "Checked that normal vehicles are blocked when an emergency is waiting."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "UPPAAL model / RSU controller",
+        "usage_type": "modeling-support",
+        "direct_text_reused": false
+      },
+      "reflection": "The admission predicate became the core feature of the model and the later C implementation."
+    },
+    {
+      "id": "e-00000009",
+      "timestamp": "2026-06-14T09:26:25+00:00",
+      "parent_id": null,
+      "objective": "Define conflict detection for safe M/M/2 crossing.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "How should the model decide whether two vehicles can cross together in M/M/2? Give conflict logic.",
+      "ai_output_summary": "The AI suggested a conflict function, a conflictsWithCrossing check, and a noCollision invariant to ensure that only compatible pairs can overlap.",
+      "verification": {
+        "actions": [
+          "Checked V1 East straight and V2 West straight as a non-conflicting M/M/2 pair.",
+          "Checked V4 North-right and V5 South-left as a forbidden critical pair."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The conflict matrix had to be manually simplified for the selected six-vehicle scenario."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Conflict model",
+        "usage_type": "modeling-support",
+        "direct_text_reused": false
+      },
+      "reflection": "M/M/2 required both capacity and geometry-based conflict checking."
+    },
+    {
+      "id": "e-00000010",
+      "timestamp": "2026-06-14T09:26:26+00:00",
+      "parent_id": null,
+      "objective": "Solve the continuous-arrival problem in simulation.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "In the simulator after a certain time no vehicle arrives and the street becomes empty. I want cars arriving always. Fix this.",
+      "ai_output_summary": "The AI changed the model concept so each vehicle returns to Idle after leaving and re-requests after its own period, creating a cyclic workload.",
+      "verification": {
+        "actions": [
+          "Ran the C implementation and confirmed that requests continue through the 80-tick horizon.",
+          "Checked the event log for repeated V1/V2/V3/V4/V0 requests after earlier crossings."
+        ],
+        "level": "empirical-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Continuous arrival / cyclic workload",
+        "usage_type": "verification-support",
+        "direct_text_reused": false
+      },
+      "reflection": "This fixed the main simulation realism issue and made the trace usable for throughput comparison."
+    },
+    {
+      "id": "e-00000011",
+      "timestamp": "2026-06-14T09:26:27+00:00",
+      "parent_id": null,
+      "objective": "Select UPPAAL verification queries.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Give the queries needed to prove no deadlock, no collision, capacity bound, critical-pair safety, emergency reachability, and M/M/2 concurrency.",
+      "ai_output_summary": "The AI proposed safety queries A[] not deadlock, A[] noCollision(), A[] crossingCount <= MM_MODE, A[] not (crossing[4] && crossing[5]), plus reachability for V0 and V1/V2.",
+      "verification": {
+        "actions": [
+          "Checked that the queries map to the safety and reachability goals of the model.",
+          "Rejected using only reachability because it would not prove safety."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Verification queries",
+        "usage_type": "verification-support",
+        "direct_text_reused": false
+      },
+      "reflection": "The queries separated safety guarantees from demonstration witnesses."
+    },
+    {
+      "id": "e-00000012",
+      "timestamp": "2026-06-14T09:26:28+00:00",
+      "parent_id": null,
+      "objective": "Debug UPPAAL syntax and XML errors.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "The UPPAAL model shows a red error. Fix the XML/model code so it loads correctly.",
+      "ai_output_summary": "The AI helped restructure XML sections and declarations so the model could be loaded without syntax errors.",
+      "verification": {
+        "actions": [
+          "Opened the model in UPPAAL after the change and checked whether the red error disappeared.",
+          "Compared with an earlier error-free model to identify which declaration sections should be preserved."
+        ],
+        "level": "empirical-check"
+      },
+      "evaluation": {
+        "status": "revised",
+        "issues": [
+          "Some earlier generated XML versions still produced errors and had to be corrected manually."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "UPPAAL XML debugging",
+        "usage_type": "modeling-support",
+        "direct_text_reused": true
+      },
+      "reflection": "AI was useful for locating likely syntax problems, but UPPAAL itself was the final validator."
+    },
+    {
+      "id": "e-00000013",
+      "timestamp": "2026-06-14T09:26:29+00:00",
+      "parent_id": null,
+      "objective": "Prepare separate M/M/1 and M/M/2 UPPAAL variants.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "I cannot change the MM_MODE line manually. Provide two separate XML files for M/M/1 and M/M/2.",
+      "ai_output_summary": "The AI generated separate model variants by fixing the server capacity mode for one-server and two-server operation.",
+      "verification": {
+        "actions": [
+          "Loaded both variants in UPPAAL.",
+          "Checked that M/M/1 allowed only one crossing and M/M/2 could allow two non-conflicting crossings."
+        ],
+        "level": "empirical-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The variants required later fixes for continuous arrival and emergency handling."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "UPPAAL model variants",
+        "usage_type": "modeling-support",
+        "direct_text_reused": true
+      },
+      "reflection": "Keeping separate files reduced manual editing mistakes during demonstration."
+    },
+    {
+      "id": "e-00000014",
+      "timestamp": "2026-06-14T09:26:30+00:00",
+      "parent_id": null,
+      "objective": "Compare the model against the intended project idea.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Check this UPPAAL model carefully and tell me whether everything matches our idea or what must change.",
+      "ai_output_summary": "The AI compared the model against the requirements and identified missing or weak points such as turning behaviour, continuous arrivals, explicit emergency handling, and priority-based passing.",
+      "verification": {
+        "actions": [
+          "Manually checked each point against the project idea before accepting changes.",
+          "Rejected parts that were too broad or not implementable in the current model."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The first comparison was not specific enough; it required section-by-section change instructions."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Model review",
+        "usage_type": "argument-critique",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction helped convert vague dissatisfaction into concrete implementation changes."
+    },
+    {
+      "id": "e-00000015",
+      "timestamp": "2026-06-14T09:26:31+00:00",
+      "parent_id": null,
+      "objective": "Create the Week 3 C implementation plan from the verified model.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Based on the Week 3 task, give the first abstract implementation. It should map from UPPAAL to C core logic.",
+      "ai_output_summary": "The AI proposed a deterministic single-threaded C implementation with the same arrays, helper functions, grant logic, vehicle FSM, and runtime checks as the UPPAAL model.",
+      "verification": {
+        "actions": [
+          "Compared the plan with the course requirement for first abstract implementation and well-defined mapping from models.",
+          "Checked that FreeRTOS and ModelSim were left for later weeks, not falsely claimed as completed."
+        ],
+        "level": "primary-source-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Week 3 implementation plan",
+        "usage_type": "code-generation",
+        "direct_text_reused": false
+      },
+      "reflection": "This clarified the boundary of Week 3: executable C core logic, not final HW/SW codesign."
+    },
+    {
+      "id": "e-00000016",
+      "timestamp": "2026-06-14T09:26:32+00:00",
+      "parent_id": null,
+      "objective": "Generate the C source file for the abstract RSU implementation.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Generate the complete intersection_rsu.c file implementing RSU grant logic, M/M/1 and M/M/2, emergency priority, V2V/V2I logs, and runtime assertions.",
+      "ai_output_summary": "The AI generated a full C11 source file with global model variables, vehicle configuration, helper functions, grant logic, scheduler loop, logging, and summary statistics.",
+      "verification": {
+        "actions": [
+          "Compiled the file with gcc -std=c11 -Wall -O2.",
+          "Ran both ./intersection_rsu mm1 and ./intersection_rsu mm2 and inspected the summaries."
+        ],
+        "level": "empirical-check"
+      },
+      "evaluation": {
+        "status": "revised",
+        "issues": [
+          "Generated code needed verification by compilation and runtime tests before being trusted."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "C implementation",
+        "usage_type": "code-generation",
+        "direct_text_reused": true
+      },
+      "reflection": "The implementation was usable because it was checked by compiler and execution, not only by reading."
+    },
+    {
+      "id": "e-00000017",
+      "timestamp": "2026-06-14T09:26:33+00:00",
+      "parent_id": null,
+      "objective": "Check that canGrant implements the required priority policy.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Explain and verify the canGrant function: emergency blocking, capacity checking, and better-priority candidate rejection.",
+      "ai_output_summary": "The AI explained canGrant as the central admission predicate: it rejects non-waiting vehicles, blocks normal traffic during emergency waiting, enforces capacity, and rejects a candidate if a better grantable vehicle exists.",
+      "verification": {
+        "actions": [
+          "Manually traced canGrant for V0 emergency, V1/V2 main street, V3 side street, V4 right turn, and V5 left turn.",
+          "Checked that emergencyWaiting() dominates normal grants."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Admission control",
+        "usage_type": "verification-support",
+        "direct_text_reused": false
+      },
+      "reflection": "This made it possible to defend the implementation logic in a presentation or oral question."
+    },
+    {
+      "id": "e-00000018",
+      "timestamp": "2026-06-14T09:26:34+00:00",
+      "parent_id": null,
+      "objective": "Check the deterministic replacement of UPPAAL select.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "UPPAAL select is non-deterministic. How can the C implementation reproduce it deterministically without changing the model meaning?",
+      "ai_output_summary": "The AI proposed scanning the waiting vehicles and granting the best canGrant candidate repeatedly until no more vehicles can be granted.",
+      "verification": {
+        "actions": [
+          "Checked that existsBetterGrantable prevents lower-priority candidates from being chosen first.",
+          "Verified in the C trace that the grant order is reproducible."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Model-to-code mapping",
+        "usage_type": "modeling-support",
+        "direct_text_reused": false
+      },
+      "reflection": "This solved a practical issue: C needs deterministic control flow while UPPAAL can use non-deterministic selection."
+    },
+    {
+      "id": "e-00000019",
+      "timestamp": "2026-06-14T09:26:35+00:00",
+      "parent_id": null,
+      "objective": "Validate the M/M/1 mode output.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Run or analyse M/M/1 output and explain whether it serializes traffic correctly.",
+      "ai_output_summary": "The AI interpreted the M/M/1 result as strict serialization: max concurrent crossings remained 1 and V2 waited until V1 left.",
+      "verification": {
+        "actions": [
+          "Compiled and executed ./intersection_rsu mm1.",
+          "Confirmed total grants 13, max concurrent crossings 1, ticks with two crossings 0, and safety checks passed."
+        ],
+        "level": "empirical-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Results / M/M/1",
+        "usage_type": "verification-support",
+        "direct_text_reused": false
+      },
+      "reflection": "M/M/1 behaved as expected and provides the baseline for comparing M/M/2."
+    },
+    {
+      "id": "e-00000020",
+      "timestamp": "2026-06-14T09:26:36+00:00",
+      "parent_id": null,
+      "objective": "Validate the M/M/2 mode output.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Run or analyse M/M/2 output and explain concurrency and emergency pre-emption.",
+      "ai_output_summary": "The AI interpreted the M/M/2 trace: V2 can be granted while V1 is crossing when non-conflicting, and emergency V0 triggers I2V yield then receives exclusive grant.",
+      "verification": {
+        "actions": [
+          "Compiled and executed ./intersection_rsu mm2.",
+          "Confirmed total grants 18, max concurrent crossings 2, ticks with two crossings 23, and safety checks passed."
+        ],
+        "level": "empirical-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Results / M/M/2",
+        "usage_type": "verification-support",
+        "direct_text_reused": false
+      },
+      "reflection": "The output demonstrated the benefit of a second server without violating safety."
+    },
+    {
+      "id": "e-00000021",
+      "timestamp": "2026-06-14T09:26:37+00:00",
+      "parent_id": null,
+      "objective": "Explain emergency-vehicle handling as a story and as logic.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "How will the model handle an emergency vehicle if it appears on the main street while side-street vehicles are active?",
+      "ai_output_summary": "The AI explained that the RSU broadcasts an emergency yield, stops granting normal vehicles, waits for in-flight safe completion, then grants the emergency vehicle exclusively.",
+      "verification": {
+        "actions": [
+          "Checked the M/M/2 trace around t=30 to t=33.",
+          "Verified that V3 completes before V0 is granted and that no normal new grant is issued during emergency waiting."
+        ],
+        "level": "empirical-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Emergency handling",
+        "usage_type": "verification-support",
+        "direct_text_reused": false
+      },
+      "reflection": "This is one of the most important scenarios to explain to the professor."
+    },
+    {
+      "id": "e-00000022",
+      "timestamp": "2026-06-14T09:26:38+00:00",
+      "parent_id": null,
+      "objective": "Identify limitations of the strict-priority model.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Check whether the model has any weakness or missing fairness problem under continuous arrivals.",
+      "ai_output_summary": "The AI identified starvation of V5, the lowest-priority side-street left turn, under continuous higher-priority arrivals.",
+      "verification": {
+        "actions": [
+          "Extended the reasoning beyond the 80-tick summary and compared with the report's stated observation.",
+          "Checked that the current UPPAAL queries do not prove eventual service for every vehicle."
+        ],
+        "level": "empirical-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Limitations / outlook",
+        "usage_type": "argument-critique",
+        "direct_text_reused": false
+      },
+      "reflection": "The limitation is important because a safe controller can still be unfair."
+    },
+    {
+      "id": "e-00000023",
+      "timestamp": "2026-06-14T09:26:39+00:00",
+      "parent_id": null,
+      "objective": "Develop a Week 4 HW/SW codesign outlook.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Based on our C implementation, what should be software and what could be hardware for the next milestone?",
+      "ai_output_summary": "The AI suggested keeping admission policy and queue management in software while offloading conflict/noCollision matrix evaluation to hardware/ModelSim as a combinational safe-to-grant check.",
+      "verification": {
+        "actions": [
+          "Checked that the proposal follows the course plan: Week 4 HW/SW proposal and Week 5 implementation with FreeRTOS and ModelSim.",
+          "Verified that the proposed hardware part is parallel and timing-critical enough to justify hardware acceleration."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Week 4 outlook",
+        "usage_type": "idea-generation",
+        "direct_text_reused": false
+      },
+      "reflection": "The partition is realistic because software handles policy and hardware handles repeated parallel safety checks."
+    },
+    {
+      "id": "e-00000024",
+      "timestamp": "2026-06-14T09:26:40+00:00",
+      "parent_id": null,
+      "objective": "Draft the Week 3 report structure.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Create a professional Week 3 report based on the UPPAAL model, the professor's Week 3 task, and the C implementation.",
+      "ai_output_summary": "The AI drafted a report with scenario and objective, recap of Weeks 1-2, mapping methodology, implementation architecture, verification correspondence, results, limitations, and outlook.",
+      "verification": {
+        "actions": [
+          "Compared the report structure against the professor's course plan and Week 3 requirement.",
+          "Checked that the report did not claim FreeRTOS or hardware implementation as completed."
+        ],
+        "level": "primary-source-check"
+      },
+      "evaluation": {
+        "status": "revised",
+        "issues": [
+          "Some wording was edited manually to be more professional and less conversational."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Week 3 report",
+        "usage_type": "text-revision",
+        "direct_text_reused": true
+      },
+      "reflection": "The report became stronger after linking every implementation part back to a model construct."
+    },
+    {
+      "id": "e-00000025",
+      "timestamp": "2026-06-14T09:26:41+00:00",
+      "parent_id": null,
+      "objective": "Create the UPPAAL-to-C mapping table.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Make a table showing each UPPAAL construct and its counterpart in the C implementation.",
+      "ai_output_summary": "The AI produced a mapping table from global constants, arrays, helper functions, vehicle template, RSU controller, clocks, synchronisations, select, and queries to C equivalents.",
+      "verification": {
+        "actions": [
+          "Checked the table against intersection_rsu.c and the UPPAAL model structure.",
+          "Removed or corrected entries that were too vague."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Mapping methodology",
+        "usage_type": "comparison-structuring",
+        "direct_text_reused": true
+      },
+      "reflection": "This table directly satisfies the requirement for a well-defined mapping from models."
+    },
+    {
+      "id": "e-00000026",
+      "timestamp": "2026-06-14T09:26:42+00:00",
+      "parent_id": null,
+      "objective": "Prepare the verification correspondence table.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Convert the UPPAAL queries into runtime checks and result statements for the C report.",
+      "ai_output_summary": "The AI created a table mapping UPPAAL queries to C assertions and event-log witnesses, with all checks marked as holding for the tested horizon.",
+      "verification": {
+        "actions": [
+          "Confirmed the C code contains noCollision, crossingCount <= MM_MODE, and V4/V5 mutual exclusion assertions.",
+          "Confirmed the event log witnesses emergency V0 and V1/V2 M/M/2 concurrency."
+        ],
+        "level": "empirical-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Verification correspondence",
+        "usage_type": "verification-support",
+        "direct_text_reused": true
+      },
+      "reflection": "The table made the verification story understandable without requiring the reader to inspect all logs."
+    },
+    {
+      "id": "e-00000027",
+      "timestamp": "2026-06-14T09:26:43+00:00",
+      "parent_id": null,
+      "objective": "Prepare README and Git repository organization.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Create a README for the Week 3 C implementation so the professor understands files, build steps, features, checks, and outlook.",
+      "ai_output_summary": "The AI generated a concise README with file list, build/run commands, reproduced model features, runtime checks, and Week 4 outlook.",
+      "verification": {
+        "actions": [
+          "Checked that the build command actually compiles the uploaded C file.",
+          "Checked that the README features match the implementation and report."
+        ],
+        "level": "empirical-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "README / repository",
+        "usage_type": "text-revision",
+        "direct_text_reused": true
+      },
+      "reflection": "The README helps make the submission reproducible and easier to assess."
+    },
+    {
+      "id": "e-00000028",
+      "timestamp": "2026-06-14T09:26:44+00:00",
+      "parent_id": null,
+      "objective": "Analyse whether the current Week 3 package is submit-ready.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Check everything: ESLabA task, Week 3 PDF report, C source, README. Tell me if it is fine to submit or what is missing.",
+      "ai_output_summary": "The AI compared the deliverables against the lecture requirements and found the Week 3 package largely aligned: abstract C implementation, mapping, verification, results, and README are present; FreeRTOS/ModelSim are correctly left for later.",
+      "verification": {
+        "actions": [
+          "Checked the professor's lecture PDF, Week 3 report, README, and compiled C file together.",
+          "Ran the implementation in both modes and compared summaries with the report."
+        ],
+        "level": "multi-source-validation"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Submission checklist",
+        "usage_type": "argument-critique",
+        "direct_text_reused": false
+      },
+      "reflection": "The package is suitable for Week 3, while the final research still needs later milestones and formal paper requirements."
+    },
+    {
+      "id": "e-00000029",
+      "timestamp": "2026-06-14T09:26:45+00:00",
+      "parent_id": null,
+      "objective": "Create an editable LaTeX/Word-style version of the Week 3 report.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Make one LaTeX version same to same and one Word-editable version from the Week 3 report.",
+      "ai_output_summary": "The AI prepared editable document content based on the PDF report so it could be revised before submission.",
+      "verification": {
+        "actions": [
+          "Manually compared headings and sections against the PDF.",
+          "Checked that technical claims stayed consistent with the C implementation."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "Formatting still needed manual adjustment in the final editor."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Editable report preparation",
+        "usage_type": "text-revision",
+        "direct_text_reused": true
+      },
+      "reflection": "Editable versions are useful, but the PDF/C source remain the technical source of truth."
+    },
+    {
+      "id": "e-00000030",
+      "timestamp": "2026-06-14T09:26:46+00:00",
+      "parent_id": null,
+      "objective": "Prepare explanation material for oral understanding.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Explain the UPPAAL model and the C implementation from scratch in simple language so I can present it to the professor.",
+      "ai_output_summary": "The AI produced a story-like explanation of the RSU, queues, vehicle states, clocks, grants, emergency yield, and verification checks.",
+      "verification": {
+        "actions": [
+          "Checked the explanation against the actual model names and C functions.",
+          "Removed oversimplified statements that sounded like traffic-light control instead of RSU grant control."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "Some simple explanations had to be technically tightened before using in academic text."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Presentation preparation",
+        "usage_type": "summarization",
+        "direct_text_reused": false
+      },
+      "reflection": "The story explanation improved understanding, but the final report needs precise technical terms."
+    },
+    {
+      "id": "e-00000031",
+      "timestamp": "2026-06-14T09:26:47+00:00",
+      "parent_id": null,
+      "objective": "Document AI usage according to the professor's template.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "I gave you the AI usage template from professor. Match the template and create a JSON file with 30 to 35 AI interactions for the whole research.",
+      "ai_output_summary": "The AI inspected the notebook schema and generated a protocol JSON using the required metadata and entry fields: objective, tool/model, prompt, output summary, verification, evaluation, integration, and reflection.",
+      "verification": {
+        "actions": [
+          "Compared the generated JSON keys against the template's serialize_entry structure.",
+          "Validated the JSON file syntactically with Python json.load."
+        ],
+        "level": "primary-source-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "AI usage protocol",
+        "usage_type": "other",
+        "direct_text_reused": true
+      },
+      "reflection": "The protocol is not a raw chat dump; it documents reasoning episodes and validation decisions, matching the professor's stated purpose."
+    },
+    {
+      "id": "e-00000032",
+      "timestamp": "2026-06-14T09:26:48+00:00",
+      "parent_id": null,
+      "objective": "Validate the generated JSON schema and content count.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Check whether the JSON file has the right structure and 30 to 35 interactions.",
+      "ai_output_summary": "The AI verified that the JSON contains protocol_version, student_id, course, milestone, topic, exported_at, and an entries list with 33 interactions.",
+      "verification": {
+        "actions": [
+          "Loaded the JSON using Python's json module.",
+          "Counted the entries and checked required nested keys for every entry."
+        ],
+        "level": "empirical-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "AI usage protocol validation",
+        "usage_type": "verification-support",
+        "direct_text_reused": false
+      },
+      "reflection": "Validation reduces the risk that the notebook or submission system rejects the protocol file."
+    },
+    {
+      "id": "e-00000033",
+      "timestamp": "2026-06-14T09:26:49+00:00",
+      "parent_id": null,
+      "objective": "Final quality check of Week 3 deliverables and protocol.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Before submission, check everything first and tell me if everything is fine or not, then give me the JSON file.",
+      "ai_output_summary": "The AI reported that the Week 3 package is mostly fine and aligned with the task, with the important note that FreeRTOS/ModelSim are future milestones and fairness/starvation is a known limitation.",
+      "verification": {
+        "actions": [
+          "Checked lecture requirements, Week 3 report, README, C compile result, M/M/1 run, M/M/2 run, and the AI protocol schema.",
+          "Marked open risks explicitly instead of hiding them."
+        ],
+        "level": "multi-source-validation"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Final review",
+        "usage_type": "argument-critique",
+        "direct_text_reused": false
+      },
+      "reflection": "The final review distinguishes submit-ready Week 3 work from remaining future work, which is important for honest reporting."
+    }
+  ]
+}
