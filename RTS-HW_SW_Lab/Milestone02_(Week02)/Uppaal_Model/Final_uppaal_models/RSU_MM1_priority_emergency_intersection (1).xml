@@ -1,0 +1,470 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC "-//Uppaal Team//DTD Flat System 1.6//EN" "http://www.it.uu.se/research/group/darts/uppaal/flat-1_6.dtd">
+<nta>
+<declaration><![CDATA[
+// ============================================================
+// Continuous RSU based autonomous intersection model
+// ============================================================
+// Main idea:
+// - Main street: EAST-WEST
+// - Side street: NORTH-SOUTH
+// - RSU controls the intersection
+// - M/M/1: only one vehicle can cross
+// - M/M/2: two vehicles can cross only if they are non-conflicting
+// - Priority:
+//      1. Emergency vehicle
+//      2. Main street vehicles
+//      3. Side street vehicles
+//      4. Right turn before left turn in a conflict
+// - Communication:
+//      V2I: vehicle requests RSU
+//      I2V: RSU sends emergency yield broadcast
+//      V2V: vehicles broadcast enter/leave message
+// - Continuous arrival:
+//      after leaving, every vehicle comes again after its period
+// ============================================================
+
+const int N = 6;
+
+// This file is fixed for M/M/1 mode
+const int MM1 = 1;
+const int MM2 = 2;
+const int MM_MODE = MM1;
+
+// Directions
+const int EAST  = 0;
+const int WEST  = 1;
+const int NORTH = 2;
+const int SOUTH = 3;
+
+// Turn types
+const int RIGHT    = 0;
+const int STRAIGHT = 1;
+const int LEFT     = 2;
+
+// V2I / I2V / V2V communication
+chan req[N];        // V2I: normal vehicle -> RSU
+chan emg_req[N];    // V2I: emergency vehicle -> RSU
+chan grant[N];      // I2V: RSU -> vehicle
+chan leave[N];      // vehicle -> RSU after leaving
+
+broadcast chan i2v_yield;  // RSU tells nearby vehicles to yield for emergency
+broadcast chan v2v_enter;  // vehicle announces entering intersection
+broadcast chan v2v_leave;  // vehicle announces leaving intersection
+
+// Queue and crossing state
+bool waiting[N];
+bool crossing[N];
+
+int[0,3] origin[N];
+int[0,2] turn[N];
+int[0,1] emergency[N];
+
+int[0,2] crossingCount = 0;
+bool emergencyNotified = false;
+
+// ------------------------------------------------------------
+// Helper functions
+// ------------------------------------------------------------
+
+bool isMainRoad(int i)
+{
+    return origin[i] == EAST || origin[i] == WEST;
+}
+
+bool oppositeDirection(int a, int b)
+{
+    if (origin[a] == EAST  && origin[b] == WEST)  return true;
+    if (origin[a] == WEST  && origin[b] == EAST)  return true;
+    if (origin[a] == NORTH && origin[b] == SOUTH) return true;
+    if (origin[a] == SOUTH && origin[b] == NORTH) return true;
+    return false;
+}
+
+int turnRank(int i)
+{
+    if (turn[i] == RIGHT) return 0;
+    if (turn[i] == STRAIGHT) return 1;
+    return 2;
+}
+
+int priorityValue(int i)
+{
+    // Emergency has highest priority.
+    if (emergency[i] == 1) return 0;
+
+    // Main street has higher priority than side street.
+    if (isMainRoad(i)) {
+        return 10 + turnRank(i);
+    }
+
+    return 20 + turnRank(i);
+}
+
+bool betterPriority(int a, int b)
+{
+    int pa;
+    int pb;
+
+    pa = priorityValue(a);
+    pb = priorityValue(b);
+
+    if (pa < pb) return true;
+    if (pa > pb) return false;
+
+    // Tie breaker: lower ID first.
+    // This keeps the state space small and avoids infinite FIFO counters.
+    return a < b;
+}
+
+// ------------------------------------------------------------
+// Conflict checking
+// ------------------------------------------------------------
+
+bool conflict(int a, int b)
+{
+    if (a == b) return false;
+
+    // Emergency vehicle gets exclusive crossing permission.
+    if (emergency[a] == 1 || emergency[b] == 1) return true;
+
+    // Same origin cannot enter together.
+    if (origin[a] == origin[b]) return true;
+
+    // Opposite-direction vehicles can sometimes pass together.
+    if (oppositeDirection(a, b)) {
+
+        // Both straight from opposite sides are allowed together.
+        if (turn[a] == STRAIGHT && turn[b] == STRAIGHT) return false;
+
+        // Both right turns from opposite sides are allowed together.
+        if (turn[a] == RIGHT && turn[b] == RIGHT) return false;
+
+        // Critical scenario:
+        // North-right versus South-left, or generally right versus left.
+        // They are not allowed together.
+        if (turn[a] == RIGHT && turn[b] == LEFT) return true;
+        if (turn[a] == LEFT && turn[b] == RIGHT) return true;
+
+        // Any left-turn conflict is blocked for safety.
+        if (turn[a] == LEFT || turn[b] == LEFT) return true;
+
+        return false;
+    }
+
+    // Perpendicular movements are considered conflicting.
+    return true;
+}
+
+bool conflictsWithCrossing(int i)
+{
+    int k;
+
+    for (k = 0; k < N; k++) {
+        if (crossing[k] && conflict(i, k)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool noCollision()
+{
+    int i;
+    int j;
+
+    for (i = 0; i < N; i++) {
+        for (j = i + 1; j < N; j++) {
+            if (crossing[i] && crossing[j] && conflict(i, j)) {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+// ------------------------------------------------------------
+// Queue and grant logic
+// ------------------------------------------------------------
+
+bool emergencyWaiting()
+{
+    int k;
+
+    for (k = 0; k < N; k++) {
+        if (waiting[k] && emergency[k] == 1) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool capacityAvailableFor(int i)
+{
+    if (MM_MODE == MM1) {
+        return crossingCount == 0;
+    }
+
+    // M/M/2 mode
+    if (crossingCount >= 2) return false;
+
+    return !conflictsWithCrossing(i);
+}
+
+bool existsBetterGrantable(int i)
+{
+    int k;
+
+    for (k = 0; k < N; k++) {
+        if (waiting[k] && k != i && betterPriority(k, i)) {
+            if (capacityAvailableFor(k)) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+bool canGrant(int i)
+{
+    if (!waiting[i]) return false;
+
+    // If emergency is waiting, no normal vehicle receives a new grant.
+    if (emergencyWaiting() && emergency[i] == 0) return false;
+
+    if (!capacityAvailableFor(i)) return false;
+
+    if (existsBetterGrantable(i)) return false;
+
+    return true;
+}
+
+// ------------------------------------------------------------
+// State update functions
+// ------------------------------------------------------------
+
+void requestVehicle(int i, int o, int t, int e)
+{
+    origin[i] = o;
+    turn[i] = t;
+    emergency[i] = e;
+
+    waiting[i] = true;
+}
+
+void grantVehicle(int i)
+{
+    waiting[i] = false;
+    crossing[i] = true;
+    crossingCount = crossingCount + 1;
+
+    if (emergency[i] == 1) {
+        emergencyNotified = false;
+    }
+}
+
+void finishVehicle(int i)
+{
+    crossing[i] = false;
+
+    if (crossingCount > 0) {
+        crossingCount = crossingCount - 1;
+    }
+}
+]]></declaration>
+
+<template>
+<name>Vehicle</name>
+<parameter>const int id, const int o, const int t, const int e, const int period, const int crossTime</parameter>
+<declaration>clock x;</declaration>
+
+<location id="v_idle" x="-600" y="0">
+<name x="-625" y="-30">Idle</name>
+<label kind="invariant" x="-650" y="25">x &lt;= period</label>
+</location>
+
+<location id="v_wait" x="-300" y="0">
+<name x="-330" y="-30">WaitingInQueue</name>
+</location>
+
+<location id="v_enter" x="0" y="0">
+<name x="-45" y="-30">V2V_Enter</name>
+<committed/>
+</location>
+
+<location id="v_cross" x="300" y="0">
+<name x="260" y="-30">Crossing</name>
+<label kind="invariant" x="260" y="25">x &lt;= crossTime</label>
+</location>
+
+<location id="v_leave" x="600" y="0">
+<name x="555" y="-30">V2V_Leave</name>
+<committed/>
+</location>
+
+<init ref="v_idle"/>
+
+<transition>
+<source ref="v_idle"/>
+<target ref="v_wait"/>
+<label kind="guard" x="-560" y="-120">x &gt;= period &amp;&amp; e == 0</label>
+<label kind="synchronisation" x="-560" y="-100">req[id]!</label>
+<label kind="assignment" x="-560" y="-80">requestVehicle(id, o, t, e), x = 0</label>
+</transition>
+
+<transition>
+<source ref="v_idle"/>
+<target ref="v_wait"/>
+<label kind="guard" x="-560" y="70">x &gt;= period &amp;&amp; e == 1</label>
+<label kind="synchronisation" x="-560" y="90">emg_req[id]!</label>
+<label kind="assignment" x="-560" y="110">requestVehicle(id, o, t, e), x = 0</label>
+</transition>
+
+<transition>
+<source ref="v_wait"/>
+<target ref="v_enter"/>
+<label kind="synchronisation" x="-200" y="-60">grant[id]?</label>
+<label kind="assignment" x="-200" y="-40">x = 0</label>
+</transition>
+
+<transition>
+<source ref="v_enter"/>
+<target ref="v_cross"/>
+<label kind="synchronisation" x="70" y="-60">v2v_enter!</label>
+<label kind="assignment" x="70" y="-40">x = 0</label>
+</transition>
+
+<transition>
+<source ref="v_cross"/>
+<target ref="v_leave"/>
+<label kind="guard" x="370" y="-60">x &gt;= crossTime</label>
+<label kind="synchronisation" x="370" y="-40">v2v_leave!</label>
+</transition>
+
+<transition>
+<source ref="v_leave"/>
+<target ref="v_idle"/>
+<label kind="synchronisation" x="660" y="-60">leave[id]!</label>
+<label kind="assignment" x="660" y="-40">finishVehicle(id), x = 0</label>
+</transition>
+
+<transition>
+<source ref="v_wait"/>
+<target ref="v_wait"/>
+<label kind="synchronisation" x="-330" y="100">i2v_yield?</label>
+</transition>
+
+</template>
+
+<template>
+<name>RSU_Controller</name>
+
+<location id="r_control" x="0" y="0">
+<name x="-35" y="-30">RSU_Control</name>
+</location>
+
+<init ref="r_control"/>
+
+<transition>
+<source ref="r_control"/>
+<target ref="r_control"/>
+<label kind="select" x="-330" y="-230">i : int[0,5]</label>
+<label kind="synchronisation" x="-330" y="-210">req[i]?</label>
+</transition>
+
+<transition>
+<source ref="r_control"/>
+<target ref="r_control"/>
+<label kind="select" x="-330" y="-130">i : int[0,5]</label>
+<label kind="synchronisation" x="-330" y="-110">emg_req[i]?</label>
+<label kind="assignment" x="-330" y="-90">emergencyNotified = false</label>
+</transition>
+
+<transition>
+<source ref="r_control"/>
+<target ref="r_control"/>
+<label kind="guard" x="-330" y="10">emergencyWaiting() &amp;&amp; !emergencyNotified</label>
+<label kind="synchronisation" x="-330" y="30">i2v_yield!</label>
+<label kind="assignment" x="-330" y="50">emergencyNotified = true</label>
+</transition>
+
+<transition>
+<source ref="r_control"/>
+<target ref="r_control"/>
+<label kind="select" x="130" y="-230">i : int[0,5]</label>
+<label kind="guard" x="130" y="-210">canGrant(i)</label>
+<label kind="synchronisation" x="130" y="-190">grant[i]!</label>
+<label kind="assignment" x="130" y="-170">grantVehicle(i)</label>
+</transition>
+
+<transition>
+<source ref="r_control"/>
+<target ref="r_control"/>
+<label kind="select" x="130" y="-90">i : int[0,5]</label>
+<label kind="synchronisation" x="130" y="-70">leave[i]?</label>
+</transition>
+
+</template>
+
+<system><![CDATA[
+// Vehicle(id, origin, turn, emergency, arrival_period, crossing_time)
+//
+// V0 = emergency vehicle on main street
+// V1/V2 = main street straight vehicles, useful for M/M/2 non-conflict test
+// V3 = side street straight
+// V4 = North right turn
+// V5 = South left turn
+//
+// Critical scenario:
+// V4 wants to turn right from North.
+// V5 wants to turn left from South.
+// They must not cross together.
+
+RSU = RSU_Controller();
+
+V0 = Vehicle(0, EAST,  STRAIGHT, 1, 30, 4); // emergency vehicle
+V1 = Vehicle(1, EAST,  STRAIGHT, 0, 6,  5); // main street
+V2 = Vehicle(2, WEST,  STRAIGHT, 0, 8,  5); // main street opposite
+V3 = Vehicle(3, NORTH, STRAIGHT, 0, 10, 5); // side street
+V4 = Vehicle(4, NORTH, RIGHT,    0, 12, 5); // critical right-turn vehicle
+V5 = Vehicle(5, SOUTH, LEFT,     0, 12, 5); // critical left-turn vehicle
+
+system RSU, V0, V1, V2, V3, V4, V5;
+]]></system>
+
+<queries>
+<query>
+<formula>A[] not deadlock</formula>
+<comment>The cyclic model should be deadlock-free.</comment>
+</query>
+
+<query>
+<formula>A[] noCollision()</formula>
+<comment>No conflicting vehicles may cross together.</comment>
+</query>
+
+<query>
+<formula>A[] crossingCount &lt;= MM_MODE</formula>
+<comment>The number of active servers must not exceed M/M/1 or M/M/2 capacity.</comment>
+</query>
+
+<query>
+<formula>A[] not (crossing[4] &amp;&amp; crossing[5])</formula>
+<comment>Critical case: North-right and South-left must not cross together.</comment>
+</query>
+
+<query>
+<formula>E&lt;&gt; crossing[0]</formula>
+<comment>The emergency vehicle can cross.</comment>
+</query>
+
+<query>
+<formula>E&lt;&gt; crossing[1] &amp;&amp; crossing[2]</formula>
+<comment>In M/M/2, two non-conflicting main-road vehicles can cross together.</comment>
+</query>
+</queries>
+</nta>
