@@ -1,0 +1,438 @@
+{
+  "protocol_version": "0.2",
+  "student_id": "1230473",
+  "course": "HW/SW Codesign / Embedded Electronic Engineering A",
+  "milestone": "M2 Scientific Contextualization and Tradeoff Analysis",
+  "topic": "Force-Directed List-Scheduling for High-Level Synthesis",
+  "exported_at": "2026-06-14T20:00:00+02:00",
+  "entries": [
+    {
+      "id": "e-20103aec",
+      "timestamp": "2026-06-14T12:00:00+02:00",
+      "parent_id": null,
+      "objective": "Contextualize FDLS among HLS scheduling approaches.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Compare Force-Directed List-Scheduling with ASAP, ALAP, list scheduling, ILP scheduling, simulated annealing, and genetic algorithm scheduling for HLS.",
+      "ai_output_summary": "The AI created a comparison of exact and heuristic approaches: ASAP/ALAP as bounds, list scheduling as fast greedy scheduling, ILP as exact but expensive, force-directed as balancing resource demand, and metaheuristics as broader design-space exploration.",
+      "verification": {
+        "actions": [
+          "Checked the approach categories against De Micheli's scheduling chapter and Teich/Haubelt's scheduling chapter.",
+          "Checked the course topic list to ensure these are neighboring seminar topics.",
+          "Removed unsupported tool-specific claims."
+        ],
+        "level": "multi-source-validation"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M2 Related approaches overview",
+        "usage_type": "comparison-structuring",
+        "direct_text_reused": false
+      },
+      "reflection": "This gave me the scientific landscape: FDLS is not isolated; it sits between simple greedy scheduling and expensive exact/metaheuristic methods."
+    },
+    {
+      "id": "e-2021ee62",
+      "timestamp": "2026-06-14T12:10:00+02:00",
+      "parent_id": null,
+      "objective": "Explain why related work may be sparse or indirect.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "My professor says related work should not be artificially collected. For FDLS, explain why some related work is direct and some is only neighboring.",
+      "ai_output_summary": "The AI suggested that direct related work is HLS scheduling and force-directed scheduling, while indirect work includes compiler instruction scheduling, real-time task scheduling, and general multiprocessor scheduling because they share scheduling concepts but different objectives and constraints.",
+      "verification": {
+        "actions": [
+          "Checked the professor's milestone checklist for the instruction that weakly related papers should not be artificially collected.",
+          "Manually classified references into direct HLS scheduling, neighboring scheduling theory, and indirect embedded-systems context.",
+          "Excluded unrelated operating-system scheduling papers from the core context."
+        ],
+        "level": "secondary-source-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M2 Explanation of sparse/indirect related work",
+        "usage_type": "argument-critique",
+        "direct_text_reused": false
+      },
+      "reflection": "This helped me avoid a fake literature review. The milestone should justify why related work is selected, not just list many papers."
+    },
+    {
+      "id": "e-2035433b",
+      "timestamp": "2026-06-14T12:20:00+02:00",
+      "parent_id": null,
+      "objective": "Analyze optimality versus feasibility tradeoff.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Explain the tradeoff between ILP-based scheduling and Force-Directed List-Scheduling in terms of optimality, runtime, scalability, and use in HLS.",
+      "ai_output_summary": "The AI argued that ILP can model constraints exactly and may prove optimality for a given formulation, but can scale poorly. FDLS is heuristic, usually faster, and more practical for larger graphs, but does not guarantee global optimum.",
+      "verification": {
+        "actions": [
+          "Checked the ILP scheduling position in De Micheli and Teich/Haubelt.",
+          "Verified that heuristic methods are presented separately from exact ILP methods.",
+          "Changed wording from 'always faster' to 'typically intended to be more scalable' because actual runtime depends on implementation and instance size."
+        ],
+        "level": "primary-source-check"
+      },
+      "evaluation": {
+        "status": "revised",
+        "issues": [
+          "The AI initially overstated ILP as always impractical. I softened the claim because small ILP instances can be useful and exact."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M2 Optimality vs feasibility",
+        "usage_type": "comparison-structuring",
+        "direct_text_reused": false
+      },
+      "reflection": "This is a central tradeoff: exactness is valuable scientifically, but heuristic feasibility is important for engineering."
+    },
+    {
+      "id": "e-20417b99",
+      "timestamp": "2026-06-14T12:30:00+02:00",
+      "parent_id": null,
+      "objective": "Compare list scheduling and FDLS under resource constraints.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "What are the engineering tradeoffs between ordinary list scheduling and force-directed list scheduling under limited multipliers/adders?",
+      "ai_output_summary": "The AI explained that list scheduling is simple and fast but priority rules may be local. FDLS adds a global-looking resource distribution estimate, which may improve balance but increases computation and still remains heuristic.",
+      "verification": {
+        "actions": [
+          "Checked that list scheduling and force-directed scheduling are distinct heuristic approaches in the HLS literature.",
+          "Used a small hand graph to see how fixed priority may create resource peaks.",
+          "Marked the result as a tradeoff, not a proof of superiority."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M2 List scheduling vs FDLS",
+        "usage_type": "comparison-structuring",
+        "direct_text_reused": false
+      },
+      "reflection": "I can now explain why FDLS was introduced: to guide greedy decisions with a more resource-aware priority."
+    },
+    {
+      "id": "e-20580bc8",
+      "timestamp": "2026-06-14T12:40:00+02:00",
+      "parent_id": null,
+      "objective": "Contextualize FDLS against pure Force-Directed Scheduling.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Compare pure Force-Directed Scheduling and Force-Directed List-Scheduling. Which one is more constrained by ready-list behavior?",
+      "ai_output_summary": "The AI explained that pure force-directed methods may evaluate possible placements over mobility windows, while list-style scheduling usually works step-by-step with ready operations and resource availability. FDLS therefore combines force-based ranking with list scheduling discipline.",
+      "verification": {
+        "actions": [
+          "Checked terminology against De Micheli and Teich/Haubelt to avoid inventing a false standard definition.",
+          "Kept the explanation as a possible interpretation of FDLS, not a universal formal definition.",
+          "Noted that the assigned reference must decide the exact variant described in the final paper."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The exact term FDLS is less standardized than FDS; the explanation must be cautious.",
+          "The AI could not prove one universal algorithm structure."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M2 Method boundary",
+        "usage_type": "terminology-clarification",
+        "direct_text_reused": false
+      },
+      "reflection": "This made me more careful: I should define exactly what I mean by FDLS in my paper."
+    },
+    {
+      "id": "e-206ddd05",
+      "timestamp": "2026-06-14T12:50:00+02:00",
+      "parent_id": null,
+      "objective": "Analyze precision versus runtime tradeoff in force computation.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "How does the accuracy of resource-demand estimation trade off against runtime in Force-Directed List-Scheduling?",
+      "ai_output_summary": "The AI explained that frequent recomputation of probability and distribution graphs after each decision may produce more informed priorities but increases runtime. Incremental or approximate updates may be faster but less precise.",
+      "verification": {
+        "actions": [
+          "Checked that runtime depends on recomputation strategy rather than a fixed formula.",
+          "Validated the idea with the algorithm steps: ASAP/ALAP windows, probability distributions, scheduling decision, update.",
+          "Used this as engineering analysis rather than a sourced performance claim."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M2 Precision vs runtime",
+        "usage_type": "argument-critique",
+        "direct_text_reused": false
+      },
+      "reflection": "This is a strong engineering tradeoff because the algorithm's quality depends on information that costs time to update."
+    },
+    {
+      "id": "e-20780a63",
+      "timestamp": "2026-06-14T13:00:00+02:00",
+      "parent_id": null,
+      "objective": "Analyze memory versus accuracy tradeoff.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Explain possible memory tradeoffs in storing mobility windows, distribution graphs, candidate forces, and ready lists for FDLS.",
+      "ai_output_summary": "The AI listed data structures such as per-operation time windows, per-cycle resource distributions, ready queues, and candidate force tables. It noted that storing more intermediate values can speed selection but increases memory usage.",
+      "verification": {
+        "actions": [
+          "Checked that these structures logically follow from the algorithm steps.",
+          "Did not present memory sizes as measured values because no implementation benchmark was used.",
+          "Kept the discussion at architectural-algorithmic level."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The AI's suggested memory estimates were too concrete without implementation. I replaced them with qualitative data-structure discussion."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M2 Memory vs computation",
+        "usage_type": "argument-critique",
+        "direct_text_reused": false
+      },
+      "reflection": "Memory is not the main headline of FDLS, but the data structures matter for implementation."
+    },
+    {
+      "id": "e-2089efc0",
+      "timestamp": "2026-06-14T13:10:00+02:00",
+      "parent_id": null,
+      "objective": "Discuss offline versus online scheduling.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Is Force-Directed List-Scheduling an offline or online scheduling method in HLS? Explain consequences for embedded systems.",
+      "ai_output_summary": "The AI described FDLS as mainly an offline compile-time/architectural synthesis method. The schedule is computed before hardware generation, unlike runtime scheduling in an operating system. This supports deterministic hardware but cannot adapt to arbitrary runtime behavior.",
+      "verification": {
+        "actions": [
+          "Checked Teich/Haubelt's distinction between static and dynamic scheduling.",
+          "Checked the HLS context where scheduling happens before RTL generation.",
+          "Removed statements about OS scheduling except as contrast."
+        ],
+        "level": "primary-source-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M2 Offline vs online computation",
+        "usage_type": "terminology-clarification",
+        "direct_text_reused": false
+      },
+      "reflection": "This distinction is important for embedded systems: deterministic compile-time scheduling is useful for hardware synthesis, but it is not runtime adaptation."
+    },
+    {
+      "id": "e-2094adef",
+      "timestamp": "2026-06-14T13:20:00+02:00",
+      "parent_id": null,
+      "objective": "Discuss consequences for constrained hardware.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "What are the consequences of using FDLS for constrained embedded hardware like FPGA datapaths, DSP accelerators, or small ASIC blocks?",
+      "ai_output_summary": "The AI linked FDLS to resource sharing: limiting multipliers/adders can reduce area but may increase latency; balancing resource demand can help choose a feasible schedule before binding and RTL generation.",
+      "verification": {
+        "actions": [
+          "Checked Teich/Haubelt's hardware/software synthesis context and resource constraints.",
+          "Checked De Micheli's architectural synthesis flow from scheduling to binding.",
+          "Kept the examples as application contexts, not empirical proof."
+        ],
+        "level": "multi-source-validation"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M2 Embedded-systems consequences",
+        "usage_type": "idea-generation",
+        "direct_text_reused": false
+      },
+      "reflection": "This connected the algorithm to real design consequences: area, latency, and determinism."
+    },
+    {
+      "id": "e-20ac8792",
+      "timestamp": "2026-06-14T13:30:00+02:00",
+      "parent_id": null,
+      "objective": "Compare formal guarantees and practical deployability.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Explain the tradeoff between formal guarantees and practical deployability for FDLS compared with exact scheduling.",
+      "ai_output_summary": "The AI explained that exact formulations can offer stronger guarantees for a simplified model, while FDLS is easier to deploy as a heuristic but gives no universal optimality guarantee. Both depend on model accuracy.",
+      "verification": {
+        "actions": [
+          "Checked that ILP's guarantee only applies to the formulated model and constraints.",
+          "Added the point that a formally optimal schedule can still be poor if the model ignores memory or routing delays.",
+          "Kept the wording balanced."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "revised",
+        "issues": [
+          "The AI initially made formal methods sound automatically better. I added the limitation that model fidelity matters."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M2 Guarantees vs deployability",
+        "usage_type": "argument-critique",
+        "direct_text_reused": false
+      },
+      "reflection": "This became a useful argument for the critical sections later: guarantees and practical usefulness are not the same thing."
+    },
+    {
+      "id": "e-20b1e223",
+      "timestamp": "2026-06-14T13:40:00+02:00",
+      "parent_id": null,
+      "objective": "Identify standards/tools/paradigms related to HLS.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Which tools, standards, or paradigms can I mention as context for HLS scheduling without drifting away from FDLS?",
+      "ai_output_summary": "The AI suggested mentioning behavioral synthesis/HLS, RTL generation, C/C++/SystemC-based design descriptions, FPGA/ASIC target flows, and scheduling/allocation/binding as core paradigms rather than focusing on vendor tools.",
+      "verification": {
+        "actions": [
+          "Checked Teich/Haubelt's discussion of SystemC and HLS-style design descriptions.",
+          "Checked De Micheli's architectural synthesis terminology.",
+          "Did not include vendor-specific tool claims because they were not needed for the milestone."
+        ],
+        "level": "secondary-source-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M2 Tools and paradigms",
+        "usage_type": "summarization",
+        "direct_text_reused": false
+      },
+      "reflection": "Keeping the context at paradigm level prevents the paper from becoming a tool survey."
+    },
+    {
+      "id": "e-20cb386e",
+      "timestamp": "2026-06-14T13:50:00+02:00",
+      "parent_id": null,
+      "objective": "Build a context comparison table.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Create a concise comparison table for M2 with methods, idea, strengths, weaknesses, and suitable use cases for HLS scheduling.",
+      "ai_output_summary": "The AI proposed table rows for ASAP/ALAP, list scheduling, FDLS, ILP, simulated annealing, genetic algorithms, and pipelined scheduling. I used the structure but rewrote the content.",
+      "verification": {
+        "actions": [
+          "Checked the table methods against the course topic list and HLS scheduling chapters.",
+          "Manually revised each strength/weakness so it did not become generic.",
+          "Did not copy table text directly; used it only as structure."
+        ],
+        "level": "secondary-source-check"
+      },
+      "evaluation": {
+        "status": "revised",
+        "issues": [
+          "Some AI table cells were too absolute, e.g., 'best quality'. I replaced them with cautious comparative language.",
+          "Some methods belonged to broader exploration, not direct competitor categories."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M2 Comparison table",
+        "usage_type": "comparison-structuring",
+        "direct_text_reused": false
+      },
+      "reflection": "The table makes the scientific context easier to communicate and prevents a long narrative-only related work section."
+    },
+    {
+      "id": "e-20dda942",
+      "timestamp": "2026-06-14T14:00:00+02:00",
+      "parent_id": null,
+      "objective": "Validate M2 against professor's milestone purpose.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Check whether my M2 plan satisfies scientific contextualization and tradeoff analysis, not only related-work summary.",
+      "ai_output_summary": "The AI reviewed the planned sections and identified missing items: explanation of indirect related work, explicit tradeoff bullets, and consequences for embedded systems.",
+      "verification": {
+        "actions": [
+          "Checked the professor's M2 checklist: related approaches, alternatives, assumptions, tradeoffs, consequences, and explanation of sparse/indirect related work.",
+          "Added explicit subsections for tradeoffs and embedded-systems consequences.",
+          "Confirmed M2 remains structured notes rather than publication-style final prose."
+        ],
+        "level": "secondary-source-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M2 Final checklist validation",
+        "usage_type": "verification-support",
+        "direct_text_reused": false
+      },
+      "reflection": "This final review aligned the milestone with the professor's exact intention: contextualization and tradeoffs, not a classical literature list only."
+    }
+  ]
+}
