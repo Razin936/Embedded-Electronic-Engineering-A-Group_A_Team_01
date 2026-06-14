@@ -5,8 +5,7 @@
 - **Course:** HW/SW Codesign / Embedded Electronic Engineering A
 - **Topic:** Force-Directed List-Scheduling for High-Level Synthesis
 - **Protocol version:** 0.2
-- **Exported at:** 2026-06-14T20:00:00+02:00
-- **Number of documented interactions:** 11
+
 
 ## Milestone purpose
 Technical understanding and research framing before polished prose. The focus is to show that the technical contribution, assumptions, problem setting, algorithmic model, and open questions were understood.
