@@ -1,0 +1,781 @@
+{
+  "protocol_version": "0.2",
+  "student_id": "1230473, 1230281, 1232714, 2220070",
+  "course": "Embedded Electronic Engineering Lab A — HW/SW Codesign",
+  "milestone": "Week 4 — Proposal for HW/SW Codesign",
+  "topic": "Cross-Traffic RSU Controller: UPPAAL → C → FreeRTOS + VHDL",
+  "exported_at": "2026-06-14T14:12:43+02:00",
+  "entries": [
+    {
+      "id": "e-week4-001",
+      "timestamp": "2026-06-14T10:15:00+02:00",
+      "parent_id": null,
+      "objective": "Clarify the Week 4 milestone task and required outputs.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Check the professor's course instruction file and explain what Week 4 requires for the cross-traffic RSU project. Focus on HW/SW codesign, FreeRTOS, ModelSim, mapping from models, and repository/report deliverables.",
+      "ai_output_summary": "The AI summarized that Week 4 is a proposal for HW/SW codesign and that Week 5 is the implementation split: software with FreeRTOS and hardware with ModelSim. It also identified that the project must keep a well-defined mapping from UPPAAL/C models to implementation artifacts.",
+      "verification": {
+        "actions": [
+          "Compared the answer with the uploaded ESLabA instruction slides, especially the organization slide listing Week 4 as HW/SW codesign proposal and Week 5 as codesign implementation.",
+          "Checked that the instruction mentions C-code with FreeRTOS, ModelSim, GitHub, and a written report chapter."
+        ],
+        "level": "primary-source-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [
+          "The answer initially used the broader phrase 'implementation' for Week 4, but the course slide makes clear that Week 4 is the proposal and Week 5 is implementation."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Section 1 Objective of Week 4",
+        "usage_type": "requirements engineering-support",
+        "direct_text_reused": false
+      },
+      "reflection": "This helped keep the milestone scope realistic: we should propose the partition and interface now, not claim that the full FreeRTOS/VHDL implementation is already finished."
+    },
+    {
+      "id": "e-week4-002",
+      "timestamp": "2026-06-14T10:27:00+02:00",
+      "parent_id": null,
+      "objective": "Connect Weeks 1–3 artifacts to the Week 4 proposal.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Using our previous requirements, UPPAAL model, and deterministic C core, write a concise recap of what is being partitioned in Week 4.",
+      "ai_output_summary": "The AI proposed a recap: Week 1 requirements, Week 2 UPPAAL model with Vehicle and RSU_Controller, Week 3 deterministic C core, then Week 4 partitioning without changing the verified safety contract.",
+      "verification": {
+        "actions": [
+          "Checked the recap against the actual Week 4 proposal structure and the course milestone list.",
+          "Verified that the partitioning explanation does not introduce new traffic behavior that was not in the UPPAAL/C model."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "Some wording was too strong about complete verification; it was revised to say that six queries were checked in the model and runtime assertions were used in C."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Section 2 Recap of Weeks 1–3",
+        "usage_type": "summarization",
+        "direct_text_reused": false
+      },
+      "reflection": "The recap made the report more traceable because it explains that the codesign proposal is based on already existing models instead of being a separate new design."
+    },
+    {
+      "id": "e-week4-003",
+      "timestamp": "2026-06-14T10:39:00+02:00",
+      "parent_id": null,
+      "objective": "Define the HW/SW partitioning rationale.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Suggest a codesign methodology for deciding which RSU functions should remain in software and which should move to hardware.",
+      "ai_output_summary": "The AI suggested the criterion: keep irregular, stateful, control-heavy, frequently changing logic in software, and move regular, parallel, timing-critical conflict checks into hardware.",
+      "verification": {
+        "actions": [
+          "Compared the suggested criterion with the functions in the C core.",
+          "Confirmed that conflict checking is pure Boolean logic while scheduling, queues, timers, and priority policies are stateful and branch-heavy."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [
+          "The answer was generic at first, so it was rewritten with the specific function names from our RSU controller."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Section 3 Codesign Methodology and Partitioning Rationale",
+        "usage_type": "comparison-structuring",
+        "direct_text_reused": false
+      },
+      "reflection": "This became the main scientific argument for the proposal: the split is based on computation type, not only convenience."
+    },
+    {
+      "id": "e-week4-004",
+      "timestamp": "2026-06-14T10:51:00+02:00",
+      "parent_id": null,
+      "objective": "Classify software-side components.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Which parts of the RSU controller should stay in FreeRTOS software and why? Use the actual functions requestVehicle, grantVehicle, finishVehicle, priorityValue, betterPriority, existsBetterGrantable, and emergencyWaiting.",
+      "ai_output_summary": "The AI classified scheduler loop, V2I/I2V/V2V messaging, state update functions, timers, priority scan, emergency hold, and aging as software because they are sequential, stateful, and policy-dependent.",
+      "verification": {
+        "actions": [
+          "Compared the classification with the Week 3 C code structure and with the Week 4 report text.",
+          "Checked that every software component maps to either a FreeRTOS task, queue, timer, mutex, or shared state update."
+        ],
+        "level": "empirical-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Section 3.1 Parts that stay in software; Section 4.1 Software part",
+        "usage_type": "modeling-support",
+        "direct_text_reused": false
+      },
+      "reflection": "This clarified why FreeRTOS is suitable: it can represent vehicle tasks, RSU task, queues, delays, and policy updates."
+    },
+    {
+      "id": "e-week4-005",
+      "timestamp": "2026-06-14T11:03:00+02:00",
+      "parent_id": null,
+      "objective": "Classify hardware-side components.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Which parts of the RSU controller should move into VHDL hardware and why? Focus on conflict(a,b), conflictsWithCrossing(i), and noCollision().",
+      "ai_output_summary": "The AI identified conflict checking as a good hardware kernel because it has no internal state, no timers, and can evaluate the 15 pairwise conflict cells for N=6 in parallel.",
+      "verification": {
+        "actions": [
+          "Manually checked N=6 gives N*(N-1)/2 = 15 pairwise combinations.",
+          "Checked that the hardware proposal only moves conflict/capacity checks and not policy decisions."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [
+          "The AI first described the hardware as if it decided the whole grant. This was corrected so the hardware only returns safe_to_grant and safety monitor bits."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Section 3.2 Parts that move to hardware; Section 4.2 Hardware part",
+        "usage_type": "modeling-support",
+        "direct_text_reused": false
+      },
+      "reflection": "This changed the design from an unrealistic all-hardware scheduler to a cleaner coprocessor architecture."
+    },
+    {
+      "id": "e-week4-006",
+      "timestamp": "2026-06-14T11:15:00+02:00",
+      "parent_id": null,
+      "objective": "Define the safe_to_grant abstraction.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Explain how canGrant(i) should look after the hardware coprocessor is introduced, and show which checks remain in software versus hardware.",
+      "ai_output_summary": "The AI proposed a canGrant(i) wrapper: waiting state, emergency waiting, hardware safe_to_grant, and existsBetterGrantable. It explained that safe_to_grant replaces the conflict-related part of capacityAvailableFor(i).",
+      "verification": {
+        "actions": [
+          "Verified that waiting and emergency policy are still software checks.",
+          "Verified that M/M/1 and M/M/2 capacity/conflict conditions can be represented in one hardware status bit.",
+          "Checked that priority ordering is not hidden inside the hardware block."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Section 5 The safe_to_grant Signal",
+        "usage_type": "code-generation",
+        "direct_text_reused": true
+      },
+      "reflection": "The wrapper made the interface easy to understand in the report and separated safety gating from scheduling policy."
+    },
+    {
+      "id": "e-week4-007",
+      "timestamp": "2026-06-14T11:27:00+02:00",
+      "parent_id": null,
+      "objective": "Design the memory-mapped HW/SW interface.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Create a minimal register interface between the FreeRTOS RSU task and the VHDL Conflict & Safety Coprocessor.",
+      "ai_output_summary": "The AI proposed STATE_VEH[i], MODE, CAND, CTRL, ST_SAFE, ST_NOCOL, ST_CWC, and ST_ALARM registers, with directions and bit widths.",
+      "verification": {
+        "actions": [
+          "Checked every register against data needed by the conflict function: origin, turn, emergency, crossing, MM_MODE, and candidate id.",
+          "Confirmed that status bits are sufficient for safe_to_grant, noCollision, conflictsWithCrossing, and collision alarm."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The first suggestion had too many debug registers; it was reduced to a small interface that fits the proposal better."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Section 6 HW/SW Interface",
+        "usage_type": "modeling-support",
+        "direct_text_reused": true
+      },
+      "reflection": "The register table gave the hardware/software boundary a concrete form and made the proposal more implementable."
+    },
+    {
+      "id": "e-week4-008",
+      "timestamp": "2026-06-14T11:39:00+02:00",
+      "parent_id": null,
+      "objective": "Map UPPAAL/C constructs to HW or SW.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Build a table that maps UPPAAL/C constructs to the proposed Week 5 implementation partition and gives one reason for each mapping.",
+      "ai_output_summary": "The AI generated a mapping table for conflict, conflictsWithCrossing, noCollision, capacityAvailableFor, priority functions, canGrant, Vehicle FSM, RSU_Controller, and communication channels.",
+      "verification": {
+        "actions": [
+          "Checked that each model function has exactly one primary implementation location.",
+          "Checked that the mapping satisfies the professor's requirement for well-defined mapping from models to implementation.",
+          "Revised rows where the AI mixed hardware and software responsibility too broadly."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Section 7 Partition Mapping (UPPAAL / C → HW or SW)",
+        "usage_type": "comparison-structuring",
+        "direct_text_reused": true
+      },
+      "reflection": "This table became the strongest traceability element from the verified model to the codesign proposal."
+    },
+    {
+      "id": "e-week4-009",
+      "timestamp": "2026-06-14T11:51:00+02:00",
+      "parent_id": null,
+      "objective": "Represent UPPAAL vehicle templates in FreeRTOS.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Explain how each UPPAAL Vehicle automaton location and clock can be represented in a FreeRTOS task.",
+      "ai_output_summary": "The AI mapped Idle, WaitingInQueue, V2V_Enter, Crossing, and V2V_Leave to a vehicle task FSM, with period and crossTime represented by FreeRTOS timers or vTaskDelay.",
+      "verification": {
+        "actions": [
+          "Checked the mapping against the UPPAAL vehicle state names used in the report.",
+          "Verified that committed enter/leave transitions are modeled as immediate task steps and not as extra waiting delays."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Section 4.1 Software part",
+        "usage_type": "modeling-support",
+        "direct_text_reused": false
+      },
+      "reflection": "This made the software design understandable for readers who know the UPPAAL model but not the FreeRTOS implementation."
+    },
+    {
+      "id": "e-week4-010",
+      "timestamp": "2026-06-14T12:03:00+02:00",
+      "parent_id": null,
+      "objective": "Represent UPPAAL communication channels in FreeRTOS.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Map req[], emg_req[], grant[], leave[], i2v_yield, v2v_enter, and v2v_leave into FreeRTOS communication mechanisms.",
+      "ai_output_summary": "The AI suggested using FreeRTOS queues for request/grant/leave messages and task notifications or one-to-many notifications for broadcast-like V2V/I2V events.",
+      "verification": {
+        "actions": [
+          "Checked the proposal against FreeRTOS concepts already taught/used in the course context.",
+          "Compared the mapping with the RSU message paths in the architecture diagram."
+        ],
+        "level": "secondary-source-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [
+          "The term 'broadcast queue' was avoided because FreeRTOS queues are normally point-to-point; the final text says one-to-many notifications for broadcast behavior."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Section 4.1 Communication",
+        "usage_type": "modeling-support",
+        "direct_text_reused": false
+      },
+      "reflection": "This improved the design because it explains how communication semantics move from UPPAAL channels into RTOS mechanisms."
+    },
+    {
+      "id": "e-week4-011",
+      "timestamp": "2026-06-14T12:15:00+02:00",
+      "parent_id": null,
+      "objective": "Define shared state and consistency mechanism.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Explain how waiting[], crossing[], origin[], turn[], emergency[], crossingCount, and emergencyNotified should be shared between RSU task, vehicle tasks, and hardware.",
+      "ai_output_summary": "The AI proposed one shared-state structure protected by a mutex, with the RSU task as the main writer that mirrors the state into hardware registers before each decision.",
+      "verification": {
+        "actions": [
+          "Checked that the state variables are exactly the ones used by the conflict checker and scheduler.",
+          "Checked that the risk of stale registers is addressed in the risk table."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The first answer implied vehicle tasks directly update hardware registers; this was rejected to avoid state drift. The final design keeps the RSU task as the single hardware register writer."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Section 4.1 Shared state; Section 10.2 Risks and mitigations",
+        "usage_type": "verification-support",
+        "direct_text_reused": false
+      },
+      "reflection": "This gave a clear mitigation for HW/SW consistency problems."
+    },
+    {
+      "id": "e-week4-012",
+      "timestamp": "2026-06-14T12:27:00+02:00",
+      "parent_id": null,
+      "objective": "Handle M/M/1 and M/M/2 in the hardware status logic.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Explain how MM_MODE affects safe_to_grant in M/M/1 and M/M/2 modes.",
+      "ai_output_summary": "The AI stated that in M/M/1 safe_to_grant is true only when crossingCount is zero, while in M/M/2 it is true when fewer than two vehicles cross and the candidate does not conflict with current crossing vehicles.",
+      "verification": {
+        "actions": [
+          "Checked against the queuing requirement from the course slides and the Week 4 proposal.",
+          "Confirmed that M/M/2 can allow V1 and V2 together only when no conflict exists."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Section 5 The safe_to_grant Signal",
+        "usage_type": "terminology-clarification",
+        "direct_text_reused": false
+      },
+      "reflection": "This connected the queuing requirement directly to the hardware status signal."
+    },
+    {
+      "id": "e-week4-013",
+      "timestamp": "2026-06-14T12:39:00+02:00",
+      "parent_id": null,
+      "objective": "Integrate emergency vehicle priority.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Explain how emergency priority should be implemented in the FreeRTOS RSU task and how it interacts with the hardware safety check.",
+      "ai_output_summary": "The AI suggested that emergencyWaiting() remains in software and blocks non-emergency grants while an emergency request exists, while hardware still checks conflicts and capacity before any grant.",
+      "verification": {
+        "actions": [
+          "Checked that emergency priority does not bypass noCollision or crossingCount.",
+          "Compared the design with the intended scenario where V0 emergency can pre-empt normal flow after yield notification."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Section 4.1 RSU controller task; Section 5 canGrant; Section 9 verification plan",
+        "usage_type": "modeling-support",
+        "direct_text_reused": false
+      },
+      "reflection": "This helped avoid a dangerous interpretation where emergency vehicles would always cross regardless of safety."
+    },
+    {
+      "id": "e-week4-014",
+      "timestamp": "2026-06-14T12:51:00+02:00",
+      "parent_id": null,
+      "objective": "Document the V4/V5 critical conflict case.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Explain why V4 north-right and V5 south-left must never cross together and how this should be checked in hardware and software.",
+      "ai_output_summary": "The AI framed V4/V5 as a regression vector and linked it to the invariant A[] not(crossing[4] && crossing[5]). Hardware conflict cell (4,5) and software assertions should both reject the state.",
+      "verification": {
+        "actions": [
+          "Checked the Week 4 proposal's critical-pair statement and verification table.",
+          "Planned a ModelSim test vector with both V4 and V5 crossing to verify that collision_alarm or noCollision failure is produced."
+        ],
+        "level": "empirical-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Section 2 Recap; Section 9 Verification and Co-Simulation Plan",
+        "usage_type": "verification-support",
+        "direct_text_reused": false
+      },
+      "reflection": "This gave a concrete safety test instead of only a general no-collision statement."
+    },
+    {
+      "id": "e-week4-015",
+      "timestamp": "2026-06-14T13:03:00+02:00",
+      "parent_id": null,
+      "objective": "Investigate starvation of V5.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "In the C simulation with strict static priority and continuous arrivals, V5 never crosses. Explain whether this violates safety and how to fix it.",
+      "ai_output_summary": "The AI explained that starvation is a liveness/fairness issue, not a direct safety violation. It suggested adding aging so long-waiting vehicles get increasing effective priority.",
+      "verification": {
+        "actions": [
+          "Checked the Week 3/Week 4 observation that V5 was not served even after extended simulation.",
+          "Confirmed that the original UPPAAL queries checked safety/reachability but did not guarantee bounded waiting for V5."
+        ],
+        "level": "empirical-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Section 8 Extension: Fairness / Aging",
+        "usage_type": "argument-critique",
+        "direct_text_reused": false
+      },
+      "reflection": "This was an important correction: a design can be collision-safe but still unfair."
+    },
+    {
+      "id": "e-week4-016",
+      "timestamp": "2026-06-14T13:15:00+02:00",
+      "parent_id": null,
+      "objective": "Design the aging/fairness term.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Suggest a simple aging formula for priority comparison that can fix V5 starvation but does not override safety.",
+      "ai_output_summary": "The AI proposed maintaining age[i] while waiting[i] is true, resetting it on grant, and comparing priorityValue(i) - k*age[i) or an equivalent effective-priority value.",
+      "verification": {
+        "actions": [
+          "Corrected the formula notation to priorityValue(i) - k*age[i].",
+          "Checked that aging is only applied after hardware safety gating and therefore cannot allow conflicting vehicles to cross."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "revised",
+        "issues": [
+          "The AI's first formula contained a small bracket typo and did not clearly separate fairness from safety. The final text explicitly says aging only reorders safe candidates."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Section 8 Extension: Fairness / Aging",
+        "usage_type": "code-generation",
+        "direct_text_reused": true
+      },
+      "reflection": "This made the fairness improvement explainable without changing the VHDL conflict checker."
+    },
+    {
+      "id": "e-week4-017",
+      "timestamp": "2026-06-14T13:27:00+02:00",
+      "parent_id": null,
+      "objective": "Define Week 5 hardware verification plan.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Create a verification plan for the VHDL Conflict & Safety Coprocessor in ModelSim.",
+      "ai_output_summary": "The AI proposed a ModelSim testbench that feeds state vectors, checks noCollision and safe_to_grant against C reference outputs, and includes the V4/V5 conflict regression.",
+      "verification": {
+        "actions": [
+          "Checked that every hardware output has at least one test: ST_SAFE, ST_NOCOL, ST_CWC, and ST_ALARM.",
+          "Added the requirement to compare against Week 3 C golden traces rather than only hand-written expected values."
+        ],
+        "level": "empirical-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Section 9 Verification and Co-Simulation Plan",
+        "usage_type": "verification-support",
+        "direct_text_reused": false
+      },
+      "reflection": "This gave the hardware part a measurable verification method, not only an architectural description."
+    },
+    {
+      "id": "e-week4-018",
+      "timestamp": "2026-06-14T13:39:00+02:00",
+      "parent_id": null,
+      "objective": "Explore exhaustive checking feasibility.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Can the hardware conflict checker be exhaustively compared with the C reference over all relevant reachable vehicle states?",
+      "ai_output_summary": "The AI reasoned that the input space is small because each vehicle only has limited origin/turn/emergency/crossing combinations, so exhaustive or near-exhaustive comparison is feasible for reachable states.",
+      "verification": {
+        "actions": [
+          "Checked that the claim should be limited to reachable or project-defined origin/turn combinations, not every arbitrary 6-bit combination.",
+          "Revised the text to avoid overclaiming full formal proof of all possible road geometries."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The AI initially implied full exhaustive verification over all possible traffic behaviors. This was narrowed to reachable state vectors for the project fleet."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Section 9 Verification and Co-Simulation Plan",
+        "usage_type": "verification-support",
+        "direct_text_reused": false
+      },
+      "reflection": "This improved scientific precision by limiting the claim to the model's defined state space."
+    },
+    {
+      "id": "e-week4-019",
+      "timestamp": "2026-06-14T13:51:00+02:00",
+      "parent_id": null,
+      "objective": "Plan FreeRTOS software verification.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Explain what the FreeRTOS implementation should reproduce from the Week 3 C trace.",
+      "ai_output_summary": "The AI suggested checking that FreeRTOS reproduces the M/M/2 overlap of V1 and V2, the emergency V0 pre-emption after I2V yield, and the three safety assertions.",
+      "verification": {
+        "actions": [
+          "Compared the proposed checks with the Week 4 verification table.",
+          "Added a log/counter based check for emergency V0 and M/M/2 concurrency."
+        ],
+        "level": "empirical-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Section 9 Verification and Co-Simulation Plan",
+        "usage_type": "verification-support",
+        "direct_text_reused": false
+      },
+      "reflection": "This made the software validation more concrete and linked it to earlier behavior."
+    },
+    {
+      "id": "e-week4-020",
+      "timestamp": "2026-06-14T14:03:00+02:00",
+      "parent_id": null,
+      "objective": "Define co-simulation acceptance criterion.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Explain how the FreeRTOS RSU task and VHDL coprocessor should be checked together.",
+      "ai_output_summary": "The AI proposed that the RSU task writes the current state and candidate to the hardware register interface, reads hw_safe_to_grant, and the test fails if the hardware result disagrees with the C reference.",
+      "verification": {
+        "actions": [
+          "Checked that the co-simulation criterion is binary and testable.",
+          "Added that ST_ALARM should be independent from the scheduling code, so safety violation detection does not depend only on software."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Section 9 Verification and Co-Simulation Plan",
+        "usage_type": "verification-support",
+        "direct_text_reused": false
+      },
+      "reflection": "This established a clear pass/fail rule for integration."
+    },
+    {
+      "id": "e-week4-021",
+      "timestamp": "2026-06-14T14:15:00+02:00",
+      "parent_id": null,
+      "objective": "Prepare risk and mitigation table.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "List the main risks for the Week 5 HW/SW implementation and give realistic mitigations.",
+      "ai_output_summary": "The AI generated risks: HW/SW state drift, interface overhead, ModelSim setup, aging breaking safety, and behavior drift from Week 3. It proposed mitigations using a single writer, mutexes, one-cycle register reads, early testbench setup, and golden vectors.",
+      "verification": {
+        "actions": [
+          "Checked each risk against the architecture.",
+          "Removed speculative risks that were not connected to the actual implementation plan."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Section 10.2 Risks and mitigations",
+        "usage_type": "argument-critique",
+        "direct_text_reused": true
+      },
+      "reflection": "This improved the proposal by showing that we know what can go wrong in Week 5."
+    },
+    {
+      "id": "e-week4-022",
+      "timestamp": "2026-06-14T14:27:00+02:00",
+      "parent_id": null,
+      "objective": "Improve architecture diagram text and layout.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Based on the current diagram, make the labels clearer and show the flow: Road and vehicles, Communication Layer, FreeRTOS software partition, VHDL hardware partition, and Verified Safety Contract.",
+      "ai_output_summary": "The AI suggested a layered diagram with arrows for V2I/I2V/V2V messages, queue events, safe_to_grant, hardware monitor feedback, and safety assertions. It also suggested shorter labels to avoid overlap.",
+      "verification": {
+        "actions": [
+          "Compared the generated diagram idea with the Week 4 proposal figures.",
+          "Manually adjusted label positions and shortened text boxes to avoid overlaps."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "revised",
+        "issues": [
+          "The first diagram text was too crowded. Some labels were moved and shortened manually."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Figure/diagram for HW/SW partition",
+        "usage_type": "idea-generation",
+        "direct_text_reused": false
+      },
+      "reflection": "The diagram became easier to explain to the professor because it separates road behavior, communication, software, hardware, and safety contract."
+    },
+    {
+      "id": "e-week4-023",
+      "timestamp": "2026-06-14T14:39:00+02:00",
+      "parent_id": null,
+      "objective": "Revise proposal wording for scientific tone.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Rewrite the Week 4 proposal in a professional but simple style without changing the technical meaning.",
+      "ai_output_summary": "The AI revised paragraphs for objective, partition rationale, safe_to_grant, verification, risks, and summary. The main technical terms were kept: UPPAAL, C core, FreeRTOS, VHDL/ModelSim, conflict matrix, safe_to_grant, and aging.",
+      "verification": {
+        "actions": [
+          "Checked that the revised wording did not change the architecture or safety contract.",
+          "Manually edited the output to keep it consistent with the actual project assumptions."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "Some sentences were too polished and not close to the team's own style. They were simplified before integration."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Whole Week 4 proposal text",
+        "usage_type": "text-revision",
+        "direct_text_reused": true
+      },
+      "reflection": "This helped make the report readable, but final responsibility remained with the team because the technical claims were checked and edited."
+    },
+    {
+      "id": "e-week4-024",
+      "timestamp": "2026-06-14T14:51:00+02:00",
+      "parent_id": null,
+      "objective": "Generate AI usage protocol and BibTeX files.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Using the professor's AI usage protocol template, create a JSON file with 20 to 25 relevant AI interactions for our Week 4 HW/SW codesign proposal and create the corresponding BibTeX entry. Student IDs are 1230473, 1230281, 1232714, 2220070.",
+      "ai_output_summary": "The AI produced a structured JSON protocol with 24 entries using the template fields: objective, AI tool, prompt, AI output summary, verification level/actions, evaluation status/issues/usefulness, integration, and reflection. It also generated a BibTeX entry that cites the machine-readable AI usage protocol.",
+      "verification": {
+        "actions": [
+          "Checked the generated JSON against the uploaded protocol template fields.",
+          "Validated the JSON syntax using a parser.",
+          "Checked that the BibTeX entry includes the milestone, topic, course, protocol version, number of documented reasoning episodes, and JSON filename."
+        ],
+        "level": "primary-source-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [
+          "The generated protocol is a cleaned documentation draft, not a literal raw chat export. It should be reviewed by the team before submission if exact prompt wording is required."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "AI Usage Protocol submission files",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "This final step created transparent documentation of AI-supported reasoning, including accepted, revised, partially accepted, and corrected interactions."
+    }
+  ]
+}
