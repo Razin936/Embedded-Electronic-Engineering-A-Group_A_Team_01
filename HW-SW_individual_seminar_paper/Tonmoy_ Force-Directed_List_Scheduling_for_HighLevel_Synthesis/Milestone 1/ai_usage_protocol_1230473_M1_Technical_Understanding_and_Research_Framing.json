@@ -1,0 +1,377 @@
+{
+  "protocol_version": "0.2",
+  "student_id": "1230473",
+  "course": "HW/SW Codesign / Embedded Electronic Engineering A",
+  "milestone": "M1 Technical Understanding and Research Framing",
+  "topic": "Force-Directed List-Scheduling for High-Level Synthesis",
+  "exported_at": "2026-06-14T20:00:00+02:00",
+  "entries": [
+    {
+      "id": "e-101d62d7",
+      "timestamp": "2026-06-14T10:00:00+02:00",
+      "parent_id": null,
+      "objective": "Identify the technical problem setting of Force-Directed List-Scheduling in High-Level Synthesis.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Explain from scratch what problem Force-Directed List-Scheduling solves in High-Level Synthesis, but keep the answer as technical notes, not final paper prose.",
+      "ai_output_summary": "The AI framed the problem as scheduling operations from a data-flow or control-data-flow graph into clock steps while respecting precedence and limited resources. It emphasized that scheduling influences latency, resource usage, and later binding.",
+      "verification": {
+        "actions": [
+          "Compared the explanation with De Micheli's scheduling chapter where ASAP, ALAP, list scheduling, force-directed scheduling, and resource-constrained scheduling are organized as architectural synthesis topics.",
+          "Checked against Teich/Haubelt that scheduling is one of the fundamental synthesis tasks together with allocation and binding.",
+          "Removed generic claims about modern HLS tools unless they were directly needed."
+        ],
+        "level": "primary-source-check"
+      },
+      "evaluation": {
+        "status": "revised",
+        "issues": [
+          "The first answer overused the phrase 'optimal'; I corrected it to 'heuristic' because force-directed and list-based variants do not generally guarantee global optimality.",
+          "Needed manual clarification between pure Force-Directed Scheduling and Force-Directed List-Scheduling."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M1 Problem statement and motivation",
+        "usage_type": "terminology-clarification",
+        "direct_text_reused": false
+      },
+      "reflection": "I learned that the milestone must start from the scheduling problem itself, not from a polished abstract. The central framing is resource-aware scheduling in HLS, not generic task scheduling."
+    },
+    {
+      "id": "e-1029c3cd",
+      "timestamp": "2026-06-14T10:09:00+02:00",
+      "parent_id": null,
+      "objective": "Clarify the relation between HLS, architectural synthesis, RTL, datapath, and control unit.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Give me a short technical explanation of how a behavioral description becomes RTL in HLS, and where scheduling fits between C/SystemC and RTL.",
+      "ai_output_summary": "The AI described HLS as converting behavioral algorithms into a datapath/control-path architecture. Scheduling assigns operations to cycles; allocation chooses resource types and counts; binding maps operations and variables to hardware units and registers.",
+      "verification": {
+        "actions": [
+          "Verified the three synthesis tasks against Teich/Haubelt's explanation of allocation, scheduling, and binding.",
+          "Checked De Micheli's architectural synthesis contents on temporal scheduling and spatial binding.",
+          "Kept the explanation as notes for the milestone, not as final prose."
+        ],
+        "level": "primary-source-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M1 Core technical idea",
+        "usage_type": "summarization",
+        "direct_text_reused": false
+      },
+      "reflection": "This helped me place FDLS inside the complete HLS flow: behavior -> scheduled operations -> bound resources -> RTL datapath/control."
+    },
+    {
+      "id": "e-103ce4eb",
+      "timestamp": "2026-06-14T10:18:00+02:00",
+      "parent_id": null,
+      "objective": "Identify the formal model used for scheduling.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "What formal objects do I need for a technical briefing on Force-Directed List-Scheduling: graph, operations, latency, mobility, resources, and schedule variables?",
+      "ai_output_summary": "The AI listed a directed acyclic data-flow graph G=(V,E), operation type function type(v), duration or unit-delay assumption, ASAP/ALAP times, mobility interval, resource limits, and a schedule function s:V -> time step.",
+      "verification": {
+        "actions": [
+          "Checked that data-flow graphs and control-data-flow graphs are valid modeling bases in Teich/Haubelt.",
+          "Checked that De Micheli treats scheduling as assigning operations to time steps under precedence and resource constraints.",
+          "Manually removed any unnecessary advanced mathematical notation that would make the 2-4 page briefing unclear."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The AI initially assumed all operations have unit latency. I kept this only as a simplifying assumption and noted that multi-cycle operations are possible."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M1 Formalism / model",
+        "usage_type": "modeling-support",
+        "direct_text_reused": false
+      },
+      "reflection": "The key formalism is simple enough for the first milestone: operations as graph nodes, dependencies as edges, time steps as schedule slots, and resources as constraints."
+    },
+    {
+      "id": "e-104a5689",
+      "timestamp": "2026-06-14T10:28:00+02:00",
+      "parent_id": null,
+      "objective": "Understand ASAP, ALAP, mobility, and probability distribution before force calculation.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Explain ASAP, ALAP, mobility, and operation probability distribution for Force-Directed Scheduling using a small HLS scheduling example.",
+      "ai_output_summary": "The AI explained ASAP as earliest feasible cycle, ALAP as latest feasible cycle under a latency bound, mobility as the interval between them, and probability as 1/mobility-window-size over possible cycles before fixing an operation.",
+      "verification": {
+        "actions": [
+          "Validated the logic by manually computing a small example with three dependent operations.",
+          "Checked that ASAP/ALAP are prerequisite scheduling concepts in both Teich/Haubelt and De Micheli.",
+          "Corrected notation so mobility includes all feasible integer time steps, not only the difference ALAP-ASAP."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "revised",
+        "issues": [
+          "The first explanation confused mobility length with mobility value; I corrected it to a set/window of feasible cycles.",
+          "Needed manual example to avoid accepting the formula blindly."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M1 Relevant algorithmic basics",
+        "usage_type": "terminology-clarification",
+        "direct_text_reused": false
+      },
+      "reflection": "This became one of the main technical checkpoints. Without ASAP/ALAP and mobility, force computation is impossible to explain."
+    },
+    {
+      "id": "e-1050364e",
+      "timestamp": "2026-06-14T10:39:00+02:00",
+      "parent_id": null,
+      "objective": "Understand the force computation idea without copying source text.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Explain force computation in Force-Directed Scheduling in my own words: distribution graph, self-force, predecessor/successor force, and total force.",
+      "ai_output_summary": "The AI explained that the distribution graph estimates expected resource demand per time step. Scheduling one operation changes this distribution; the force measures the change. A low or negative total force is preferred because it tends to balance resource usage and reduce peaks.",
+      "verification": {
+        "actions": [
+          "Checked the force terminology against the classic force-directed scheduling description from Paulin and Knight as cited in HLS literature.",
+          "Checked De Micheli's treatment of force-directed scheduling as a heuristic scheduling algorithm.",
+          "Manually rewrote the concept using my own wording and did not reuse the AI's sentences."
+        ],
+        "level": "primary-source-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The AI gave a simplified formula but did not fully prove it. I kept the intuition and marked the exact force equations as something to verify further.",
+          "The AI did not clearly separate self-force from predecessor/successor force in the first attempt."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M1 Core technical idea",
+        "usage_type": "summarization",
+        "direct_text_reused": false
+      },
+      "reflection": "I understood the central idea: schedule decisions are scored by how much they change expected resource pressure across cycles."
+    },
+    {
+      "id": "e-106eef89",
+      "timestamp": "2026-06-14T10:49:00+02:00",
+      "parent_id": null,
+      "objective": "Clarify how list scheduling is combined with force-directed priority.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "What makes Force-Directed List-Scheduling different from ordinary list scheduling and from pure force-directed scheduling?",
+      "ai_output_summary": "The AI explained that ordinary list scheduling chooses ready operations by priority under resource limits, while force-directed scheduling evaluates candidate time placements using force. FDLS can use force as a priority metric inside a ready-list or list-scheduling framework.",
+      "verification": {
+        "actions": [
+          "Checked De Micheli's separate presentation of list scheduling and force-directed scheduling.",
+          "Checked Teich/Haubelt's list scheduling and force-directed scheduling sections to avoid merging them incorrectly.",
+          "Marked the term 'Force-Directed List-Scheduling' as a hybrid/variant needing careful wording in the milestone."
+        ],
+        "level": "multi-source-validation"
+      },
+      "evaluation": {
+        "status": "revised",
+        "issues": [
+          "The AI initially made FDLS sound like a universally standardized single algorithm. I corrected the wording to 'hybrid scheduling strategy' because implementations may differ."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M1 Algorithm positioning",
+        "usage_type": "comparison-structuring",
+        "direct_text_reused": false
+      },
+      "reflection": "This clarification is important for my exact topic. The paper must not accidentally discuss only pure FDS or only list scheduling."
+    },
+    {
+      "id": "e-10750b53",
+      "timestamp": "2026-06-14T11:01:00+02:00",
+      "parent_id": null,
+      "objective": "Identify assumptions and scope limitations.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "List the important assumptions behind Force-Directed List-Scheduling for HLS and explain which assumptions may be limitations.",
+      "ai_output_summary": "The AI listed assumptions such as known operation graph, static scheduling, known resource types, finite latency window, deterministic operation delays, and approximate resource probability. It also identified limitations for dynamic control flow, memory bottlenecks, and large design spaces.",
+      "verification": {
+        "actions": [
+          "Compared assumptions with the scheduling models in De Micheli and Teich/Haubelt.",
+          "Removed speculative statements about commercial tools that were not verified.",
+          "Kept only assumptions directly connected to HLS scheduling."
+        ],
+        "level": "primary-source-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M1 Assumptions and scope limitations",
+        "usage_type": "argument-critique",
+        "direct_text_reused": false
+      },
+      "reflection": "The assumptions are not just details; they define when the algorithm can be explained cleanly and when it may fail."
+    },
+    {
+      "id": "e-1086d425",
+      "timestamp": "2026-06-14T11:12:00+02:00",
+      "parent_id": null,
+      "objective": "Analyze runtime, memory, and scalability at a first-milestone level.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Give me a careful first-level runtime and memory discussion for Force-Directed List-Scheduling without pretending exact complexity if implementation details vary.",
+      "ai_output_summary": "The AI suggested describing cost drivers rather than a single universal complexity: number of operations, number of cycles in mobility windows, number of resource types, recomputation of distribution graphs, and updates after each scheduled operation.",
+      "verification": {
+        "actions": [
+          "Checked that the professor's milestone asks for runtime, memory, scalability, or resource aspects where applicable.",
+          "Kept the discussion qualitative because exact complexity depends on data structures and update strategy.",
+          "Verified that FDLS is a heuristic, so scalability is a key evaluation dimension."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M1 Runtime, memory, and scalability",
+        "usage_type": "argument-critique",
+        "direct_text_reused": false
+      },
+      "reflection": "I learned to write complexity as implementation-dependent cost drivers instead of inventing a fake precise Big-O formula."
+    },
+    {
+      "id": "e-109aa0d4",
+      "timestamp": "2026-06-14T11:23:00+02:00",
+      "parent_id": null,
+      "objective": "Prepare a small application example for the technical briefing.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Create a small HLS example with additions and multiplications that can demonstrate operation scheduling, resource constraints, and FDLS intuition.",
+      "ai_output_summary": "The AI proposed a small arithmetic expression/data-flow graph with multiplications and additions, showing that parallel operations may compete for limited multipliers or adders. This can be used to illustrate why force-based priority tries to avoid resource peaks.",
+      "verification": {
+        "actions": [
+          "Drew the example graph manually and checked precedence constraints.",
+          "Confirmed that the example can be scheduled by hand without needing a full HLS tool.",
+          "Adjusted the example so it fits a short milestone briefing instead of becoming a full implementation section."
+        ],
+        "level": "empirical-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The AI's first example had too many nodes for a short briefing. I reduced it to a small expression graph."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M1 Example / intuition",
+        "usage_type": "idea-generation",
+        "direct_text_reused": false
+      },
+      "reflection": "A small graph is useful because it forces me to understand the algorithm rather than only define it."
+    },
+    {
+      "id": "e-10a0c26e",
+      "timestamp": "2026-06-14T11:33:00+02:00",
+      "parent_id": null,
+      "objective": "Document unclear points for professor feedback.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "What unclear points and feedback questions should I document for a first milestone on Force-Directed List-Scheduling?",
+      "ai_output_summary": "The AI suggested questions about exact definition of FDLS in the assigned reference, treatment of multi-cycle operations, memory operations, whether C++ implementation should implement full FDS or only the force computation, and how much RTL context is expected.",
+      "verification": {
+        "actions": [
+          "Compared the suggested questions with my actual uncertainties.",
+          "Removed questions that were too broad or not relevant to the seminar topic.",
+          "Kept questions that help clarify professor expectations."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M1 Open points and questions",
+        "usage_type": "idea-generation",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction helped me make uncertainty visible instead of hiding it. That matches the milestone purpose."
+    },
+    {
+      "id": "e-10b5f9bd",
+      "timestamp": "2026-06-14T11:44:00+02:00",
+      "parent_id": null,
+      "objective": "Check if the M1 content satisfies the professor's checklist.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Review my planned Milestone 1 structure against the professor's checklist: problem, contribution, formalism, assumptions, runtime/memory/scalability, and open questions.",
+      "ai_output_summary": "The AI mapped the planned sections to the checklist and pointed out that I should avoid publication-style prose. It recommended bullet points, formulas, pseudocode fragments, and concise technical notes.",
+      "verification": {
+        "actions": [
+          "Checked against the provided milestone checklist notebook that M1 should be a short structured technical briefing and not polished final prose.",
+          "Verified that M1-M3 should emphasize reasoning, analysis, and structured notes.",
+          "Ensured all planned sections correspond to professor's expected output."
+        ],
+        "level": "secondary-source-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M1 Final checklist validation",
+        "usage_type": "verification-support",
+        "direct_text_reused": false
+      },
+      "reflection": "This final check made the M1 artifact closer to the professor's expected milestone style."
+    }
+  ]
+}
