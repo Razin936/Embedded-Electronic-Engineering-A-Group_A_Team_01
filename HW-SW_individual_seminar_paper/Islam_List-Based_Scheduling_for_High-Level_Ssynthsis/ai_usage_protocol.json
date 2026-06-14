@@ -1,0 +1,90 @@
+{
+  "ai_usage_protocol": {
+    "document_title": "List-Based Scheduling for High-Level Synthesis",
+    "author": {
+      "name": "Md Azadul Islam",
+      "student_id": "2220070",
+      "institution": "Hamm-Lippstadt University of Applied Sciences",
+      "course_or_context": "HW/SW Co-design seminar paper"
+    },
+    "date": "2026-06-14",
+    "ai_tool": {
+      "tool_name": "ChatGPT",
+      "model": "GPT-5.5 Thinking",
+      "provider": "OpenAI"
+    },
+    "purpose_of_ai_use": [
+      "Explaining List-Based Scheduling in beginner-friendly language",
+      "Structuring the seminar paper",
+      "Improving academic wording and clarity",
+      "Generating an initial LaTeX/IEEE-style paper draft",
+      "Helping prepare C++ implementation logic for the scheduling example",
+      "Helping prepare VHDL RTL examples and QuestaSim simulation guidance",
+      "Debugging command-line, PowerShell, and QuestaSim workflow issues",
+      "Preparing captions and explanation text for the implementation screenshots"
+    ],
+    "human_contribution": [
+      "Selected the seminar topic",
+      "Provided the main references",
+      "Created and ran the C++ implementation locally",
+      "Compiled and simulated the VHDL design in QuestaSim",
+      "Generated the PowerShell and QuestaSim screenshots",
+      "Reviewed and selected the final implementation results",
+      "Remains responsible for checking correctness, citations, and course compliance"
+    ],
+    "not_used_for": [
+      "Fabricating experimental results",
+      "Replacing the author's own understanding",
+      "Submitting unreviewed text without author verification",
+      "Bypassing plagiarism or academic integrity requirements"
+    ],
+    "technical_results_used_in_paper": [
+      {
+        "case": "1 ALU + 1 Multiplier",
+        "source": "C++ scheduler output and VHDL RTL simulation",
+        "latency_cycles": 4,
+        "explanation": "The two addition operations are scheduled in separate cycles because only one ALU is available."
+      },
+      {
+        "case": "2 ALUs + 1 Multiplier",
+        "source": "C++ scheduler output and VHDL RTL simulation",
+        "latency_cycles": 3,
+        "explanation": "The two independent addition operations execute in parallel because two ALUs are available."
+      },
+      {
+        "case": "VHDL/QuestaSim verification",
+        "source": "QuestaSim waveform",
+        "output": "z = 46",
+        "explanation": "Both RTL designs compute the same correct result, while the 2-ALU design finishes earlier."
+      }
+    ],
+    "references_used": [
+      {
+        "citation_key": "teich2007",
+        "type": "book",
+        "used_for": [
+          "High-Level Synthesis background",
+          "Allocation, scheduling, and binding concepts",
+          "Resource-constrained scheduling context"
+        ]
+      },
+      {
+        "citation_key": "demicheli1994",
+        "type": "book",
+        "used_for": [
+          "Architectural synthesis background",
+          "Scheduling and binding concepts",
+          "List scheduling as a heuristic scheduling method"
+        ]
+      }
+    ],
+    "disclosure_statement_for_paper": "AI assistance was used to support explanation, structuring, wording, LaTeX formatting, and debugging guidance. The C++ outputs, VHDL/QuestaSim waveform, interpretation of results, and final submission responsibility remain with the author.",
+    "integrity_checklist": {
+      "citations_added_for_theory": true,
+      "own_results_identified": true,
+      "ai_assistance_disclosed": true,
+      "final_text_to_be_reviewed_by_author": true,
+      "plagiarism_checker_recommended_before_submission": true
+    }
+  }
+}
