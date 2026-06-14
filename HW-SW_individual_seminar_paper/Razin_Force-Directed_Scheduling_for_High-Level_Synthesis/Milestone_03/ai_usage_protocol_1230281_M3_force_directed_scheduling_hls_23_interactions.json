@@ -1,0 +1,752 @@
+{
+  "protocol_version": "0.2",
+  "student_id": "1230281",
+  "course": "HW/SW Codesign",
+  "milestone": "M3",
+  "topic": "Force-Directed Scheduling for High-Level Synthesis",
+  "exported_at": "2026-06-14T11:59:44+00:00",
+  "entries": [
+    {
+      "id": "e-305493db",
+      "timestamp": "2026-06-15T11:32:00+00:00",
+      "parent_id": null,
+      "objective": "Define the implementation goal for M3.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "For M3, what should I implement for Force-Directed Scheduling in C++ so that it matches the professor requirement?",
+      "ai_output_summary": "The AI identified the main feature as force computation and candidate selection, supported by ASAP/ALAP and distribution graph construction.",
+      "verification": {
+        "actions": [
+          "Checked the professor slide requiring implementation of the main feature in C/C++.",
+          "Compared with prior feedback that ASAP/ALAP are supporting machinery while force computation is the core idea."
+        ],
+        "level": "multi-source-validation"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M3 implementation objective",
+        "usage_type": "code-generation",
+        "direct_text_reused": false
+      },
+      "reflection": "This fixed the implementation scope and avoided attempting a full HLS compiler."
+    },
+    {
+      "id": "e-05bcef60",
+      "timestamp": "2026-06-15T11:39:00+00:00",
+      "parent_id": null,
+      "objective": "Design the C++ data structures.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Design simple C++ data structures for operations, dependencies, operation type, ASAP/ALAP times, and scheduled step.",
+      "ai_output_summary": "The AI proposed structs for operations, vectors for dependencies, operation type labels, and fields for ASAP, ALAP, mobility, and fixed schedule.",
+      "verification": {
+        "actions": [
+          "Checked that the structures are sufficient for the five-operation example.",
+          "Kept code simple enough to explain in the paper."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M3 C++ design",
+        "usage_type": "code-generation",
+        "direct_text_reused": false
+      },
+      "reflection": "The data structure design supports explanation and screenshots."
+    },
+    {
+      "id": "e-2a3dae57",
+      "timestamp": "2026-06-15T11:46:00+00:00",
+      "parent_id": null,
+      "objective": "Implement ASAP computation.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Generate C++ code for ASAP scheduling on a small DAG of HLS operations.",
+      "ai_output_summary": "The AI generated topological-style ASAP computation based on predecessor finish times.",
+      "verification": {
+        "actions": [
+          "Compiled the code locally.",
+          "Tested with a manually calculated dependency chain.",
+          "Checked output against the selected example."
+        ],
+        "level": "empirical-check"
+      },
+      "evaluation": {
+        "status": "revised",
+        "issues": [
+          "The first version needed indexing correction for control steps."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M3 C++ implementation",
+        "usage_type": "code-generation",
+        "direct_text_reused": false
+      },
+      "reflection": "This provided the earliest-time foundation for the force calculation."
+    },
+    {
+      "id": "e-6c9d5c13",
+      "timestamp": "2026-06-15T11:53:00+00:00",
+      "parent_id": null,
+      "objective": "Implement ALAP computation.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Generate C++ code for ALAP scheduling under a latency bound L.",
+      "ai_output_summary": "The AI generated reverse traversal logic to compute latest legal control steps for each operation.",
+      "verification": {
+        "actions": [
+          "Compiled and ran the code.",
+          "Compared ALAP results with manual calculations.",
+          "Corrected off-by-one handling around latency L."
+        ],
+        "level": "empirical-check"
+      },
+      "evaluation": {
+        "status": "revised",
+        "issues": [
+          "Initial off-by-one issue was corrected before integration."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M3 C++ implementation",
+        "usage_type": "code-generation",
+        "direct_text_reused": false
+      },
+      "reflection": "The correction made the mobility windows reliable."
+    },
+    {
+      "id": "e-382c0c24",
+      "timestamp": "2026-06-15T12:00:00+00:00",
+      "parent_id": null,
+      "objective": "Implement operation probability windows.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Write C++ code to compute operation probabilities over ASAP/ALAP time frames.",
+      "ai_output_summary": "The AI generated logic that assigns uniform probability across a node time frame and probability one for fixed operations.",
+      "verification": {
+        "actions": [
+          "Printed probability values for each operation.",
+          "Verified that probabilities over the legal time frame sum to one."
+        ],
+        "level": "empirical-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M3 C++ implementation",
+        "usage_type": "code-generation",
+        "direct_text_reused": false
+      },
+      "reflection": "This was necessary to construct the distribution graph."
+    },
+    {
+      "id": "e-a70a4f66",
+      "timestamp": "2026-06-15T12:07:00+00:00",
+      "parent_id": null,
+      "objective": "Implement the distribution graph.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Generate C++ logic for multiplier and adder distribution graphs from operation probabilities.",
+      "ai_output_summary": "The AI created code to accumulate expected resource usage per control step and per operation type.",
+      "verification": {
+        "actions": [
+          "Ran the code and checked distribution values manually.",
+          "Confirmed that fixed operations update the distribution correctly."
+        ],
+        "level": "empirical-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M3 C++ implementation",
+        "usage_type": "code-generation",
+        "direct_text_reused": false
+      },
+      "reflection": "The distribution graph became visible output for explaining FDS behavior."
+    },
+    {
+      "id": "e-5cfba5a3",
+      "timestamp": "2026-06-15T12:14:00+00:00",
+      "parent_id": null,
+      "objective": "Implement self-force calculation.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Write the C++ function that calculates self-force for assigning operation v to step s.",
+      "ai_output_summary": "The AI generated a candidate-force function based on changes in the distribution graph for the operation resource type.",
+      "verification": {
+        "actions": [
+          "Compared the formula with M2 notes.",
+          "Ran a trace showing candidate forces for different control steps.",
+          "Manually checked one candidate calculation."
+        ],
+        "level": "empirical-check"
+      },
+      "evaluation": {
+        "status": "revised",
+        "issues": [
+          "The first code draft did not clearly restore state after trial assignment; this was fixed."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M3 force computation",
+        "usage_type": "code-generation",
+        "direct_text_reused": false
+      },
+      "reflection": "This was the central implementation feature."
+    },
+    {
+      "id": "e-7c4312aa",
+      "timestamp": "2026-06-15T12:21:00+00:00",
+      "parent_id": null,
+      "objective": "Handle dependency-window update after trial assignment.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "How should the C++ implementation update feasible windows when an operation is tentatively assigned?",
+      "ai_output_summary": "The AI suggested recomputing feasible ASAP/ALAP windows after each tentative assignment to capture predecessor and successor effects in a simple implementation.",
+      "verification": {
+        "actions": [
+          "Checked that recomputation preserves dependencies.",
+          "Used this as a clear implementation alternative to a complex symbolic predecessor/successor-force derivation."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "This is a simplified implementation strategy and was documented as such."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M3 implementation method",
+        "usage_type": "verification-support",
+        "direct_text_reused": false
+      },
+      "reflection": "The design traded textbook elegance for correctness and explainability."
+    },
+    {
+      "id": "e-20f53e66",
+      "timestamp": "2026-06-15T12:28:00+00:00",
+      "parent_id": null,
+      "objective": "Select minimum-force candidate.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Generate C++ code that evaluates all unscheduled operation-step candidates and selects the minimum-force candidate.",
+      "ai_output_summary": "The AI created an iteration loop over unscheduled operations and their legal time frames, selecting the candidate with minimum total force.",
+      "verification": {
+        "actions": [
+          "Compiled and ran the loop.",
+          "Checked deterministic tie breaking by operation order and step.",
+          "Verified that fixed operations are not rescheduled."
+        ],
+        "level": "empirical-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M3 scheduling loop",
+        "usage_type": "code-generation",
+        "direct_text_reused": false
+      },
+      "reflection": "This produced a complete constructive scheduler instead of only isolated formulas."
+    },
+    {
+      "id": "e-a551a976",
+      "timestamp": "2026-06-15T12:35:00+00:00",
+      "parent_id": null,
+      "objective": "Create the five-operation application example.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Create a small FDS example with 3 multiplications and 2 additions that shows reduced multiplier peak compared with ASAP.",
+      "ai_output_summary": "The AI proposed a compact graph and expected schedule where force-directed placement spreads multiplication operations across steps.",
+      "verification": {
+        "actions": [
+          "Matched the example to the C++ source.",
+          "Manually checked dependencies and resource types.",
+          "Confirmed that output can be shown in the paper."
+        ],
+        "level": "empirical-check"
+      },
+      "evaluation": {
+        "status": "revised",
+        "issues": [
+          "Some operation names were changed to be clearer in the final code."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M3 application example",
+        "usage_type": "code-generation",
+        "direct_text_reused": false
+      },
+      "reflection": "The example makes the implementation understandable with screenshots."
+    },
+    {
+      "id": "e-2e79fdf7",
+      "timestamp": "2026-06-15T12:42:00+00:00",
+      "parent_id": null,
+      "objective": "Generate terminal build instructions.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Give exact Windows PowerShell commands to compile and run the C++ FDS implementation.",
+      "ai_output_summary": "The AI provided commands using g++/MinGW, executable naming, and example run steps.",
+      "verification": {
+        "actions": [
+          "Checked commands in the intended Windows folder.",
+          "Adjusted path instructions for folders containing spaces and ampersands."
+        ],
+        "level": "empirical-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M3 reproducibility",
+        "usage_type": "verification-support",
+        "direct_text_reused": false
+      },
+      "reflection": "The build instructions support reproducibility for GitHub and the paper."
+    },
+    {
+      "id": "e-5a742102",
+      "timestamp": "2026-06-15T12:49:00+00:00",
+      "parent_id": null,
+      "objective": "Interpret the program output.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Explain the FDS program output line by line so I can add screenshots and explanation in the implementation section.",
+      "ai_output_summary": "The AI explained ASAP peak resource usage, FDS selected steps, candidate forces, final schedule, and the comparison result.",
+      "verification": {
+        "actions": [
+          "Compared the explanation with actual terminal output.",
+          "Removed any explanation not visible in the output."
+        ],
+        "level": "empirical-check"
+      },
+      "evaluation": {
+        "status": "revised",
+        "issues": [
+          "Some early wording overinterpreted the output; final version stayed close to observed values."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M3 result interpretation",
+        "usage_type": "summarization",
+        "direct_text_reused": false
+      },
+      "reflection": "This helped transform screenshots into scientific evidence."
+    },
+    {
+      "id": "e-2bd9c10f",
+      "timestamp": "2026-06-15T12:56:00+00:00",
+      "parent_id": null,
+      "objective": "Prepare code comments for clarity.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Improve the C++ comments so each function is understandable for a professor reading the code.",
+      "ai_output_summary": "The AI suggested concise comments for ASAP, ALAP, distribution graph, candidate-force evaluation, and final schedule output.",
+      "verification": {
+        "actions": [
+          "Kept only comments that explain algorithmic purpose.",
+          "Removed verbose comments that repeated obvious C++ syntax."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "Some generated comments were too tutorial-like and were shortened."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M3 code documentation",
+        "usage_type": "text-revision",
+        "direct_text_reused": false
+      },
+      "reflection": "The comments improved readability without replacing actual explanation."
+    },
+    {
+      "id": "e-8712395e",
+      "timestamp": "2026-06-15T13:03:00+00:00",
+      "parent_id": null,
+      "objective": "Check implementation against M2 formulas.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Compare the C++ implementation with the M2 formal description and identify mismatches.",
+      "ai_output_summary": "The AI checked whether ASAP/ALAP, probability, distribution, force calculation, candidate selection, and final schedule correspond to the formal algorithm.",
+      "verification": {
+        "actions": [
+          "Reviewed each function against the M2 pseudocode.",
+          "Fixed mismatch in step indexing and clarified simplified dependency update."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "revised",
+        "issues": [
+          "The implementation is a didactic subset, not a full industrial FDS engine."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M3 validation",
+        "usage_type": "verification-support",
+        "direct_text_reused": false
+      },
+      "reflection": "This consistency check was essential before using the code as evidence."
+    },
+    {
+      "id": "e-b72dc68c",
+      "timestamp": "2026-06-15T13:10:00+00:00",
+      "parent_id": null,
+      "objective": "Discuss runtime overhead based on code.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Based on the C++ implementation, explain runtime overhead in the report.",
+      "ai_output_summary": "The AI related runtime to the number of operations, time-frame sizes, candidate trials, distribution recomputation, and repeated scheduling iterations.",
+      "verification": {
+        "actions": [
+          "Checked the loops in the actual code.",
+          "Kept the discussion qualitative because the implementation is small and educational."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M3 runtime discussion",
+        "usage_type": "argument-critique",
+        "direct_text_reused": false
+      },
+      "reflection": "The runtime explanation became more concrete after connecting it to code structure."
+    },
+    {
+      "id": "e-30c7b219",
+      "timestamp": "2026-06-15T13:17:00+00:00",
+      "parent_id": null,
+      "objective": "Prepare a minimal RTL/VHDL demonstration plan.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "What minimal VHDL/RTL demonstration can represent the output of the FDS schedule without implementing a full HLS tool?",
+      "ai_output_summary": "The AI suggested a small RTL-style demonstration with functional units, registers, and a controller schedule corresponding to the C++ output.",
+      "verification": {
+        "actions": [
+          "Checked professor slide saying HLS output is an RTL netlist and RTL components can be VHDL entities.",
+          "Limited the scope to a demonstration rather than full automatic RTL generation."
+        ],
+        "level": "primary-source-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M3 RTL outlook",
+        "usage_type": "modeling-support",
+        "direct_text_reused": false
+      },
+      "reflection": "This supports the final requirement without overstating implementation maturity."
+    },
+    {
+      "id": "e-3910597a",
+      "timestamp": "2026-06-15T13:24:00+00:00",
+      "parent_id": null,
+      "objective": "Reject an overambitious full VHDL implementation.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Generate a full VHDL implementation of the complete FDS algorithm.",
+      "ai_output_summary": "The AI attempted to outline a large hardware implementation of the scheduler itself, but this was judged inappropriate for the milestone scope.",
+      "verification": {
+        "actions": [
+          "Compared with professor expectation: C/C++ implementation of the main feature and RTL output example, not a hardware implementation of the scheduler algorithm.",
+          "Rejected the generated full-hardware direction."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "rejected",
+        "issues": [
+          "The output was too large, hard to verify, and would distract from the main C++ FDS feature."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": false,
+        "section": "Rejected implementation idea",
+        "usage_type": "code-generation",
+        "direct_text_reused": false
+      },
+      "reflection": "This rejected interaction is documented because it changed the implementation strategy."
+    },
+    {
+      "id": "e-8d3ae468",
+      "timestamp": "2026-06-15T13:31:00+00:00",
+      "parent_id": null,
+      "objective": "Write implementation-section bullets.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Write concise bullet points for the paper implementation section: input graph, algorithm functions, output, and result.",
+      "ai_output_summary": "The AI produced implementation-section bullets connecting code structure to the formal FDS algorithm and observed output.",
+      "verification": {
+        "actions": [
+          "Manually rewrote the bullets to avoid direct text reuse.",
+          "Checked against actual code and terminal output."
+        ],
+        "level": "empirical-check"
+      },
+      "evaluation": {
+        "status": "revised",
+        "issues": [
+          "AI wording was polished but needed personal rewriting."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M3 report writing",
+        "usage_type": "text-revision",
+        "direct_text_reused": false
+      },
+      "reflection": "The interaction helped structure the section but not replace authorship."
+    },
+    {
+      "id": "e-a9484600",
+      "timestamp": "2026-06-15T13:38:00+00:00",
+      "parent_id": null,
+      "objective": "Create screenshot captions.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Create professional captions for screenshots of compiling, running, and output of the FDS C++ program.",
+      "ai_output_summary": "The AI suggested captions describing the build command, ASAP baseline, FDS result, and resource peak comparison.",
+      "verification": {
+        "actions": [
+          "Checked that captions match screenshots.",
+          "Removed claims not visible in the screenshots."
+        ],
+        "level": "empirical-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M3 figures",
+        "usage_type": "text-revision",
+        "direct_text_reused": false
+      },
+      "reflection": "The captions became more specific after verification."
+    },
+    {
+      "id": "e-4f88e4f5",
+      "timestamp": "2026-06-15T13:45:00+00:00",
+      "parent_id": null,
+      "objective": "Prepare a GitHub README for implementation.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Draft a README for the FDS C++ implementation folder: purpose, build, run, files, expected output, and relation to HLS.",
+      "ai_output_summary": "The AI produced a README structure explaining the educational implementation and how to reproduce the run.",
+      "verification": {
+        "actions": [
+          "Adjusted file names and commands to match the actual folder.",
+          "Kept the README concise for GitHub."
+        ],
+        "level": "empirical-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "Some generic README text was removed."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M3 GitHub documentation",
+        "usage_type": "text-revision",
+        "direct_text_reused": false
+      },
+      "reflection": "This improved reproducibility and submission quality."
+    },
+    {
+      "id": "e-1a78ced1",
+      "timestamp": "2026-06-15T13:52:00+00:00",
+      "parent_id": null,
+      "objective": "Prepare professor Q&A for implementation.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "What might the professor ask about the C++ implementation and how should I answer?",
+      "ai_output_summary": "The AI prepared answers about what was implemented, why C++ is enough for main feature demonstration, how force is calculated, and why the output is an RTL schedule rather than a complete netlist.",
+      "verification": {
+        "actions": [
+          "Checked answers against the code and professor slide.",
+          "Corrected the claim that C++ output alone is a full RTL netlist."
+        ],
+        "level": "multi-source-validation"
+      },
+      "evaluation": {
+        "status": "revised",
+        "issues": [
+          "Needed correction: schedule output is evidence for RTL mapping, not the complete RTL netlist."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M3 oral preparation",
+        "usage_type": "argument-critique",
+        "direct_text_reused": false
+      },
+      "reflection": "This made the implementation defensible in discussion."
+    },
+    {
+      "id": "e-add5047d",
+      "timestamp": "2026-06-15T13:59:00+00:00",
+      "parent_id": null,
+      "objective": "Compare ASAP and FDS result fairly.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Explain the result comparison between ASAP and FDS without overclaiming.",
+      "ai_output_summary": "The AI described the observed example result as showing lower peak multiplier demand under FDS for the chosen example, while noting that a small example does not prove global superiority.",
+      "verification": {
+        "actions": [
+          "Checked actual output values.",
+          "Rewrote to avoid claiming universal improvement."
+        ],
+        "level": "empirical-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M3 evaluation",
+        "usage_type": "argument-critique",
+        "direct_text_reused": false
+      },
+      "reflection": "This made the evaluation scientifically cautious."
+    },
+    {
+      "id": "e-b4922e90",
+      "timestamp": "2026-06-15T14:06:00+00:00",
+      "parent_id": null,
+      "objective": "Summarize M3 final outcome.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Summarize the M3 implementation outcome professionally for the AI usage protocol.",
+      "ai_output_summary": "The AI summarized that M3 produced a reproducible C++ demonstration of ASAP/ALAP, distribution graph, force evaluation, candidate selection, result output, and an RTL/VHDL mapping outlook.",
+      "verification": {
+        "actions": [
+          "Compared the summary with actual implementation materials.",
+          "Ensured rejected and revised interactions were also reflected in the protocol."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M3 conclusion",
+        "usage_type": "summarization",
+        "direct_text_reused": false
+      },
+      "reflection": "M3 ended with a defensible implementation-focused milestone."
+    }
+  ]
+}

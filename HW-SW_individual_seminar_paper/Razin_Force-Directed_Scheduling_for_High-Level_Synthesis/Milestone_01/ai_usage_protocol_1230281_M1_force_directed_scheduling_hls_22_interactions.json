@@ -1,0 +1,710 @@
+{
+  "protocol_version": "0.2",
+  "student_id": "1230281",
+  "course": "HW/SW Codesign",
+  "milestone": "M1",
+  "topic": "Force-Directed Scheduling for High-Level Synthesis",
+  "exported_at": "2026-06-14T11:59:44+00:00",
+  "entries": [
+    {
+      "id": "e-3d66c174",
+      "timestamp": "2026-06-14T12:12:00+00:00",
+      "parent_id": null,
+      "objective": "Understand the seminar task and milestone expectations.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Read the HW/SW Codesign seminar PDF and explain what must be delivered for the topic Force-Directed Scheduling for High-Level Synthesis.",
+      "ai_output_summary": "The AI identified the seminar as a topic-based paper and presentation task, using the IEEE style, scientific writing, references, GitHub documentation, and an implementation-oriented elaboration.",
+      "verification": {
+        "actions": [
+          "Checked the course PDF for paper length, presentation duration, IEEE template, plagiarism warning, GitHub usage, and elaboration items.",
+          "Compared the AI summary with the professor slide that lists mathematical basics, formal algorithm, runtime/overhead, C/C++ implementation, application example, and RTL output."
+        ],
+        "level": "primary-source-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M1 task framing",
+        "usage_type": "summarization",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction fixed the boundary of the work: the milestone is not only a general summary but must prepare a technical and implementable seminar topic."
+    },
+    {
+      "id": "e-7ceaba19",
+      "timestamp": "2026-06-14T12:19:00+00:00",
+      "parent_id": null,
+      "objective": "Clarify the exact topic and avoid neighboring-topic confusion.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "My assigned topic is Force-Directed Scheduling for High-Level Synthesis. Explain how it differs from list scheduling, ILP-based scheduling, and force-directed list scheduling.",
+      "ai_output_summary": "The AI separated pure force-directed scheduling from list scheduling, ILP scheduling, and hybrid force-directed list scheduling, emphasizing that FDS is a heuristic for distributing operations across control steps to balance resource usage.",
+      "verification": {
+        "actions": [
+          "Checked the possible-topic slide: Force-Directed Scheduling and Force-Directed List-Scheduling appear as separate topics.",
+          "Checked de Micheli contents: list scheduling, ILP, and force-directed scheduling are separate subsections under scheduling with resource constraints."
+        ],
+        "level": "primary-source-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M1 topic delimitation",
+        "usage_type": "comparison-structuring",
+        "direct_text_reused": false
+      },
+      "reflection": "The interaction prevented mixing multiple seminar topics and helped keep the paper focused on the assigned algorithm."
+    },
+    {
+      "id": "e-b0d69a48",
+      "timestamp": "2026-06-14T12:26:00+00:00",
+      "parent_id": null,
+      "objective": "Build an initial technical vocabulary for HLS scheduling.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Explain HLS, scheduling, allocation, binding, latency, control step, resource constraint, data-flow graph, ASAP, ALAP, mobility, and force in simple words but technically correct.",
+      "ai_output_summary": "The AI produced a glossary connecting behavior-level descriptions to RTL datapath/control generation and positioned scheduling as the time-assignment step before binding.",
+      "verification": {
+        "actions": [
+          "Compared the terminology with Teich/Haubelt sections on synthesis, scheduling, allocation, and binding.",
+          "Checked de Micheli contents for architectural synthesis, scheduling, resource sharing, and binding."
+        ],
+        "level": "multi-source-validation"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "Some explanations were simplified and had to be rewritten in stricter scientific language."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M1 terminology notes",
+        "usage_type": "terminology-clarification",
+        "direct_text_reused": false
+      },
+      "reflection": "The glossary was useful for learning, but final wording needed manual correction to avoid sounding like lecture notes."
+    },
+    {
+      "id": "e-336c53c5",
+      "timestamp": "2026-06-14T12:33:00+00:00",
+      "parent_id": null,
+      "objective": "Identify the main reference chapters.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "From de Micheli and Teich/Haubelt, which chapters are most relevant for Force-Directed Scheduling in HLS?",
+      "ai_output_summary": "The AI pointed to architectural synthesis, scheduling algorithms, scheduling with resource constraints, ASAP/ALAP scheduling, list scheduling, force-directed scheduling, and binding/resource sharing as the relevant reading area.",
+      "verification": {
+        "actions": [
+          "Verified against de Micheli table of contents: Architectural Synthesis and Scheduling Algorithms include ASAP, ALAP, ILP, List Scheduling, and Force-directed Scheduling.",
+          "Verified against Teich/Haubelt table of contents: Ablaufplanung includes ASAP, ALAP, list scheduling, force-directed scheduling, and ILP."
+        ],
+        "level": "primary-source-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M1 literature selection",
+        "usage_type": "literature-search-support",
+        "direct_text_reused": false
+      },
+      "reflection": "The interaction made the reading plan more efficient and avoided using unrelated chapters as main evidence."
+    },
+    {
+      "id": "e-38297478",
+      "timestamp": "2026-06-14T12:40:00+00:00",
+      "parent_id": null,
+      "objective": "Create a first research framing for the seminar paper.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Give me a research framing for Force-Directed Scheduling for HLS: motivation, problem, algorithm idea, implementation target, and evaluation criteria.",
+      "ai_output_summary": "The AI framed FDS as an architectural-synthesis heuristic that schedules operations from a CDFG under a latency bound while reducing peak functional-unit demand through a force metric.",
+      "verification": {
+        "actions": [
+          "Checked that HLS output should lead to RTL components, matching the professor slide.",
+          "Validated that scheduling is the temporal-domain architectural synthesis problem in de Micheli."
+        ],
+        "level": "multi-source-validation"
+      },
+      "evaluation": {
+        "status": "revised",
+        "issues": [
+          "The first output overclaimed optimality; it was corrected to say heuristic, not exact optimum."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M1 research framing",
+        "usage_type": "idea-generation",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction shaped the scientific purpose: explaining why a heuristic is needed between simple lists and exact ILP."
+    },
+    {
+      "id": "e-3f5b99db",
+      "timestamp": "2026-06-14T12:47:00+00:00",
+      "parent_id": null,
+      "objective": "Derive possible research questions.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Formulate 3 to 5 research questions for a seminar paper on Force-Directed Scheduling for High-Level Synthesis.",
+      "ai_output_summary": "The AI proposed questions about how FDS models operation mobility, how force balances resource usage, how it compares to ASAP/ALAP/list scheduling, and how a small implementation can demonstrate the main feature.",
+      "verification": {
+        "actions": [
+          "Removed questions that were too broad for a five-page paper.",
+          "Checked whether each question can be answered with the main references and a small implementation."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "Some proposed questions involved modern commercial HLS tools, which were outside the milestone scope."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M1 research questions",
+        "usage_type": "idea-generation",
+        "direct_text_reused": false
+      },
+      "reflection": "The research questions became more realistic after limiting them to the professor-required elements."
+    },
+    {
+      "id": "e-cec47b53",
+      "timestamp": "2026-06-14T12:54:00+00:00",
+      "parent_id": null,
+      "objective": "Plan the M1 milestone structure.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Create a professional Milestone 1 structure for technical understanding and research framing for this topic.",
+      "ai_output_summary": "The AI suggested sections for scope, motivation, core terminology, main references, algorithm intuition, expected implementation, risks, and next steps.",
+      "verification": {
+        "actions": [
+          "Compared the structure with the professor elaboration list.",
+          "Ensured the structure supports later milestones instead of becoming a final paper too early."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M1 document outline",
+        "usage_type": "comparison-structuring",
+        "direct_text_reused": false
+      },
+      "reflection": "This became the working outline for documenting M1 clearly."
+    },
+    {
+      "id": "e-428d8e22",
+      "timestamp": "2026-06-14T13:01:00+00:00",
+      "parent_id": null,
+      "objective": "Explain the role of CDFG/DFG in the topic.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Why does Force-Directed Scheduling need a data-flow graph or sequencing graph? Explain for HLS.",
+      "ai_output_summary": "The AI explained that operations become nodes and dependencies become directed edges; scheduling must assign each operation to a legal control step while respecting predecessor-successor constraints.",
+      "verification": {
+        "actions": [
+          "Checked Teich/Haubelt modeling section on data-flow graphs and CDFGs.",
+          "Checked de Micheli contents for data-flow and sequencing graphs."
+        ],
+        "level": "primary-source-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M1 technical understanding",
+        "usage_type": "terminology-clarification",
+        "direct_text_reused": false
+      },
+      "reflection": "This clarified that FDS is not scheduling CPU tasks but operation nodes inside a hardware behavior."
+    },
+    {
+      "id": "e-fe3859e8",
+      "timestamp": "2026-06-14T13:08:00+00:00",
+      "parent_id": null,
+      "objective": "Understand ASAP and ALAP as support machinery.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Explain ASAP and ALAP scheduling and why they are needed before force-directed scheduling.",
+      "ai_output_summary": "The AI described ASAP as earliest legal time, ALAP as latest legal time under the latency bound, and mobility as the allowed range in which FDS evaluates candidate assignments.",
+      "verification": {
+        "actions": [
+          "Checked de Micheli scheduling subsections for ASAP and ALAP.",
+          "Manually tested the idea on a small dependency chain."
+        ],
+        "level": "multi-source-validation"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M1 background concepts",
+        "usage_type": "terminology-clarification",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction established the foundation for the later mathematical description."
+    },
+    {
+      "id": "e-45b04246",
+      "timestamp": "2026-06-14T13:15:00+00:00",
+      "parent_id": null,
+      "objective": "Understand the meaning of force intuitively.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Explain force in force-directed scheduling as if I am new to the topic, then restate it technically.",
+      "ai_output_summary": "The AI explained force as the change in resource-demand distribution caused by fixing an operation to a specific step; technically, it relates candidate placement to operation probability and resource usage over the operation time frame.",
+      "verification": {
+        "actions": [
+          "Checked against the known FDS idea: distribution graph and force computation are the central mechanism.",
+          "Marked the intuitive explanation as learning support, not as direct paper text."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The analogy was useful but too informal for the submitted report."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M1 concept notes",
+        "usage_type": "terminology-clarification",
+        "direct_text_reused": false
+      },
+      "reflection": "This made the core idea memorable but also showed that final writing must be more formal."
+    },
+    {
+      "id": "e-b598dc68",
+      "timestamp": "2026-06-14T13:22:00+00:00",
+      "parent_id": null,
+      "objective": "Choose a small application example for the paper.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Suggest a small HLS scheduling example suitable for explaining FDS in a five-page seminar paper.",
+      "ai_output_summary": "The AI suggested using a compact arithmetic data-flow graph with multiplications and additions so ASAP peak usage can be contrasted with force-directed spreading.",
+      "verification": {
+        "actions": [
+          "Checked that the example is small enough to calculate manually.",
+          "Later aligned the example with the C++ implementation requirement and professor feedback."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "revised",
+        "issues": [
+          "The first candidate graph had too many operations; it was reduced to a small five-operation example."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M1 example selection",
+        "usage_type": "idea-generation",
+        "direct_text_reused": false
+      },
+      "reflection": "The example choice became important because it connects explanation, implementation, and screenshots."
+    },
+    {
+      "id": "e-499eea6c",
+      "timestamp": "2026-06-14T13:29:00+00:00",
+      "parent_id": null,
+      "objective": "Create a reference-management plan.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Give me a Zotero/Citavi note plan for sources related to Force-Directed Scheduling for HLS.",
+      "ai_output_summary": "The AI proposed reference notes for de Micheli, Teich/Haubelt, the original force-directed scheduling paper, and supporting HLS overview references.",
+      "verification": {
+        "actions": [
+          "Checked the course slide requiring reference-management notes.",
+          "Removed sources not directly used in the milestone."
+        ],
+        "level": "primary-source-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "Some suggested citations needed manual bibliographic verification before use."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M1 bibliography plan",
+        "usage_type": "literature-search-support",
+        "direct_text_reused": false
+      },
+      "reflection": "This helped document not only citations but why each source matters."
+    },
+    {
+      "id": "e-42c567b8",
+      "timestamp": "2026-06-14T13:36:00+00:00",
+      "parent_id": null,
+      "objective": "Critique an overly general AI summary.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Here is a general AI summary of HLS scheduling. Tell me what is missing for my specific topic FDS.",
+      "ai_output_summary": "The AI identified missing details: ASAP/ALAP mobility, distribution graphs, self/predecessor/successor forces, candidate-step scoring, and a concrete implementation of the force function.",
+      "verification": {
+        "actions": [
+          "Compared missing items with the professor elaboration list.",
+          "Confirmed that the missing items are essential to the algorithm, not optional additions."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M1 gap analysis",
+        "usage_type": "argument-critique",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction corrected the direction from general HLS to the specific FDS main feature."
+    },
+    {
+      "id": "e-f9273957",
+      "timestamp": "2026-06-14T13:43:00+00:00",
+      "parent_id": null,
+      "objective": "Define scope exclusions.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "What should I not include deeply in a short Force-Directed Scheduling paper?",
+      "ai_output_summary": "The AI recommended not going deep into RTL synthesis, commercial HLS tools, full binding algorithms, advanced pipelining, and unrelated metaheuristics, except as brief context.",
+      "verification": {
+        "actions": [
+          "Checked the page limit and required elaboration topics.",
+          "Kept implementation and application example inside the scope."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M1 scope control",
+        "usage_type": "argument-critique",
+        "direct_text_reused": false
+      },
+      "reflection": "The paper scope became manageable and less likely to lose focus."
+    },
+    {
+      "id": "e-029d8b7d",
+      "timestamp": "2026-06-14T13:50:00+00:00",
+      "parent_id": null,
+      "objective": "Build an initial comparison table.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Make a concise comparison of ASAP, ALAP, list scheduling, ILP scheduling, and FDS for HLS.",
+      "ai_output_summary": "The AI drafted a table comparing purpose, optimality, complexity, resource awareness, and paper relevance.",
+      "verification": {
+        "actions": [
+          "Checked de Micheli contents showing these algorithms as neighboring scheduling methods.",
+          "Rewrote wording to avoid unsupported claims about exact complexity."
+        ],
+        "level": "primary-source-check"
+      },
+      "evaluation": {
+        "status": "revised",
+        "issues": [
+          "The first version said ILP is always impractical; this was softened to problem-size dependent."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M1 related work framing",
+        "usage_type": "comparison-structuring",
+        "direct_text_reused": false
+      },
+      "reflection": "The table became a useful way to explain where FDS sits among other algorithms."
+    },
+    {
+      "id": "e-db0e7a81",
+      "timestamp": "2026-06-14T13:57:00+00:00",
+      "parent_id": null,
+      "objective": "Validate the professor-specific deliverables.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Match my topic work against the professor slide: math basics, formal description, algorithm, runtime, C/C++ implementation, application example, RTL output.",
+      "ai_output_summary": "The AI created a checklist and mapped each required item to planned sections and future milestones.",
+      "verification": {
+        "actions": [
+          "Checked the HW/SW Codesign PDF elaboration slide.",
+          "Marked C/C++ and RTL output as not optional for the final work."
+        ],
+        "level": "primary-source-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M1 deliverable checklist",
+        "usage_type": "verification-support",
+        "direct_text_reused": false
+      },
+      "reflection": "This made the milestone plan assessment-ready."
+    },
+    {
+      "id": "e-8ddec95d",
+      "timestamp": "2026-06-14T14:04:00+00:00",
+      "parent_id": null,
+      "objective": "Translate learning explanation into scientific wording.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Convert my simple Bangla/English learning notes about FDS into scientific English bullet points without copying textbook text.",
+      "ai_output_summary": "The AI rewrote informal understanding into formal statements about behavioral synthesis, operation scheduling, latency constraints, and resource-demand balancing.",
+      "verification": {
+        "actions": [
+          "Manually rewrote the output again to keep original authorship.",
+          "Checked terminology against source vocabulary."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "revised",
+        "issues": [
+          "Direct text reuse was avoided because the professor emphasized intellectual origin."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M1 draft notes",
+        "usage_type": "text-revision",
+        "direct_text_reused": false
+      },
+      "reflection": "The interaction improved tone but reinforced the need for manual authorship."
+    },
+    {
+      "id": "e-18a8de00",
+      "timestamp": "2026-06-14T14:11:00+00:00",
+      "parent_id": null,
+      "objective": "Identify risks of AI hallucination.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "List likely AI mistakes when explaining force-directed scheduling and how I should validate them.",
+      "ai_output_summary": "The AI listed risks such as confusing FDS with force-directed graph drawing, claiming global optimality, ignoring predecessor/successor forces, and misrepresenting RTL output.",
+      "verification": {
+        "actions": [
+          "Checked each risk against the main references and course requirements.",
+          "Used this list as a validation checklist for later prompts."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M1 validation plan",
+        "usage_type": "verification-support",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction directly improved the reliability of later AI-assisted work."
+    },
+    {
+      "id": "e-7d1e5d0e",
+      "timestamp": "2026-06-14T14:18:00+00:00",
+      "parent_id": null,
+      "objective": "Create a seminar-story explanation for personal understanding.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Explain FDS like a story so I can remember it during discussion, then give the technical version.",
+      "ai_output_summary": "The AI used a resource-balancing story and then restated the algorithm in terms of operations, time frames, distribution graphs, candidate assignment, and force minimization.",
+      "verification": {
+        "actions": [
+          "Kept the story for oral understanding only.",
+          "Only the technical restatement influenced the written milestone."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "Story format is not suitable for the paper itself."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": false,
+        "section": "Personal study notes",
+        "usage_type": "summarization",
+        "direct_text_reused": false
+      },
+      "reflection": "The story helped retention, but it was not used as submitted text."
+    },
+    {
+      "id": "e-9ab722af",
+      "timestamp": "2026-06-14T14:25:00+00:00",
+      "parent_id": null,
+      "objective": "Prepare possible professor questions.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "What questions might the professor ask in M1 about FDS and how should I answer briefly?",
+      "ai_output_summary": "The AI prepared possible questions about why FDS is used, what force means, why ASAP/ALAP are needed, and what the implementation will demonstrate.",
+      "verification": {
+        "actions": [
+          "Checked answers for consistency with the main scope.",
+          "Removed unsupported claims about industrial performance."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M1 oral preparation",
+        "usage_type": "argument-critique",
+        "direct_text_reused": false
+      },
+      "reflection": "This helped turn the milestone from a written summary into an explainable topic."
+    },
+    {
+      "id": "e-7c1cf094",
+      "timestamp": "2026-06-14T14:32:00+00:00",
+      "parent_id": null,
+      "objective": "Evaluate whether the topic is implementation-feasible.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Can I implement the main feature of Force-Directed Scheduling in C++ for a small example? What exactly should be implemented?",
+      "ai_output_summary": "The AI concluded that the main feasible feature is the force computation and candidate-step selection using ASAP/ALAP ranges, probabilities, and distribution graphs, not a complete industrial HLS system.",
+      "verification": {
+        "actions": [
+          "Checked the professor slide requiring C/C++ implementation of the main feature.",
+          "Verified that a small DFG example can produce demonstrable output."
+        ],
+        "level": "multi-source-validation"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M1 implementation feasibility",
+        "usage_type": "verification-support",
+        "direct_text_reused": false
+      },
+      "reflection": "This set the direction for M3 implementation and avoided overbuilding."
+    },
+    {
+      "id": "e-83eb6ea8",
+      "timestamp": "2026-06-14T14:39:00+00:00",
+      "parent_id": null,
+      "objective": "Summarize M1 decisions.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Summarize the final M1 decisions for my Force-Directed Scheduling seminar topic.",
+      "ai_output_summary": "The AI summarized the topic scope, references, terminology, research questions, planned example, implementation goal, and validation strategy.",
+      "verification": {
+        "actions": [
+          "Compared the summary against all previous M1 notes.",
+          "Manually removed repeated and informal statements."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M1 conclusion",
+        "usage_type": "summarization",
+        "direct_text_reused": false
+      },
+      "reflection": "M1 ended with a clear research frame and preparation path for M2."
+    }
+  ]
+}

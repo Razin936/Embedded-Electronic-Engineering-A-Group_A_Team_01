@@ -1,0 +1,710 @@
+{
+  "protocol_version": "0.2",
+  "student_id": "1230281",
+  "course": "HW/SW Codesign",
+  "milestone": "M2",
+  "topic": "Force-Directed Scheduling for High-Level Synthesis",
+  "exported_at": "2026-06-14T11:59:44+00:00",
+  "entries": [
+    {
+      "id": "e-7c35fad8",
+      "timestamp": "2026-06-14T23:52:00+00:00",
+      "parent_id": null,
+      "objective": "Define the formal scheduling problem.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Give a formal mathematical description of the HLS scheduling problem used by force-directed scheduling.",
+      "ai_output_summary": "The AI defined a directed acyclic graph of operations, operation types, control steps, latencies, resource-demand objectives, precedence constraints, and a latency bound.",
+      "verification": {
+        "actions": [
+          "Checked that scheduling is the temporal domain of architectural synthesis in de Micheli.",
+          "Checked Teich/Haubelt for scheduling with resource constraints and latency constraints."
+        ],
+        "level": "multi-source-validation"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M2 formal problem statement",
+        "usage_type": "modeling-support",
+        "direct_text_reused": false
+      },
+      "reflection": "This became the foundation of the formal section."
+    },
+    {
+      "id": "e-fa75a5b1",
+      "timestamp": "2026-06-14T23:59:00+00:00",
+      "parent_id": null,
+      "objective": "Formalize ASAP scheduling.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Write the ASAP algorithm formally for a DAG of HLS operations and explain its role in FDS.",
+      "ai_output_summary": "The AI expressed ASAP as topological traversal assigning each node the earliest control step after all predecessors.",
+      "verification": {
+        "actions": [
+          "Manually tested ASAP on the selected five-operation example.",
+          "Checked against source descriptions of ASAP as unconstrained/earliest scheduling."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M2 ASAP definition",
+        "usage_type": "modeling-support",
+        "direct_text_reused": false
+      },
+      "reflection": "ASAP was confirmed as support machinery, not the main contribution."
+    },
+    {
+      "id": "e-afc40274",
+      "timestamp": "2026-06-15T00:06:00+00:00",
+      "parent_id": null,
+      "objective": "Formalize ALAP scheduling.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Write the ALAP algorithm formally under a fixed latency bound and explain how it gives operation mobility.",
+      "ai_output_summary": "The AI expressed ALAP as reverse topological traversal assigning latest possible steps before successors while satisfying latency.",
+      "verification": {
+        "actions": [
+          "Manually checked latest-start values on the example.",
+          "Corrected step indexing to match the chosen convention of control steps 1..L."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "revised",
+        "issues": [
+          "Initial draft mixed 0-based and 1-based control-step indexing."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M2 ALAP definition",
+        "usage_type": "modeling-support",
+        "direct_text_reused": false
+      },
+      "reflection": "The indexing correction was important because later probability and force calculations depend on it."
+    },
+    {
+      "id": "e-63ec2a7b",
+      "timestamp": "2026-06-15T00:13:00+00:00",
+      "parent_id": null,
+      "objective": "Define mobility and time frame.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Explain operation mobility and time frame in Force-Directed Scheduling using formulas.",
+      "ai_output_summary": "The AI defined mobility as ALAP minus ASAP and the time frame as the set of legal control steps between ASAP and ALAP.",
+      "verification": {
+        "actions": [
+          "Checked consistency with ASAP/ALAP values.",
+          "Ensured the formula does not imply operations can violate dependencies."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M2 mathematical basics",
+        "usage_type": "terminology-clarification",
+        "direct_text_reused": false
+      },
+      "reflection": "This clarified why zero-mobility operations are fixed and high-mobility operations are decision points."
+    },
+    {
+      "id": "e-c3cdba73",
+      "timestamp": "2026-06-15T00:20:00+00:00",
+      "parent_id": null,
+      "objective": "Define operation probability.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "How is the probability of an operation being scheduled in a control step calculated in FDS?",
+      "ai_output_summary": "The AI described uniform probability over the operation time frame before an operation is fixed and probability one at the fixed step after assignment.",
+      "verification": {
+        "actions": [
+          "Checked the formula on mobility 0 and mobility > 0 cases.",
+          "Manually verified probabilities sum to one for each unscheduled operation."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M2 probability model",
+        "usage_type": "modeling-support",
+        "direct_text_reused": false
+      },
+      "reflection": "The probability model is the bridge from legal scheduling range to distribution graph."
+    },
+    {
+      "id": "e-ae79979d",
+      "timestamp": "2026-06-15T00:27:00+00:00",
+      "parent_id": null,
+      "objective": "Construct the distribution graph.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Explain the distribution graph in FDS and give a formula for resource-type demand per control step.",
+      "ai_output_summary": "The AI described the distribution graph as the sum of probabilities of operations of the same resource type at each control step.",
+      "verification": {
+        "actions": [
+          "Manually calculated multiplier and adder distributions for the example.",
+          "Checked that the graph represents expected demand, not a final resource allocation."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M2 distribution graph",
+        "usage_type": "modeling-support",
+        "direct_text_reused": false
+      },
+      "reflection": "This identified the real object that force tries to flatten."
+    },
+    {
+      "id": "e-83264df0",
+      "timestamp": "2026-06-15T00:34:00+00:00",
+      "parent_id": null,
+      "objective": "Define self-force.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Give the formal formula and meaning of self-force when operation i is assigned to step k.",
+      "ai_output_summary": "The AI described self-force as the change in resource distribution caused by fixing the operation to a candidate step.",
+      "verification": {
+        "actions": [
+          "Checked the sign convention manually with a simple resource distribution.",
+          "Corrected wording so lower force means preferable candidate, not necessarily lower latency."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "revised",
+        "issues": [
+          "The initial explanation did not clearly separate objective direction from latency."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M2 force equations",
+        "usage_type": "modeling-support",
+        "direct_text_reused": false
+      },
+      "reflection": "This is part of the core algorithm, so correctness mattered more than style."
+    },
+    {
+      "id": "e-4cb51da8",
+      "timestamp": "2026-06-15T00:41:00+00:00",
+      "parent_id": null,
+      "objective": "Define predecessor and successor force.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Explain predecessor force and successor force in FDS and why they are needed after fixing an operation.",
+      "ai_output_summary": "The AI explained that assigning an operation can shrink time frames of dependent predecessors and successors, so their distribution changes must also be included.",
+      "verification": {
+        "actions": [
+          "Checked dependency implications manually on the example graph.",
+          "Marked simplified implementation as computing feasibility windows after each candidate assignment."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The full textbook derivation was complex; the milestone uses a clear but simplified explanation."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M2 force equations",
+        "usage_type": "modeling-support",
+        "direct_text_reused": false
+      },
+      "reflection": "This prevented presenting FDS as only a local single-operation decision."
+    },
+    {
+      "id": "e-c319b6c8",
+      "timestamp": "2026-06-15T00:48:00+00:00",
+      "parent_id": null,
+      "objective": "Develop pseudocode for the full algorithm.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Write clear pseudocode for Force-Directed Scheduling using ASAP, ALAP, distribution graph, force evaluation, and iterative assignment.",
+      "ai_output_summary": "The AI produced an iterative algorithm: compute time frames, build distributions, evaluate all operation-step candidates, select minimum-force candidate, fix it, update windows, and repeat.",
+      "verification": {
+        "actions": [
+          "Checked that precedence constraints are maintained after each assignment.",
+          "Confirmed that the pseudocode maps to the later C++ implementation."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M2 algorithm description",
+        "usage_type": "modeling-support",
+        "direct_text_reused": false
+      },
+      "reflection": "This pseudocode became the bridge from formulas to implementation."
+    },
+    {
+      "id": "e-42fbcaad",
+      "timestamp": "2026-06-15T00:55:00+00:00",
+      "parent_id": null,
+      "objective": "Distinguish exact and heuristic scheduling.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Explain why FDS is a heuristic and how it differs from ILP-based scheduling.",
+      "ai_output_summary": "The AI explained that ILP encodes a global optimization problem with binary variables, while FDS uses a constructive greedy force-minimization strategy.",
+      "verification": {
+        "actions": [
+          "Checked de Micheli contents where ILP and force-directed scheduling are separate subsections.",
+          "Revised absolute claims about optimality and runtime."
+        ],
+        "level": "primary-source-check"
+      },
+      "evaluation": {
+        "status": "revised",
+        "issues": [
+          "The first answer was too strong about ILP always being slow."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M2 related algorithms",
+        "usage_type": "comparison-structuring",
+        "direct_text_reused": false
+      },
+      "reflection": "This helped justify the algorithm choice without attacking exact methods unfairly."
+    },
+    {
+      "id": "e-f2feb60a",
+      "timestamp": "2026-06-15T01:02:00+00:00",
+      "parent_id": null,
+      "objective": "Compare FDS and list scheduling formally.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Make a technical comparison between list scheduling and force-directed scheduling for HLS.",
+      "ai_output_summary": "The AI compared priority-list decisions with force-based distribution balancing, noting that list scheduling often uses local priorities while FDS uses demand over time frames.",
+      "verification": {
+        "actions": [
+          "Checked de Micheli table of contents showing both as heuristic scheduling algorithms.",
+          "Adjusted wording to avoid saying list scheduling ignores resources completely."
+        ],
+        "level": "primary-source-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "Some wording oversimplified list scheduling."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M2 comparison",
+        "usage_type": "comparison-structuring",
+        "direct_text_reused": false
+      },
+      "reflection": "The comparison sharpened the novelty of FDS in the paper."
+    },
+    {
+      "id": "e-f60d2b2b",
+      "timestamp": "2026-06-15T01:09:00+00:00",
+      "parent_id": null,
+      "objective": "Choose formal notation for the paper.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Suggest clean notation for operations, edges, operation types, time steps, ASAP/ALAP, probabilities, and forces.",
+      "ai_output_summary": "The AI proposed symbols V, E, type(v), L, a_v, l_v, T_v, p_v(t), D_r(t), and F(v,t).",
+      "verification": {
+        "actions": [
+          "Checked the notation for readability in a five-page paper.",
+          "Reduced the number of symbols to avoid confusing readers."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "revised",
+        "issues": [
+          "The first notation set was too large for the paper length."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M2 notation",
+        "usage_type": "text-revision",
+        "direct_text_reused": false
+      },
+      "reflection": "Good notation made formulas more compact."
+    },
+    {
+      "id": "e-8d8dbb51",
+      "timestamp": "2026-06-15T01:16:00+00:00",
+      "parent_id": null,
+      "objective": "Prepare a manual example table.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Create a small table showing operations, type, predecessors, ASAP, ALAP, and mobility for the five-operation FDS example.",
+      "ai_output_summary": "The AI generated a table for multiplication and addition operations with dependencies and legal scheduling windows.",
+      "verification": {
+        "actions": [
+          "Manually recalculated values before using them.",
+          "Corrected any inconsistent dependencies to match the implementation graph."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "revised",
+        "issues": [
+          "The table needed manual alignment with the final operation names."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M2 application example",
+        "usage_type": "modeling-support",
+        "direct_text_reused": false
+      },
+      "reflection": "The table became the starting point for implementation testing."
+    },
+    {
+      "id": "e-db962adc",
+      "timestamp": "2026-06-15T01:23:00+00:00",
+      "parent_id": null,
+      "objective": "Explain resource pressure visually.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "How can I describe the distribution graph visually in the paper without too much complexity?",
+      "ai_output_summary": "The AI suggested a small control-step table or bar-style diagram for expected multiplier/adder demand rather than a complicated plot.",
+      "verification": {
+        "actions": [
+          "Checked paper length constraints.",
+          "Selected a table representation that can be recreated in LaTeX."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M2 explanation design",
+        "usage_type": "idea-generation",
+        "direct_text_reused": false
+      },
+      "reflection": "This helped make the math explainable for the professor."
+    },
+    {
+      "id": "e-6f2a06d5",
+      "timestamp": "2026-06-15T01:30:00+00:00",
+      "parent_id": null,
+      "objective": "Analyze runtime and overhead qualitatively.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Explain the runtime and overhead of force-directed scheduling for a small seminar paper.",
+      "ai_output_summary": "The AI gave a qualitative complexity discussion based on number of operations, number of control steps, candidate assignments, distribution updates, and dependency updates.",
+      "verification": {
+        "actions": [
+          "Avoided an unsupported exact Big-O formula for a particular optimized implementation.",
+          "Kept a conservative discussion that matches the algorithm structure."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "Exact complexity depends on implementation details, so the wording was kept cautious."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M2 runtime overhead",
+        "usage_type": "argument-critique",
+        "direct_text_reused": false
+      },
+      "reflection": "This supported the professor-required runtime/overhead discussion."
+    },
+    {
+      "id": "e-1ba9647d",
+      "timestamp": "2026-06-15T01:37:00+00:00",
+      "parent_id": null,
+      "objective": "Check mathematical consistency of candidate selection.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "If several candidate assignments have the same minimum force, how should FDS break ties in a deterministic implementation?",
+      "ai_output_summary": "The AI suggested deterministic tie breaking by operation order and earliest control step for reproducible output.",
+      "verification": {
+        "actions": [
+          "Validated that tie breaking does not change feasibility.",
+          "Marked tie breaking as an implementation decision, not part of the original core theory."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M2 algorithm details",
+        "usage_type": "verification-support",
+        "direct_text_reused": false
+      },
+      "reflection": "This was later used for reproducible C++ output."
+    },
+    {
+      "id": "e-48f8ccc0",
+      "timestamp": "2026-06-15T01:44:00+00:00",
+      "parent_id": null,
+      "objective": "Identify constraints for the application example.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Which constraints must the example satisfy to demonstrate FDS clearly?",
+      "ai_output_summary": "The AI listed acyclic dependencies, at least two resource types, enough mobility to create scheduling choices, and a latency bound that allows resource spreading.",
+      "verification": {
+        "actions": [
+          "Checked the chosen graph against each constraint.",
+          "Rejected examples with no mobility because they cannot demonstrate force decisions."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M2 example validation",
+        "usage_type": "verification-support",
+        "direct_text_reused": false
+      },
+      "reflection": "This ensured the application example actually demonstrates the algorithm."
+    },
+    {
+      "id": "e-498c9ba5",
+      "timestamp": "2026-06-15T01:51:00+00:00",
+      "parent_id": null,
+      "objective": "Create a step-by-step algorithm explanation.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Explain the FDS algorithm step by step for the report, avoiding informal language.",
+      "ai_output_summary": "The AI produced a concise algorithm walk-through from input graph to final schedule.",
+      "verification": {
+        "actions": [
+          "Rewrote the text manually to maintain intellectual authorship.",
+          "Checked that each step corresponds to pseudocode."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "revised",
+        "issues": [
+          "Some phrases sounded AI-generated and were rewritten."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M2 algorithm narrative",
+        "usage_type": "text-revision",
+        "direct_text_reused": false
+      },
+      "reflection": "The output helped order the explanation, but not as direct final text."
+    },
+    {
+      "id": "e-f57ea9fb",
+      "timestamp": "2026-06-15T01:58:00+00:00",
+      "parent_id": null,
+      "objective": "Prepare an algorithm limitations section.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "What are the limitations of Force-Directed Scheduling that should be mentioned professionally?",
+      "ai_output_summary": "The AI listed heuristic non-optimality, dependence on latency bound, simplified resource model, complexity of predecessor/successor force, and later need for binding.",
+      "verification": {
+        "actions": [
+          "Checked against the course requirement to discuss runtime/overhead.",
+          "Removed unsupported claims about modern HLS tools."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M2 limitations",
+        "usage_type": "argument-critique",
+        "direct_text_reused": false
+      },
+      "reflection": "This made the milestone more critical and less like promotion of the algorithm."
+    },
+    {
+      "id": "e-219375b5",
+      "timestamp": "2026-06-15T02:05:00+00:00",
+      "parent_id": null,
+      "objective": "Prepare a transition to implementation.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Write what the M3 implementation should prove based on the M2 formal description.",
+      "ai_output_summary": "The AI stated that the implementation should compute ASAP/ALAP windows, build distribution graphs, evaluate force for candidates, and output a schedule for a small CDFG.",
+      "verification": {
+        "actions": [
+          "Checked that this matches the professor requirement for C/C++ implementation of the main feature.",
+          "Kept VHDL/RTL as an optional or later demonstration."
+        ],
+        "level": "primary-source-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M2 outlook to M3",
+        "usage_type": "verification-support",
+        "direct_text_reused": false
+      },
+      "reflection": "This made the next milestone concrete."
+    },
+    {
+      "id": "e-9aae80df",
+      "timestamp": "2026-06-15T02:12:00+00:00",
+      "parent_id": null,
+      "objective": "Review for plagiarism and originality risk.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Review my M2 structure for possible plagiarism or overdependence on AI text.",
+      "ai_output_summary": "The AI recommended using AI for structure and checking but manually writing final prose, citing sources for textbook concepts, and avoiding direct copying from PDFs.",
+      "verification": {
+        "actions": [
+          "Compared with professor plagiarism warning.",
+          "Decided to cite main references for definitions and algorithms."
+        ],
+        "level": "primary-source-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M2 writing ethics",
+        "usage_type": "verification-support",
+        "direct_text_reused": false
+      },
+      "reflection": "This shaped the writing workflow and reduced compliance risk."
+    },
+    {
+      "id": "e-c20b087d",
+      "timestamp": "2026-06-15T02:19:00+00:00",
+      "parent_id": null,
+      "objective": "Summarize M2 final outcome.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Summarize M2 in a professional way: formal problem, formulas, algorithm, comparison, runtime, and implementation plan.",
+      "ai_output_summary": "The AI condensed the milestone into a final checklist of formal model, equations, pseudocode, small example, limitations, and next implementation tasks.",
+      "verification": {
+        "actions": [
+          "Checked against all M2 entries.",
+          "Manually edited the summary to match the milestone report organization."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M2 conclusion",
+        "usage_type": "summarization",
+        "direct_text_reused": false
+      },
+      "reflection": "M2 ended with a complete algorithmic foundation for the C++ implementation."
+    }
+  ]
+}
