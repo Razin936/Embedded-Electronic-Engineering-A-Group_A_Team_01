@@ -1,0 +1,250 @@
+{
+  "student": {
+    "name": "Faysal Ahammed Tonmoy",
+    "student_id": "1230473",
+    "course": "HW/SW Codesign Seminar",
+    "topic": "Force-Directed List-Scheduling for High-Level Synthesis"
+  },
+  "milestone": {
+    "number": "Milestone 1",
+    "purpose": "Technical Understanding and Research Framing",
+    "expected_interaction_count": "10-12",
+    "actual_interaction_count": 11,
+    "created_date": "2026-06-12"
+  },
+  "topic_scope": {
+    "main_topic": "Force-Directed List-Scheduling for High-Level Synthesis",
+    "central_question": "How can force-based priority information improve resource-constrained list scheduling during high-level synthesis?",
+    "main_terms": [
+      "High-Level Synthesis",
+      "architectural synthesis",
+      "data-flow graph",
+      "control step",
+      "ASAP",
+      "ALAP",
+      "mobility",
+      "resource constraint",
+      "force-directed scheduling",
+      "force-directed list scheduling",
+      "allocation",
+      "binding",
+      "RTL/netlist"
+    ]
+  },
+  "references": [
+    {
+      "key": "COURSE_HWSW_CODESIGN_2026",
+      "type": "course_slides",
+      "title": "HW/SW Codesign seminar organization and possible topics",
+      "author_or_editor": "Achim Rettberg",
+      "year": "2026",
+      "source_note": "Uploaded course material. Used for seminar requirements, plagiarism rules, topic confirmation, and required elaboration items.",
+      "relevance_note": "The slides list Force-Directed List-Scheduling for High-Level Synthesis as a possible topic and require mathematical basics, formal description, runtime/overhead, C/C++ implementation, application example, and RTL/netlist context."
+    },
+    {
+      "key": "TEICH_HAUBELT_2007",
+      "type": "book",
+      "title": "Digitale Hardware/Software-Systeme: Synthese und Optimierung",
+      "author_or_editor": "Jürgen Teich and Christian Haubelt",
+      "publisher": "Springer",
+      "edition": "2nd edition",
+      "year": "2007",
+      "source_note": "Uploaded book PDF. Used mainly for German terminology and the scheduling/allocation/binding framing.",
+      "relevance_note": "Chapters on modeling, synthesis, scheduling, architecture synthesis, list scheduling, force-directed scheduling, and ILP approaches."
+    },
+    {
+      "key": "DE_MICHELI_1994",
+      "type": "book",
+      "title": "Synthesis and Optimization of Digital Circuits",
+      "author_or_editor": "Giovanni De Micheli",
+      "publisher": "McGraw-Hill",
+      "year": "1994",
+      "source_note": "Uploaded book excerpt/table of contents. Used as the main HLS background reference for architectural synthesis and scheduling algorithms.",
+      "relevance_note": "Part II covers architectural-level synthesis; Chapter 5 covers scheduling algorithms including ASAP, ALAP, ILP, list scheduling, and force-directed scheduling."
+    },
+    {
+      "key": "PAULIN_KNIGHT_1987",
+      "type": "conference_paper",
+      "title": "Force-Directed Scheduling in Automatic Data Path Synthesis",
+      "author_or_editor": "P. G. Paulin and J. P. Knight",
+      "venue": "Proceedings of the 24th Design Automation Conference",
+      "year": "1987",
+      "source_note": "Bibliographic details verified from online scholarly indexes/search results; should be checked in Zotero/Citavi before final submission.",
+      "relevance_note": "Original force-directed scheduling approach for datapath synthesis; used to frame the algorithmic origin."
+    },
+    {
+      "key": "PAULIN_KNIGHT_1989_DAC",
+      "type": "conference_paper",
+      "title": "Scheduling and Binding Algorithms for High-Level Synthesis",
+      "author_or_editor": "P. G. Paulin and J. P. Knight",
+      "venue": "Proceedings of the 26th ACM/IEEE Design Automation Conference",
+      "pages": "1-6",
+      "doi": "10.1109/DAC.1989.203360",
+      "year": "1989",
+      "source_note": "Online scholarly search/ACM result. Verify final BibTeX in ACM/IEEE/Zotero.",
+      "relevance_note": "Direct reference for force-directed list scheduling under resource constraints and related binding considerations."
+    },
+    {
+      "key": "PAULIN_KNIGHT_1989_TCAD",
+      "type": "journal_article",
+      "title": "Force-directed scheduling for the behavioral synthesis of ASICs",
+      "author_or_editor": "P. G. Paulin and J. P. Knight",
+      "journal": "IEEE Transactions on Computer-Aided Design of Integrated Circuits and Systems",
+      "volume": "8",
+      "number": "6",
+      "pages": "661-679",
+      "doi": "10.1109/43.31522",
+      "year": "1989",
+      "source_note": "Online scholarly search/DBLP/Semantic Scholar result. Verify final BibTeX in IEEE/Zotero.",
+      "relevance_note": "Core publication explaining FDS for behavioral synthesis; used for scheduling forces and resource balancing context."
+    }
+  ],
+  "interactions": [
+    {
+      "interaction_id": "I01",
+      "student_prompt_or_question": "Explain the problem setting of Force-Directed List-Scheduling for High-Level Synthesis in simple terms.",
+      "ai_assistance_summary": "Clarified that HLS scheduling maps operations from a behavioral/data-flow description to clock/control steps while respecting dependencies and resource limits. FDLS was framed as a heuristic that combines list scheduling with force-based priority estimation.",
+      "references_used": [
+        "DE_MICHELI_1994",
+        "TEICH_HAUBELT_2007",
+        "PAULIN_KNIGHT_1989_DAC"
+      ],
+      "student_verification_or_next_action": "I will draw a small data-flow graph with add/multiply nodes and show why several valid schedules can produce different hardware costs.",
+      "academic_integrity_note": "The explanation will be rewritten in my own words; I will cite HLS scheduling background and the FDLS source when mentioning the algorithm.",
+      "output_used_in_submission": "conceptual_understanding_only"
+    },
+    {
+      "interaction_id": "I02",
+      "student_prompt_or_question": "Identify the motivation: why is scheduling necessary in HLS before RTL generation?",
+      "ai_assistance_summary": "Explained that scheduling determines when operations execute, which affects latency, number of functional units, registers, buses, and therefore area/performance tradeoffs.",
+      "references_used": [
+        "COURSE_HWSW_CODESIGN_2026",
+        "TEICH_HAUBELT_2007",
+        "DE_MICHELI_1994"
+      ],
+      "student_verification_or_next_action": "I will connect this with the professor's requirement that the output of HLS is an RTL/netlist-level implementation.",
+      "academic_integrity_note": "No copied wording will be used; the source will be cited for the HLS flow and synthesis tasks.",
+      "output_used_in_submission": "briefing_section_motivation"
+    },
+    {
+      "interaction_id": "I03",
+      "student_prompt_or_question": "List the core formal objects I need: problem graph, operations, dependencies, resources, time steps, latency bound, and resource constraint.",
+      "ai_assistance_summary": "Defined a scheduling problem with a directed acyclic problem graph, operation types, resource types, control steps, precedence constraints, mobility intervals, and either time-constrained or resource-constrained objectives.",
+      "references_used": [
+        "TEICH_HAUBELT_2007",
+        "DE_MICHELI_1994"
+      ],
+      "student_verification_or_next_action": "I will use a compact notation table in Milestone 1 and keep the equations short.",
+      "academic_integrity_note": "Formal notation will be student-authored and citations will support the source concepts.",
+      "output_used_in_submission": "briefing_formalism"
+    },
+    {
+      "interaction_id": "I04",
+      "student_prompt_or_question": "Explain ASAP and ALAP because FDLS uses time frames and mobility.",
+      "ai_assistance_summary": "Summarized ASAP as earliest feasible scheduling under dependencies and ALAP as latest feasible scheduling under a latency bound. Their difference gives mobility/time frame information.",
+      "references_used": [
+        "TEICH_HAUBELT_2007",
+        "DE_MICHELI_1994"
+      ],
+      "student_verification_or_next_action": "I will compute ASAP/ALAP manually for a small example graph to prove understanding.",
+      "academic_integrity_note": "The algorithm names are standard; any descriptive text will be written freshly and cited.",
+      "output_used_in_submission": "worked_example_preparation"
+    },
+    {
+      "interaction_id": "I05",
+      "student_prompt_or_question": "Explain force-directed scheduling without copying the paper: what are probability, distribution graph, and force?",
+      "ai_assistance_summary": "Explained that unscheduled operations are spread over feasible time frames; their probabilities contribute to resource usage distribution. A force estimates how assigning an operation to one step changes resource pressure and successor/predecessor mobility.",
+      "references_used": [
+        "TEICH_HAUBELT_2007",
+        "PAULIN_KNIGHT_1989_TCAD"
+      ],
+      "student_verification_or_next_action": "I will present this as intuition plus one simple formula rather than reproduce paper text.",
+      "academic_integrity_note": "The terms are technical; all definitions will be paraphrased and cited.",
+      "output_used_in_submission": "briefing_core_idea"
+    },
+    {
+      "interaction_id": "I06",
+      "student_prompt_or_question": "What is the difference between Force-Directed Scheduling and Force-Directed List-Scheduling?",
+      "ai_assistance_summary": "Clarified that classic FDS is often time-constrained and tries to reduce resource usage by balancing concurrency; FDLS adapts force as a priority in a list-scheduling style when resource constraints are fixed.",
+      "references_used": [
+        "PAULIN_KNIGHT_1989_DAC",
+        "PAULIN_KNIGHT_1989_TCAD",
+        "TEICH_HAUBELT_2007"
+      ],
+      "student_verification_or_next_action": "I will explicitly state this distinction because my topic is FDLS, not only FDS.",
+      "academic_integrity_note": "This distinction will be cited from the relevant Paulin and Knight work and checked in the original reference if accessible.",
+      "output_used_in_submission": "scope_clarification"
+    },
+    {
+      "interaction_id": "I07",
+      "student_prompt_or_question": "Give an algorithm skeleton for FDLS that I can later implement in C++.",
+      "ai_assistance_summary": "Produced a high-level skeleton: build ready list, compute ASAP/ALAP/time frames, compute force-based priorities, choose ready operation/resource/control step, schedule it, update time frames and priorities, repeat until all nodes are scheduled.",
+      "references_used": [
+        "PAULIN_KNIGHT_1989_DAC",
+        "TEICH_HAUBELT_2007"
+      ],
+      "student_verification_or_next_action": "I will implement a simplified version for unit-delay operations and two resource types for the seminar example.",
+      "academic_integrity_note": "The implementation will be original code and simplified assumptions will be clearly stated.",
+      "output_used_in_submission": "implementation_plan"
+    },
+    {
+      "interaction_id": "I08",
+      "student_prompt_or_question": "What assumptions should I mention in Milestone 1?",
+      "ai_assistance_summary": "Identified assumptions: static/offline scheduling, known operation graph, known operation latencies, finite resource types, no dynamic branch behavior in the minimal example, and simplified binding/interconnect estimation unless extended.",
+      "references_used": [
+        "TEICH_HAUBELT_2007",
+        "DE_MICHELI_1994"
+      ],
+      "student_verification_or_next_action": "I will add an assumptions subsection and avoid claiming optimality.",
+      "academic_integrity_note": "Assumptions are my own framing based on the cited HLS model.",
+      "output_used_in_submission": "briefing_assumptions"
+    },
+    {
+      "interaction_id": "I09",
+      "student_prompt_or_question": "What runtime, memory, or scalability aspects should be discussed at first-milestone level?",
+      "ai_assistance_summary": "Explained that exact ILP can be optimal but may scale poorly, while FDLS is heuristic and repeatedly recomputes priorities/time-frame effects. Memory mainly stores graph, ready list, time frames, probabilities, and distribution arrays.",
+      "references_used": [
+        "TEICH_HAUBELT_2007",
+        "DE_MICHELI_1994",
+        "PAULIN_KNIGHT_1989_DAC"
+      ],
+      "student_verification_or_next_action": "I will describe complexity qualitatively in Milestone 1 and later make it more critical in Milestone 3.",
+      "academic_integrity_note": "I will avoid unsupported Big-O claims unless I can justify them from algorithm structure or a cited source.",
+      "output_used_in_submission": "resource_aspects"
+    },
+    {
+      "interaction_id": "I10",
+      "student_prompt_or_question": "What should be my unclear points/questions for feedback?",
+      "ai_assistance_summary": "Suggested questions: how detailed should the C++ implementation be, whether to include binding/interconnect costs, whether to compare against ILP or simple list scheduling, and what size of example is acceptable for a 5-page IEEE paper.",
+      "references_used": [
+        "COURSE_HWSW_CODESIGN_2026"
+      ],
+      "student_verification_or_next_action": "I will include 4-5 feedback questions at the end of the briefing.",
+      "academic_integrity_note": "These are my own feedback questions, not claims from sources.",
+      "output_used_in_submission": "questions_for_professor"
+    },
+    {
+      "interaction_id": "I11",
+      "student_prompt_or_question": "Create a Milestone 1 outline matching the professor's expected output.",
+      "ai_assistance_summary": "Created a structured 2-4 page outline: problem/motivation, core idea, formal model, algorithm sketch, assumptions/scope, resource aspects, unclear points.",
+      "references_used": [
+        "COURSE_HWSW_CODESIGN_2026",
+        "TEICH_HAUBELT_2007",
+        "DE_MICHELI_1994"
+      ],
+      "student_verification_or_next_action": "I will fill this outline myself using my example and citations.",
+      "academic_integrity_note": "The outline is allowed as planning support; final prose must be authored by me.",
+      "output_used_in_submission": "planning_outline_only"
+    }
+  ],
+  "academic_integrity_policy": {
+    "plagiarism_prevention": [
+      "No source text is copied into the generated interaction logs.",
+      "Every technical claim intended for later use is linked to a reference key.",
+      "Final report and slides must be written in the student's own words.",
+      "Bibliographic details must be verified in Zotero/Citavi before submission.",
+      "AI outputs are treated as planning, explanation, and checking support, not as final authored prose."
+    ],
+    "citation_rule_for_later_work": "Cite sources near the relevant technical claim: HLS/scheduling background, FDLS/FDS origin, comparison with ILP/list scheduling, and course-specific requirements."
+  }
+}
