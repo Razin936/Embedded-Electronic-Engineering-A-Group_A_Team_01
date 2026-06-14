@@ -1,0 +1,578 @@
+{
+  "protocol_version": "0.2",
+  "student_id": "1230473",
+  "course": "HW/SW Codesign / Embedded Electronic Engineering A",
+  "milestone": "M4 Scientific Communication: Paper and Talk",
+  "topic": "Force-Directed List-Scheduling for High-Level Synthesis",
+  "exported_at": "2026-06-14T20:00:00+02:00",
+  "entries": [
+    {
+      "id": "e-401e099c",
+      "timestamp": "2026-06-14T16:50:00+02:00",
+      "parent_id": null,
+      "objective": "Plan the final paper structure from M1-M3.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Create a 5-page IEEE-style seminar paper outline for FDLS that integrates M1 technical understanding, M2 tradeoffs, and M3 critique.",
+      "ai_output_summary": "The AI proposed sections: introduction, HLS background, FDLS formal model, algorithm, implementation sketch, context/tradeoffs, critical evaluation, application examples, and conclusion.",
+      "verification": {
+        "actions": [
+          "Checked course instruction requiring a scientific paper and presentation.",
+          "Mapped outline sections back to M1-M3 so the paper is not generated independently.",
+          "Removed sections that would not fit five pages."
+        ],
+        "level": "secondary-source-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M4 Paper outline",
+        "usage_type": "comparison-structuring",
+        "direct_text_reused": false
+      },
+      "reflection": "The paper should synthesize the milestones, not restart from a blank AI-generated text."
+    },
+    {
+      "id": "e-402ed1cf",
+      "timestamp": "2026-06-14T17:00:00+02:00",
+      "parent_id": null,
+      "objective": "Write motivation and problem setting in a concise scientific style.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Draft a short motivation for FDLS in HLS, focusing on why scheduling affects latency, resource use, and RTL quality. Avoid plagiarism and avoid copying textbook wording.",
+      "ai_output_summary": "The AI produced a motivation paragraph. I used it only as a planning aid and rewrote the final text manually with citations to HLS sources.",
+      "verification": {
+        "actions": [
+          "Checked factual claims against Teich/Haubelt and De Micheli.",
+          "Ensured no direct AI sentence was reused.",
+          "Added citations in the paper rather than relying on the AI output."
+        ],
+        "level": "primary-source-check"
+      },
+      "evaluation": {
+        "status": "revised",
+        "issues": [
+          "The AI text was too polished and broad. I converted it into shorter technical statements.",
+          "Some wording sounded like an abstract and was manually rewritten."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Paper Section I: Introduction",
+        "usage_type": "text-revision",
+        "direct_text_reused": false
+      },
+      "reflection": "This showed how AI can help with structure, but the scientific wording still needs manual control."
+    },
+    {
+      "id": "e-403e965f",
+      "timestamp": "2026-06-14T17:10:00+02:00",
+      "parent_id": null,
+      "objective": "Prepare a clear explanation of HLS scheduling basics for the paper.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Explain ASAP, ALAP, mobility, and resource-constrained scheduling in a way suitable for a technical seminar paper.",
+      "ai_output_summary": "The AI suggested a compact explanation and formula-style notation. I used the conceptual order but verified and rewrote the definitions.",
+      "verification": {
+        "actions": [
+          "Checked ASAP/ALAP concepts against HLS scheduling references.",
+          "Made sure the formulas use consistent notation throughout the paper.",
+          "Kept definitions short because the topic is FDLS, not a full HLS textbook."
+        ],
+        "level": "primary-source-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Paper Section II: Background",
+        "usage_type": "summarization",
+        "direct_text_reused": false
+      },
+      "reflection": "Good communication requires giving enough background for the reader to understand force calculation."
+    },
+    {
+      "id": "e-404af65d",
+      "timestamp": "2026-06-14T17:20:00+02:00",
+      "parent_id": null,
+      "objective": "Develop formal algorithm description.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Create pseudocode for Force-Directed List-Scheduling with inputs, preprocessing, ready list, candidate force evaluation, scheduling decision, and update steps.",
+      "ai_output_summary": "The AI proposed pseudocode that starts with ASAP/ALAP, initializes distribution graphs, then repeatedly chooses ready operations and assigns candidates with minimum force under resource constraints.",
+      "verification": {
+        "actions": [
+          "Checked the pseudocode against the algorithmic concepts used in M1 and M2.",
+          "Adjusted steps to avoid pretending a universal FDLS variant.",
+          "Separated pure force idea from list-ready selection."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "revised",
+        "issues": [
+          "The first pseudocode over-fixed implementation details. I changed it to an abstract algorithm sketch."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Paper Section III: Algorithm",
+        "usage_type": "modeling-support",
+        "direct_text_reused": false
+      },
+      "reflection": "Pseudocode is useful for scientific communication because it makes the algorithm concrete without requiring full source code."
+    },
+    {
+      "id": "e-4050eb47",
+      "timestamp": "2026-06-14T17:30:00+02:00",
+      "parent_id": null,
+      "objective": "Create force computation explanation.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Explain distribution graph, self-force, predecessor/successor force, and total force in concise technical paper language.",
+      "ai_output_summary": "The AI generated a technical explanation of how assigning an operation to a cycle changes expected resource demand and therefore creates a force score.",
+      "verification": {
+        "actions": [
+          "Checked force terminology against classic force-directed scheduling descriptions in HLS literature.",
+          "Rewrote formulas and text manually to avoid copied phrasing.",
+          "Kept the description limited to what is needed for the paper."
+        ],
+        "level": "primary-source-check"
+      },
+      "evaluation": {
+        "status": "revised",
+        "issues": [
+          "Some AI formula notation was inconsistent. I standardized operation index, resource type, and time-step symbols.",
+          "The explanation originally lacked a warning that force is heuristic."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Paper Section III: Force metric",
+        "usage_type": "text-revision",
+        "direct_text_reused": false
+      },
+      "reflection": "The force metric is the central technical idea of the paper, so it required the most careful verification."
+    },
+    {
+      "id": "e-4066c669",
+      "timestamp": "2026-06-14T17:40:00+02:00",
+      "parent_id": null,
+      "objective": "Prepare C++ implementation sketch.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Write a small C++ implementation sketch for the main feature of FDLS: operations, dependencies, mobility windows, distribution graph, and force-based candidate selection.",
+      "ai_output_summary": "The AI produced a C++ sketch with data structures for operations, resource types, ASAP/ALAP windows, and a function to estimate candidate force. I revised it to a smaller demonstration suitable for the paper.",
+      "verification": {
+        "actions": [
+          "Compiled and reviewed the C++ idea locally at pseudocode level or small-demo level.",
+          "Checked that it demonstrates the main feature rather than a full HLS compiler.",
+          "Removed untested large code fragments from the paper."
+        ],
+        "level": "empirical-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The generated code was too long for a 5-page paper.",
+          "Some edge cases such as multi-cycle operations were not implemented."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Paper Section IV: Implementation sketch",
+        "usage_type": "code-generation",
+        "direct_text_reused": false
+      },
+      "reflection": "The main implementation value is showing I understand the force computation, not building a complete synthesis tool."
+    },
+    {
+      "id": "e-4072419c",
+      "timestamp": "2026-06-14T17:50:00+02:00",
+      "parent_id": null,
+      "objective": "Prepare application example for paper.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Create a small arithmetic data-flow graph example for FDLS with limited adders and multipliers, suitable for one paper figure or table.",
+      "ai_output_summary": "The AI proposed an example and possible schedule table. I simplified it to fit the page limit and to make the resource conflict visible.",
+      "verification": {
+        "actions": [
+          "Checked precedence constraints manually.",
+          "Verified that the example illustrates resource pressure and mobility.",
+          "Kept it as a demonstration example, not a benchmark."
+        ],
+        "level": "empirical-check"
+      },
+      "evaluation": {
+        "status": "revised",
+        "issues": [
+          "The initial example was too large and would not fit cleanly in the paper.",
+          "Needed manual schedule checking."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Paper Section IV: Application example",
+        "usage_type": "idea-generation",
+        "direct_text_reused": false
+      },
+      "reflection": "A small example makes the algorithm explainable and supports the professor's requirement for an application example."
+    },
+    {
+      "id": "e-408d8d3e",
+      "timestamp": "2026-06-14T18:00:00+02:00",
+      "parent_id": null,
+      "objective": "Integrate M2 tradeoff analysis into final paper.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Convert my M2 tradeoff notes into a concise paper subsection comparing FDLS with list scheduling, ILP, and metaheuristic scheduling.",
+      "ai_output_summary": "The AI helped compress the tradeoffs into a short comparative discussion: speed and scalability versus optimality; local priority versus distribution-aware priority; formal exactness versus practical heuristic deployability.",
+      "verification": {
+        "actions": [
+          "Checked each comparison against M2 notes.",
+          "Rewrote prose manually to avoid copying.",
+          "Kept citations linked to the methods discussed."
+        ],
+        "level": "secondary-source-check"
+      },
+      "evaluation": {
+        "status": "revised",
+        "issues": [
+          "The AI text was initially too table-like for the paper subsection.",
+          "Some method comparisons needed more cautious wording."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Paper Section V: Context and tradeoffs",
+        "usage_type": "text-revision",
+        "direct_text_reused": false
+      },
+      "reflection": "The paper benefits from M2 because it explains why FDLS matters relative to alternatives."
+    },
+    {
+      "id": "e-409f4a04",
+      "timestamp": "2026-06-14T18:10:00+02:00",
+      "parent_id": null,
+      "objective": "Integrate M3 critical evaluation into final paper.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Convert my M3 strengths, limitations, suitable cases, unsuitable cases, and open questions into a balanced final paper section.",
+      "ai_output_summary": "The AI proposed a critical evaluation structure with mechanism-based strengths, model-based limitations, and transfer discussion. I used the structure and added my own wording.",
+      "verification": {
+        "actions": [
+          "Checked against M3 notes and professor's M3 checklist.",
+          "Ensured limitations are not written as personal opinion only, but linked to assumptions and model scope.",
+          "Kept open questions realistic and connected to earlier limitations."
+        ],
+        "level": "secondary-source-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Paper Section VI: Critical evaluation",
+        "usage_type": "argument-critique",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction helped transform milestone notes into a coherent evaluation section."
+    },
+    {
+      "id": "e-40a4da95",
+      "timestamp": "2026-06-14T18:20:00+02:00",
+      "parent_id": null,
+      "objective": "Prepare conclusion without repeating the whole paper.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Write a short conclusion for FDLS paper that summarizes central idea, tradeoffs, and realistic applicability.",
+      "ai_output_summary": "The AI drafted a conclusion emphasizing that FDLS is useful for resource-aware static HLS scheduling but remains a heuristic dependent on model assumptions.",
+      "verification": {
+        "actions": [
+          "Checked that the conclusion does not introduce new unsupported claims.",
+          "Rewrote final conclusion manually and ensured it refers to the paper's arguments.",
+          "Removed overly strong claims about superiority."
+        ],
+        "level": "primary-source-check"
+      },
+      "evaluation": {
+        "status": "revised",
+        "issues": [
+          "The AI conclusion sounded too promotional. I made it more balanced."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Paper Conclusion",
+        "usage_type": "text-revision",
+        "direct_text_reused": false
+      },
+      "reflection": "A good conclusion should state the scientific position: useful under assumptions, not universally optimal."
+    },
+    {
+      "id": "e-40bed96d",
+      "timestamp": "2026-06-14T18:30:00+02:00",
+      "parent_id": null,
+      "objective": "Check citations and reference relevance.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Review which references are needed for a paper on FDLS: assigned Teich/Haubelt material, De Micheli, Paulin and Knight, and neighboring HLS scheduling methods.",
+      "ai_output_summary": "The AI suggested a minimal reference set and relevance notes. I checked which references actually support the claims in the paper.",
+      "verification": {
+        "actions": [
+          "Checked that references are attached to claims they actually support.",
+          "Used relevance notes rather than a raw bibliography.",
+          "Flagged any citation I could not verify for later manual checking."
+        ],
+        "level": "primary-source-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "AI may suggest incomplete or inaccurate citation metadata; bibliographic details require manual verification.",
+          "Some neighboring references were not necessary for a short paper."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "References and citation notes",
+        "usage_type": "literature-search-support",
+        "direct_text_reused": false
+      },
+      "reflection": "Reference quality matters more than quantity. Every citation should support a real technical claim."
+    },
+    {
+      "id": "e-40cd2a56",
+      "timestamp": "2026-06-14T18:40:00+02:00",
+      "parent_id": null,
+      "objective": "Check final paper against plagiarism risk.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Review the paper workflow for plagiarism risk: AI-generated text, source paraphrasing, citations, and direct reuse.",
+      "ai_output_summary": "The AI gave a checklist: no direct copy, cite technical claims, distinguish own interpretation, use AI only as support, and keep an AI usage protocol.",
+      "verification": {
+        "actions": [
+          "Checked professor's warning on plagiarism and requirement for scientific writing.",
+          "Confirmed direct_text_reused is false for AI interactions used in the paper.",
+          "Reviewed paper sections for uncited technical claims."
+        ],
+        "level": "secondary-source-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Academic integrity check",
+        "usage_type": "verification-support",
+        "direct_text_reused": false
+      },
+      "reflection": "This check is important because AI can make copied-looking prose even when the idea is correct."
+    },
+    {
+      "id": "e-40d28edb",
+      "timestamp": "2026-06-14T18:50:00+02:00",
+      "parent_id": null,
+      "objective": "Plan presentation slides separate from paper.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Create a 10-minute presentation outline for FDLS that does not simply repeat the paper.",
+      "ai_output_summary": "The AI proposed slides for motivation, HLS flow, scheduling problem, ASAP/ALAP/mobility, force idea, FDLS algorithm, example schedule, tradeoffs, limitations, and discussion.",
+      "verification": {
+        "actions": [
+          "Checked professor's M4 requirement that the talk should communicate core idea, tradeoffs, and critical assessment.",
+          "Reduced text-heavy slides and prioritized diagrams and examples.",
+          "Separated presentation flow from paper section order."
+        ],
+        "level": "secondary-source-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Talk/slides outline",
+        "usage_type": "comparison-structuring",
+        "direct_text_reused": false
+      },
+      "reflection": "The presentation needs to teach the central idea quickly, not reproduce the full paper."
+    },
+    {
+      "id": "e-40e0bade",
+      "timestamp": "2026-06-14T19:00:00+02:00",
+      "parent_id": null,
+      "objective": "Prepare diagram ideas for slides.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "What diagrams should I use to explain FDLS: HLS flow, data-flow graph, mobility window, distribution graph, and schedule table?",
+      "ai_output_summary": "The AI proposed five diagram types and explained what each communicates. I selected a small subset for the slides.",
+      "verification": {
+        "actions": [
+          "Checked that each diagram supports one learning objective.",
+          "Removed diagrams that would overcrowd a 10-minute talk.",
+          "Kept the small data-flow graph and distribution graph as the main explanatory visuals."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Talk/slides diagrams",
+        "usage_type": "idea-generation",
+        "direct_text_reused": false
+      },
+      "reflection": "Good diagrams help explain force better than long text."
+    },
+    {
+      "id": "e-40f2b094",
+      "timestamp": "2026-06-14T19:10:00+02:00",
+      "parent_id": null,
+      "objective": "Prepare speaker explanation for technical terms.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Give simple but technically correct speaker notes for mobility, distribution graph, force, and ready list.",
+      "ai_output_summary": "The AI produced short explanatory notes. I edited them so the vocabulary stays accurate and understandable for classmates.",
+      "verification": {
+        "actions": [
+          "Checked each term against the paper definitions.",
+          "Removed oversimplifications that could mislead the audience.",
+          "Kept notes as speaking support, not as written paper text."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "revised",
+        "issues": [
+          "The AI's first analogy for force was too informal. I replaced it with a resource-pressure explanation."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Talk speaker notes",
+        "usage_type": "terminology-clarification",
+        "direct_text_reused": false
+      },
+      "reflection": "Speaker notes help me explain the topic orally without reading dense equations."
+    },
+    {
+      "id": "e-410f57ca",
+      "timestamp": "2026-06-14T19:20:00+02:00",
+      "parent_id": null,
+      "objective": "Prepare discussion questions and possible examiner questions.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "What questions might the professor ask about FDLS, and how should I answer them briefly?",
+      "ai_output_summary": "The AI suggested questions about optimality guarantees, difference from list scheduling, why ASAP/ALAP are needed, runtime overhead, implementation scope, and suitability for FPGA/ASIC targets.",
+      "verification": {
+        "actions": [
+          "Checked that questions match actual weak points of the paper.",
+          "Prepared concise answers from my own understanding.",
+          "Marked uncertain questions for further review."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Talk discussion preparation",
+        "usage_type": "verification-support",
+        "direct_text_reused": false
+      },
+      "reflection": "This helps validate whether I can defend the topic, not only submit a paper."
+    },
+    {
+      "id": "e-411a5b63",
+      "timestamp": "2026-06-14T19:30:00+02:00",
+      "parent_id": null,
+      "objective": "Validate M4 final paper and talk against professor's checklist.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Check whether my final paper and slides satisfy M4: contribution explanation, context/tradeoffs, critical evaluation, application discussion, citations, AI protocol, motivation, core idea, assumptions, limitations, and open issues.",
+      "ai_output_summary": "The AI mapped the final deliverables to M4 requirements and identified that the AI protocol must be submitted separately using the professor's JSON template.",
+      "verification": {
+        "actions": [
+          "Checked the professor's M4 checklist directly.",
+          "Confirmed the paper integrates M1-M3 rather than being created independently.",
+          "Checked that the presentation includes motivation, core technical idea, assumptions, tradeoffs, strengths, limitations, examples, and discussion questions."
+        ],
+        "level": "secondary-source-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "M4 Final checklist validation",
+        "usage_type": "verification-support",
+        "direct_text_reused": false
+      },
+      "reflection": "This final validation confirms that M4 is a synthesis and communication milestone, not just a polished text-generation task."
+    }
+  ]
+}
