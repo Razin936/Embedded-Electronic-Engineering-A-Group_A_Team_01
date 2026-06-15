@@ -10,19 +10,17 @@
 \usepackage{array}
 \usepackage{tikz}
 \usetikzlibrary{patterns,arrows.meta,positioning}
-\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
-    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 
 \begin{document}
 
-\title{Priority Exchange}
+\title{The Priority Exchange Server: Mechanism,\\ Schedulability, and Dynamic-Priority Extensions}
 
 \author{\IEEEauthorblockN{Md Jubair Salehin Razin\\1230281}
 \IEEEauthorblockA{\textit{Department of Electronic Engineering} \\
 \textit{Hochschule Hamm-Lippstadt}\\
 Lippstadt, Germany \\
 md-jubair-salehin.razin@stud.hshl.de}
-\thanks{Seminar paper, \textit{Real-Time Systems}, Hochschule Hamm-Lippstadt. The primary reference for this work is Buttazzo's monograph on predictable scheduling~\cite{buttazzo}.}
+\thanks{Seminar paper, \textit{Real-Time Systems}, Hochschule Hamm-Lippstadt. The treatment in this paper follows Buttazzo's textbook~\cite{buttazzo}, which is the primary reference; the original papers are cited as Buttazzo cites them.}
 }
 
 \maketitle
@@ -30,137 +28,112 @@ md-jubair-salehin.razin@stud.hshl.de}
 \pagestyle{plain}
 
 \begin{abstract}
-A real-time system must guarantee the hard deadlines of its periodic workload while still responding quickly to unpredictable soft aperiodic events such as operator commands, alarms, and sporadic sensor interrupts. The two classical baselines, background execution and the polling server, are unsatisfactory: the former gives slow and unbounded response, while the latter discards any reserved processor budget that is not consumed at the polling instant. Bandwidth-preserving servers were introduced to keep that budget available until aperiodic load actually arrives. This paper studies the Priority Exchange server, a bandwidth-preserving technique proposed by Lehoczky, Sha, and Strosnider, whose distinctive idea is to preserve high-priority budget not by holding it, but by trading it for the execution time of lower-priority periodic tasks. We explain the exchange mechanism on a worked, machine-verified schedule, derive its rate-monotonic schedulability bound, and show how the same idea extends to deadline-driven systems through the Dynamic and Improved Priority Exchange servers, which achieve exact and near-optimal aperiodic service respectively. We then position the algorithm within the broader family of aperiodic servers, analyse the trade-offs between responsiveness, schedulability, and implementation overhead, and critically evaluate the strengths, limitations, and realistic application scope of the approach. The paper closes with a documented protocol describing how artificial intelligence tools were used during its preparation.
+A hard real-time system has to guarantee the deadlines of its periodic tasks and, at the same time, respond quickly to soft aperiodic events such as operator commands or alarms whose arrival times are not known in advance. The two simplest options both have a clear weakness: background scheduling gives unbounded aperiodic response, and a polling server throws away its reserved capacity whenever no request happens to be pending at the polling instant. The Priority Exchange (PE) server, introduced by Lehoczky, Sha, and Strosnider, avoids the second problem in an unusual way: instead of \emph{holding} its high-priority budget, it \emph{trades} that budget for the execution time of a lower-priority periodic task, so the reserved time is moved down the priority order rather than lost. This paper explains the exchange mechanism following Buttazzo's presentation, walks through a worked example that I implemented and checked with a small C++ unit-time simulator, derives the rate-monotonic schedulability bound and applies it to my own example, and then follows the same idea into deadline-driven scheduling through the Dynamic Priority Exchange and Improved Priority Exchange servers. The paper closes with a short critical evaluation and a documented record of how AI tools were used during its preparation.
 \end{abstract}
 
 \begin{IEEEkeywords}
-real-time scheduling, aperiodic servers, priority exchange, rate-monotonic, earliest deadline first, bandwidth preservation, schedulability analysis
+real-time scheduling, aperiodic servers, priority exchange, rate monotonic, earliest deadline first, bandwidth preservation, schedulability
 \end{IEEEkeywords}
 
 \section{Introduction}\label{sec:intro}
 
-\subsection{Problem Statement and Motivation}
-Embedded and cyber-physical systems are typically organised around a set of \emph{periodic} activities with hard timing constraints, such as control loops, signal-processing pipelines, and actuation tasks. The temporal correctness of these activities is established offline by a worst-case schedulability analysis. In practice, however, the very same processor must also handle \emph{aperiodic} activity whose arrival pattern is not known in advance, for example operator interactions, fault and alarm handlers, mode-change requests, or event-triggered sensor data. For a large class of such activities the timing requirement is \emph{soft}: there is no catastrophic consequence if an individual response is late, but the system designer nevertheless wants the average and worst-case response times to be as small as possible.
+\subsection{The Problem}
+Most embedded and control systems are built around a set of \emph{periodic} tasks with hard deadlines: control loops, signal-processing stages, actuation. Whether these tasks meet their deadlines is checked offline by a worst-case schedulability test. In practice the same processor must also handle \emph{aperiodic} work whose arrival pattern is unknown beforehand --- operator input, alarms, mode changes, event-triggered sensor data. For much of this aperiodic work the timing requirement is \emph{soft}: a late response is not catastrophic, but the designer still wants response times to be as short as possible~\cite{buttazzo}.
 
-The central engineering problem is therefore to service soft aperiodic requests as responsively as possible \emph{without ever jeopardising} the guaranteed deadlines of the hard periodic tasks. Two naive solutions illustrate the tension. Under \emph{background scheduling}, aperiodic requests run only when no periodic task is ready; this never affects the periodic guarantee, but aperiodic response time is poor and, in heavily loaded systems, effectively unbounded~\cite{buttazzo}. Under a \emph{polling server}, a periodic task with a reserved capacity is created specifically to serve aperiodic requests; responsiveness improves, but if no request is pending at the moment the server is invoked, the reserved capacity is simply discarded until the next period, wasting processor bandwidth precisely when it might soon be needed.
+The engineering question is therefore how to serve soft aperiodic requests as responsively as possible \emph{without ever endangering} the hard periodic deadlines. Two naive answers show the tension clearly. With \emph{background scheduling}, aperiodic requests run only when no periodic task is ready. This never disturbs the periodic guarantee, but the response time can become very long under high periodic load, so it is acceptable only when the aperiodic activities have no stringent timing requirement~\cite{buttazzo}. With a \emph{polling server}, a periodic task is created with a reserved capacity that exists only to serve aperiodic requests. Responsiveness improves, but if no request is pending at the instant the server is invoked, the reserved capacity is simply discarded until the next period --- exactly when it might soon have been useful~\cite{buttazzo}.
 
-\subsection{Core Technical Idea}
-The Priority Exchange (PE) server, introduced by Lehoczky, Sha, and Strosnider~\cite{lss87}, belongs to the family of \emph{bandwidth-preserving} servers that resolve this tension by retaining unused server budget so that it can be spent on aperiodic load whenever the load eventually arrives. What distinguishes PE from its sibling, the Deferrable Server (DS)~\cite{lss87,strosnider95}, is \emph{how} the budget is preserved. The DS keeps its capacity at the original high priority level until the end of the server period. PE, in contrast, preserves its capacity by \emph{exchanging} it for the execution time of the highest-priority pending periodic task: that periodic task is advanced (it executes at the server's higher priority), while an equal amount of budget is accumulated at the periodic task's \emph{lower} priority level~\cite{buttazzo}. The reserved time is thus never lost; it is merely relocated to a progressively lower priority, where it remains reclaimable for aperiodic service and is discarded only if the processor would otherwise idle.
+\subsection{The Idea Behind Priority Exchange}
+The Priority Exchange (PE) server, introduced by Lehoczky, Sha, and Strosnider~\cite{lss87}, addresses this by preserving unused budget so it stays available for aperiodic load until that load actually arrives. Its sibling, the Deferrable Server (DS), also introduced in the same paper, does this by keeping its capacity at the original high priority until the end of the server period. PE preserves the budget differently: when no aperiodic request is pending, it \emph{exchanges} its capacity for the execution time of the highest-priority active periodic task. That periodic task is advanced --- it runs at the server's higher priority --- and an equal amount of capacity is accumulated at the periodic task's \emph{lower} priority level~\cite{buttazzo}. The reserved time is not lost; it is relocated to a lower priority, where it can still be reclaimed for aperiodic service, and it is only discarded if the processor would otherwise sit idle.
 
-This seemingly indirect mechanism has a precise and valuable consequence. Because PE never executes above its budget at any priority level---the time it ``borrows'' at high priority is always returned as real periodic work---it behaves, for the purpose of worst-case schedulability analysis, exactly like an ordinary periodic task. As a result it inherits the full rate-monotonic utilization bound of a periodic task, which is strictly better than the bound achievable by the Deferrable Server~\cite{buttazzo}.
+The reason this matters is that, in the worst case, a PE server behaves like an ordinary periodic task. Every unit of high-priority time it uses is either genuine aperiodic service paid for from its budget, or periodic work that was simply moved earlier. Because of this, PE inherits the same schedulability bound as a periodic task, which Buttazzo notes is better than the bound the Deferrable Server can offer~\cite{buttazzo}.
 
-\subsection{Contributions and Structure}
-This paper provides a self-contained technical treatment of the Priority Exchange server and its place in the literature. Section~\ref{sec:model} fixes the system model and assumptions. Section~\ref{sec:algorithm} presents the fixed-priority algorithm together with a worked, independently simulated schedule, derives its schedulability bound, and describes the dynamic-priority extensions (DPE and IPE) that carry the exchange idea into earliest-deadline-first systems. Section~\ref{sec:context} positions PE among competing aperiodic servers and analyses the trade-offs that govern the choice between them. Section~\ref{sec:eval} critically evaluates the approach, with concrete strengths, limitations, unrealistic assumptions, and matched examples of suitable and unsuitable applications. Section~\ref{sec:conclusion} concludes. An appendix documents the use of artificial intelligence tools in preparing the manuscript.
+\subsection{Structure of the Paper}
+Section~\ref{sec:model} states the system model used throughout. Section~\ref{sec:algorithm} presents the fixed-priority PE algorithm, a worked example produced by my own C++ simulator, the schedulability bound with a numerical check, and the comparison with the Deferrable Server. Section~\ref{sec:edf} follows the exchange idea into EDF scheduling with the Dynamic and Improved Priority Exchange servers. Section~\ref{sec:context} places PE among the other aperiodic servers described by Buttazzo. Section~\ref{sec:eval} evaluates the approach critically. An appendix documents the use of AI tools.
 
-\section{System Model and Assumptions}\label{sec:model}
-
-\subsection{Task Model}
-We consider a single processor executing a set $\Gamma=\{\tau_1,\dots,\tau_n\}$ of independent periodic tasks. Each task $\tau_i$ is characterised by a worst-case execution time $C_i$ and a period $T_i$, and releases an infinite sequence of jobs. Unless stated otherwise we assume relative deadlines equal to periods, $D_i=T_i$, and synchronous activation at the critical instant, which represents the worst case for fixed-priority analysis. The periodic processor utilization is
+\section{System Model}\label{sec:model}
+The model is the one used by Buttazzo for fixed-priority aperiodic service~\cite{buttazzo}. A single processor runs a set $\Gamma=\{\tau_1,\dots,\tau_n\}$ of independent periodic tasks. Each task $\tau_i$ has a worst-case execution time $C_i$ and a period $T_i$, with relative deadline equal to the period. All periodic tasks are released together at $t=0$, which is the worst case for fixed-priority analysis, and all tasks are fully preemptable. The periodic utilization is
 \begin{equation}
 U_p=\sum_{i=1}^{n}\frac{C_i}{T_i}.\label{eq:up}
 \end{equation}
-
-Soft aperiodic activity is modelled as a stream of jobs $J_k$, each with an arrival time $a_k$ and an execution requirement, but with no hard deadline. The optimisation objective for aperiodic jobs is to minimise their response time; meeting any particular deadline carries no additional value, which is precisely what distinguishes soft from \emph{firm} aperiodic requests.
-
-\subsection{Server and Priority Model}
-A server is a logical task with a capacity (budget) $C_s$ and a period $T_s$, and a utilization
+Soft aperiodic activity arrives as a stream of jobs with unknown arrival times and no hard deadline; the goal for these jobs is small response time. Periodic priorities are assigned by Rate Monotonic (RM), and the server is placed at the highest priority so fresh budget gives the shortest possible response. A server is described by a capacity $C_s$ and a period $T_s$, with utilization
 \begin{equation}
 U_s=\frac{C_s}{T_s}.\label{eq:us}
 \end{equation}
-In the fixed-priority setting, periodic priorities are assigned by the rate-monotonic (RM) rule, and the server is placed at the highest priority in the system so that fresh budget can deliver the shortest possible response. In the dynamic-priority setting, priorities follow the earliest-deadline-first (EDF) rule and the server's budget is tagged with a deadline. All ties are broken in favour of aperiodic execution, reflecting the goal of high responsiveness.
-
-\subsection{Assumptions and Scope Limitations}
-The analysis assumes a fully preemptive uniprocessor; tasks that are independent and do not self-suspend; no shared logical resources and therefore no blocking; negligible context-switch, tick, and bookkeeping overhead in the formal model (an assumption we revisit critically in Section~\ref{sec:eval}); and exact worst-case execution times for the periodic tasks. Release jitter, offsets, precedence constraints, mixed-criticality, and multiprocessor or distributed platforms are outside the scope of this treatment. These restrictions are inherited from the classical analyses of PE and its relatives~\cite{lss87,buttazzo,spuri96}, and Section~\ref{sec:eval} examines how realistic they are.
+All priority ties are broken in favour of aperiodic execution, since the objective is high responsiveness~\cite{buttazzo}.
 
 \section{The Priority Exchange Algorithm}\label{sec:algorithm}
 
 \subsection{The Exchange Mechanism}
-The fixed-priority PE server is defined by the following rules~\cite{buttazzo}. At the beginning of each server period the capacity is replenished to its full value $C_s$. At every scheduling instant the highest-priority entity in the system is selected, where an entity is either a ready periodic job, the server budget, or budget that has previously been parked at some priority level. Two cases then arise:
+Following Buttazzo~\cite{buttazzo}, the fixed-priority PE server works as follows. At the beginning of each server period the capacity is replenished to its full value $C_s$. At every scheduling instant the highest-priority ready entity is chosen, where an entity is a ready periodic job, the fresh server budget, or budget that was parked at some priority level by an earlier exchange. Two cases arise:
 \begin{itemize}
-\item If aperiodic requests are pending and a budget is the highest-priority entity, the requests are serviced at that priority level; each request consumes an amount of budget equal to its execution time.
-\item If no aperiodic request is pending, the budget is \emph{exchanged} with the execution time of the highest-priority active periodic task. That task runs at the (higher) priority of the budget, and an equal amount of budget is accumulated at the (lower) priority level of that task.
+\item If aperiodic requests are pending and a budget is the highest-priority entity, the requests are served at that priority level, each request consuming an amount of budget equal to its execution time.
+\item If no aperiodic request is pending, the budget is \emph{exchanged} with the execution time of the highest-priority active periodic task: that task runs at the budget's (higher) priority, and an equal amount of budget is parked at the task's (lower) priority level.
 \end{itemize}
-If no aperiodic request and no periodic job can use the budget---that is, the processor would otherwise be idle---the budget is gradually discarded. Because the exchange repeatedly pushes unused budget to lower and lower priority levels, the reserved time degrades smoothly toward the level of background processing, but it is preserved (and remains usable for aperiodic service) at every step along the way.
+If no aperiodic request and no periodic job can use the budget --- that is, the processor would otherwise be idle --- the parked budget is gradually discarded. Because the exchange keeps pushing unused budget to lower and lower priority levels, the reserved time degrades smoothly toward the level of background processing, but it remains usable for aperiodic service at every step until that point~\cite{buttazzo}.
+
+\subsection{Worked Example}
+Buttazzo illustrates the mechanism in Figures~5.14 and~5.15 of~\cite{buttazzo}. To make sure I had understood it rather than just read it, I set up my own small configuration and implemented the algorithm as a unit-time C++ simulator; the schedule in Fig.~\ref{fig:pe} is the simulator output, not a redrawn version of the book's figure. The system is a PE server with $C_s=1$ and $T_s=5$ and two periodic tasks $\tau_1=(C_1{=}2,T_1{=}10)$ and $\tau_2=(C_2{=}6,T_2{=}20)$, giving $U_p=0.5$ and $U_s=0.2$. Two aperiodic jobs arrive: $J_1$ at $t=5$ and $J_2$ at $t=12$, each needing one unit of time.
 
 \begin{figure*}[t]
 \centering
 \begin{tikzpicture}[x=0.66cm, y=1cm, font=\footnotesize]
-  % ---- geometry ----
-  % rows (bottom to top): axis(0), aperiodic-exec, tau2 exec+parked, tau1 exec+parked, arrivals
   \def\xmax{20}
-  % background grid lines (light)
   \foreach \g in {0,2,4,6,8,10,12,14,16,18,20}{
     \draw[gray!25] (\g,0.15) -- (\g,3.05);
   }
-  % ---- time axis ----
   \draw[->,thick] (0,0) -- (\xmax+0.7,0) node[right]{$t$};
   \foreach \x in {0,1,...,20}{ \draw (\x,0)--(\x,-0.07); }
   \foreach \x in {0,2,4,6,8,10,12,14,16,18,20}{ \node[below=1pt] at (\x,-0.07){\scriptsize\x}; }
-
-  % ---- row labels ----
   \node[left] at (-0.25,0.50){Aperiodic};
   \node[left] at (-0.25,1.30){$\tau_2$};
   \node[left] at (-0.25,2.10){$\tau_1$};
-
-  % ===================== tau1 =====================
-  % parked-capacity band at tau1's level: [0,2] and [10,12]
+  % tau1 parked band: [0,2], [10,12]
   \fill[pattern=north east lines, pattern color=blue!55] (0,2.40) rectangle (2,2.62);
   \fill[pattern=north east lines, pattern color=blue!55] (10,2.40) rectangle (12,2.62);
   \draw (0,2.40) rectangle (2,2.62); \draw (10,2.40) rectangle (12,2.62);
-  % tau1 execution: slots 0,1,10,11  -> [0,2] and [10,12]
+  % tau1 execution: [0,2], [10,12]
   \fill[blue!18] (0,1.85) rectangle (2,2.40);
   \fill[blue!18] (10,1.85) rectangle (12,2.40);
   \draw (0,1.85) rectangle (2,2.40); \draw (10,1.85) rectangle (12,2.40);
-
-  % ===================== tau2 =====================
-  % parked-capacity band at tau2's level: [2,9]
+  % tau2 parked band: [2,9]
   \fill[pattern=north east lines, pattern color=red!55] (2,1.60) rectangle (9,1.82);
   \draw (2,1.60) rectangle (9,1.82);
-  % tau2 execution: slots 2,3,4 -> [2,5] ; 6,7,8 -> [6,9]
+  % tau2 execution: [2,5], [6,9]
   \fill[red!18] (2,1.05) rectangle (5,1.60);
   \fill[red!18] (6,1.05) rectangle (9,1.60);
   \draw (2,1.05) rectangle (5,1.60); \draw (6,1.05) rectangle (9,1.60);
-
-  % ===================== aperiodic execution =====================
-  % J1 at slot 5 (server level) ; J2 at slot 12 (tau1 level)
+  % aperiodic execution: J1 at slot 5 (server level), J2 at slot 12 (tau1 level)
   \fill[green!30] (5,0.25) rectangle (6,0.80);  \draw (5,0.25) rectangle (6,0.80);
   \node at (5.5,0.525){\scriptsize $J_1$};
   \fill[green!30] (12,0.25) rectangle (13,0.80); \draw (12,0.25) rectangle (13,0.80);
   \node at (12.5,0.525){\scriptsize $J_2$};
-
-  % ===================== arrivals =====================
+  % arrivals
   \draw[-{Latex[length=2mm]},thick] (5,3.05) -- (5,2.70);
   \node[above] at (5,3.05){\scriptsize $J_1$};
   \draw[-{Latex[length=2mm]},thick] (12,3.05) -- (12,2.70);
   \node[above] at (12,3.05){\scriptsize $J_2$};
-
-  % ===================== server replenishment markers =====================
+  % replenishment markers
   \foreach \r in {0,5,10,15,20}{ \node at (\r,-0.68){\scriptsize$\blacktriangle$}; }
   \node[anchor=west,font=\scriptsize] at (0,-1.22){$\blacktriangle$~=~server period restart ($C_s$ replenished every $T_s=5$)};
-
-  % ===================== event annotations =====================
+  % annotations
   \draw[-{Latex[length=1.4mm]}] (1.0,3.45) -- (1.0,2.64);
   \node[anchor=south,align=center] at (1.0,3.45){\scriptsize exchange:\\\scriptsize $\tau_1$ advances};
   \draw[-{Latex[length=1.4mm]}] (3.6,3.45) -- (2.6,1.83);
   \node[anchor=south,align=center] at (4.2,3.45){\scriptsize budget degrades\\\scriptsize to $\tau_2$'s level};
   \draw[-{Latex[length=1.4mm]}] (8.4,3.45) -- (8.4,1.83);
-  \node[anchor=south,align=center] at (8.4,3.45){\scriptsize discarded\\\scriptsize (idle)};
+  \node[anchor=south,align=center] at (8.4,3.45){\scriptsize discarded\\\scriptsize at idle ($t=9$)};
 \end{tikzpicture}
-\caption{Aperiodic service under a fixed-priority Priority Exchange server with $C_s=1$, $T_s=5$, and periodic tasks $\tau_1=(2,10)$, $\tau_2=(6,20)$. Solid blocks are periodic (blue/red) and aperiodic (green) execution; hatched bands show the reserved budget parked at $\tau_1$'s and $\tau_2$'s priority levels. At $t=0$ the fresh budget is exchanged with $\tau_1$; with $\tau_1$ idle after $t=2$ it degrades to $\tau_2$'s level, and is discarded at the idle instant $t=9$. Request $J_1$ (arriving at $t=5$) is served immediately at the server's top priority, whereas $J_2$ (arriving at $t=12$) is served using budget reclaimed at $\tau_1$'s level. The schedule was produced and checked by an independent unit-time simulator (Section~\ref{sec:eval}).}
+\caption{Aperiodic service under a fixed-priority Priority Exchange server with $C_s=1$, $T_s=5$, and periodic tasks $\tau_1=(2,10)$, $\tau_2=(6,20)$. Solid blocks are periodic (blue/red) and aperiodic (green) execution; hatched bands show the reserved budget parked at $\tau_1$'s and $\tau_2$'s priority levels. At $t=0$ the fresh budget is exchanged with $\tau_1$; once $\tau_1$ is idle after $t=2$ it degrades to $\tau_2$'s level, and is discarded at the idle instant $t=9$. $J_1$ (arriving $t=5$) is served immediately at the server's top priority; $J_2$ (arriving $t=12$) is served from budget reclaimed at $\tau_1$'s level. The fresh budget replenished at $t=15$ is never claimed and is discarded at idle. The schedule was produced by the C++ unit-time simulator of Section~\ref{sec:cpp}.}
 \label{fig:pe}
 \end{figure*}
 
-\subsection{Worked Example}
-Figure~\ref{fig:pe} illustrates the mechanism on a small system: a PE server with $C_s=1$ and $T_s=5$, and two periodic tasks $\tau_1=(C_1{=}2,T_1{=}10)$ and $\tau_2=(C_2{=}6,T_2{=}20)$, giving $U_p=0.5$ and $U_s=0.2$. The schedule was generated by the C++ unit-time simulator described below and is read as follows.
+Reading the schedule step by step makes the mechanism concrete. At $t=0$ the budget is replenished but nothing is pending, so it is exchanged with $\tau_1$: the first unit of $\tau_1$ runs at the server's top priority, and one unit of budget is parked at $\tau_1$'s level. $\tau_1$ keeps running while it has work; once it finishes at $t=2$ the budget degrades one step further and is exchanged with $\tau_2$, sliding down to $\tau_2$'s level. At $t=5$ the server period restarts, the budget is replenished at top priority, and because $J_1$ has just arrived it is served \emph{immediately} at the highest priority --- this is the responsiveness benefit of placing the server at the top of the priority order. The unit parked at $\tau_2$'s level is never claimed and is discarded at the first idle instant, $t=9$. The cycle then repeats: at $t=10$ the fresh budget is exchanged with the second job of $\tau_1$ and parked at $\tau_1$'s level, and when $J_2$ arrives at $t=12$ it is served from exactly that reclaimed budget, at $\tau_1$'s priority rather than the top. The defining property of PE is visible here: reserved time is lost only when the processor would otherwise idle, never just because a request happened not to be pending.
 
-At $t=0$ the budget is replenished but no request is pending, so it is exchanged with $\tau_1$: the first unit of $\tau_1$ runs at the server's top priority and one unit of budget is parked at $\tau_1$'s level. While $\tau_1$ still has work it continues to execute and the parked unit remains at its level; once $\tau_1$ completes at $t=2$, the budget degrades a further step and is exchanged with $\tau_2$, sliding down to $\tau_2$'s priority level. At $t=5$ the server period restarts, the budget is replenished at top priority, and because request $J_1$ has just arrived it is served \emph{immediately} at the highest priority---this is the responsiveness benefit of placing the server at the top of the priority order. The unit that had been parked at $\tau_2$'s level is never claimed by an aperiodic request and is therefore discarded at the first idle instant, $t=9$. The cycle then repeats: at $t=10$ the fresh budget is exchanged with the second job of $\tau_1$ and parked at $\tau_1$'s level, and when $J_2$ arrives at $t=12$ it is served using exactly that reclaimed budget, at $\tau_1$'s priority rather than the top. The figure makes the defining property of PE visible: reserved time is lost only when the processor would otherwise idle, never simply because a request happened not to be pending.
-
-
-\subsection{C++ Implementation and Simulation Result}
-To realise the application example, the main feature of the Priority Exchange server was implemented as a discrete unit-time C++ simulator. The simulator models one preemptive fixed-priority CPU, a PE server with $C_s=1$ and $T_s=5$, and two rate-monotonic periodic tasks $\tau_1=(2,10)$ and $\tau_2=(6,20)$. The implementation explicitly stores server capacity at each priority level: level~0 is the server level, level~1 corresponds to $\tau_1$, and level~2 corresponds to $\tau_2$. If an aperiodic job is pending, the highest available budget is used to serve it. If no aperiodic job is pending, unused budget is exchanged with the highest-priority ready periodic task below that budget level and is parked at the task's priority level. If no work is available, the remaining parked budget is discarded only during an idle instant.
+\subsection{C++ Implementation and Result}\label{sec:cpp}
+I implemented the main feature of the PE server as a discrete unit-time C++ simulator to generate and check Fig.~\ref{fig:pe}. The simulator models one preemptive fixed-priority CPU, the PE server with $C_s=1$ and $T_s=5$, and the two RM tasks. It stores server capacity at each priority level explicitly: level~0 is the server level, level~1 is $\tau_1$, and level~2 is $\tau_2$. At each tick, if an aperiodic job is pending the highest available budget serves it; otherwise the highest budget is exchanged with the highest-priority ready periodic task below it and parked at that task's level; and if nothing can use the budget, one parked unit is discarded only on an idle instant. Table~\ref{tab:cpp_result} lists the events the simulator reports.
 
 \begin{table}[t]
-\caption{Relevant events observed in the C++ simulation.}
+\caption{Events reported by the C++ simulation.}
 \label{tab:cpp_result}
 \centering
 \renewcommand{\arraystretch}{1.15}
@@ -168,136 +141,127 @@ To realise the application example, the main feature of the Priority Exchange se
 \toprule
 \textbf{Time} & \textbf{Observed behaviour} \\
 \midrule
-$t=0$  & Fresh server budget is replenished and exchanged with $\tau_1$; one budget unit is parked at $\tau_1$'s priority level. \\
-$t=2$  & The parked budget degrades further by being exchanged with $\tau_2$. \\
-$t=5$  & Aperiodic job $J_1$ arrives and is served immediately using fresh top-priority server budget. \\
-$t=9$  & Old parked budget is discarded because the processor would otherwise be idle. \\
-$t=12$ & Aperiodic job $J_2$ is served using reclaimed budget parked at $\tau_1$'s priority level. \\
+$t=0$  & Fresh budget replenished and exchanged with $\tau_1$; one unit parked at $\tau_1$'s level. \\
+$t=2$  & Parked budget degrades further, exchanged with $\tau_2$. \\
+$t=5$  & $J_1$ arrives and is served immediately from fresh top-priority budget. \\
+$t=9$  & Parked budget is discarded because the processor would otherwise be idle. \\
+$t=12$ & $J_2$ is served from budget reclaimed at $\tau_1$'s priority level. \\
+$t=15$ & Fresh budget replenished but unclaimed, discarded at idle. \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-The terminal output also reports the response times of the two aperiodic jobs. Both $J_1$ and $J_2$ finish one time unit after arrival, giving a response time of $1$ for each job. The deadline check reports zero deadline misses for both periodic tasks. This confirms that the implemented exchange mechanism improves aperiodic responsiveness while preserving the hard periodic workload.
+The simulator also reports the aperiodic response times and a deadline check. Both $J_1$ and $J_2$ finish one unit after arrival, so each has a response time of $1$, and the deadline check reports zero misses for $\tau_1$ and $\tau_2$. This confirms on a concrete schedule that the exchange mechanism improves aperiodic responsiveness while the hard periodic workload still meets its deadlines.
 
-
-
-\subsection{Schedulability Analysis (Fixed Priority)}
-The key analytical observation is that, in the worst case, a PE server behaves as a periodic task: every unit of high-priority time it consumes corresponds either to genuine aperiodic service paid for from its budget, or to periodic work that has merely been advanced. Consequently the periodic schedulability bound is identical to that of the Polling Server~\cite{buttazzo}. Assuming the server holds the highest priority, the least upper bound on total utilization is
+\subsection{Schedulability Bound}
+The analytical point, as Buttazzo states it, is that in the worst case a PE server behaves as a periodic task, because every unit of high-priority time it consumes is either aperiodic service paid from its budget or periodic work that was merely advanced. The schedulability bound is therefore the same as for the Polling Server. Assuming the server holds the highest priority, the least upper bound on total utilization is
 \begin{equation}
 U_{lub}=U_s+n\!\left(K^{1/n}-1\right),\qquad
 K=\frac{2}{U_s+1}.\label{eq:lub}
 \end{equation}
-Equivalently, a set of $n$ periodic tasks with utilization $U_p$ running together with a PE server of utilization $U_s$ is guaranteed under RM if
+Equivalently, a set of $n$ periodic tasks with utilization $U_p$ running with a PE server of utilization $U_s$ is guaranteed under RM if
 \begin{equation}
 U_p\le n\!\left[\left(\frac{2}{U_s+1}\right)^{1/n}-1\right].\label{eq:guarantee}
 \end{equation}
-Two limiting cases are instructive. As $U_s\to 0$, \eqref{eq:guarantee} reduces to the classical Liu and Layland bound $n(2^{1/n}-1)$~\cite{liu73}, as expected when the server vanishes. As $n\to\infty$ the bound tends to $\ln\!\big(2/(U_s+1)\big)$, so even for a large periodic task set a non-trivial fraction of the processor can be reserved for aperiodic service while still guaranteeing the periodic deadlines.
+Two limiting cases are worth noting. As $U_s\to 0$ the server vanishes and~\eqref{eq:guarantee} reduces to the classical Liu and Layland bound $n(2^{1/n}-1)$~\cite{liu73}, as it should. As $n\to\infty$ the bound tends to $\ln\!\big(2/(U_s+1)\big)$, so even for a large task set a non-trivial fraction of the processor can be reserved for aperiodic service while the periodic deadlines are still guaranteed.
 
-\subsection{Dynamic Priority Exchange (EDF)}
+Applying~\eqref{eq:guarantee} to my own example ($n=2$, $U_s=0.2$) gives
+\[
+U_p\le 2\!\left[\left(\tfrac{2}{1.2}\right)^{1/2}-1\right]
+       =2\,(1.291-1)=0.582 .
+\]
+Since the periodic load there is $U_p=0.5<0.582$, the task set is guaranteed, which is consistent with the simulator reporting zero deadline misses.
 
+\subsection{Priority Exchange versus the Deferrable Server}
+The most direct comparison is with the Deferrable Server, since the two were introduced together~\cite{lss87} and solve the same problem in opposite ways. Buttazzo compares them along three axes~\cite{buttazzo}. In responsiveness, DS is slightly better, because it keeps its capacity at the original high priority. In implementation cost, DS is much simpler: it never tracks exchanges, so its overhead does not depend on the number of periodic tasks, whereas PE must account for budget at every priority level and its overhead grows as $n$ grows. In schedulability, however, DS pays for its simplicity: by holding capacity at high priority it can interfere with periodic tasks in a way an ordinary periodic task cannot, which lowers its utilization bound. Buttazzo gives the maximum server utilizations
+\begin{equation}
+U_{\mathrm{DS}}^{\max}=\frac{2-P}{2P-1},\qquad
+U_{\mathrm{PE}}^{\max}=\frac{2-P}{P},
+\qquad P=\prod_{i=1}^{n}(U_i+1),
+\label{eq:maxutil}
+\end{equation}
+from which $U_{\mathrm{DS}}^{\max}<U_{\mathrm{PE}}^{\max}$: for a given periodic load the largest PE server that can still be guaranteed is bigger than the largest DS server~\cite{buttazzo}. So the two sit at opposite corners of a responsiveness--schedulability--overhead trade-off: DS buys slightly better responsiveness and low overhead at a weaker periodic bound, while PE recovers the full periodic bound at the cost of higher, task-count-dependent overhead.
 
-The exchange idea transfers naturally to deadline-driven scheduling. The Dynamic Priority Exchange (DPE) server, proposed by Spuri and Buttazzo~\cite{spuri94,spuri96}, lets the server trade its runtime with the runtime of lower-priority periodic tasks, which under EDF means tasks with a longer deadline~\cite{buttazzo}. The server capacity is tagged with the deadline of the current server period; whenever a deadline-tagged capacity is the highest-priority entity and no aperiodic request is pending, the periodic task with the shortest deadline runs and an equal capacity is added at \emph{that} task's deadline. Reserved time is again only relocated, never wasted except at genuine idle times.
+\section{Extending the Idea to EDF}\label{sec:edf}
 
-Crucially, this runtime exchange does not affect schedulability, because moving a periodic execution earlier and reserving its time at the corresponding deadline preserves feasibility. The exact condition is the classical processor-demand bound:
+\subsection{Dynamic Priority Exchange}
+The exchange idea carries over to deadline-driven scheduling. The Dynamic Priority Exchange (DPE) server, proposed by Spuri and Buttazzo~\cite{sb94,sb96}, is described by Buttazzo as the EDF adaptation of PE~\cite{buttazzo}. The server trades its runtime with the runtime of lower-priority periodic tasks, which under EDF means tasks with a longer deadline. The server capacity carries the deadline of the current server period; each periodic task deadline has its own aperiodic capacity, initially zero. Whenever a deadline-tagged capacity is the highest-priority entity and no aperiodic request is pending, the periodic task with the shortest deadline runs, and a capacity equal to that execution is moved to the task's deadline. As before, reserved time is only relocated, never wasted except at genuine idle times.
+
+This runtime exchange does not affect schedulability, because moving a periodic execution earlier and reserving an equal capacity at the corresponding deadline preserves feasibility. The condition is the classical processor-demand bound:
 \begin{equation}
 U_p+U_s\le 1.\label{eq:dpe}
 \end{equation}
-The result is proved by transforming any DPE schedule $\sigma$ into an equivalent EDF schedule $\sigma'$ in which the server is replaced by a periodic task and exchanged periodic executions are postponed to the intervals where the corresponding capacities decrease; $\sigma'$ is invariant (it depends only on the task set, not on the aperiodic load) and is feasible if and only if \eqref{eq:dpe} holds, which in turn holds if and only if $\sigma$ is feasible~\cite{buttazzo,spuri96}. The DPE server also admits a simple and safe \emph{resource-reclaiming} extension: when a periodic job finishes early, its unused worst-case time is added to the aperiodic capacity at that job's deadline, improving aperiodic response without affecting the periodic guarantee, since that time was already accounted for at that priority level.
+Buttazzo proves this (Theorem~6.1) by transforming any DPE schedule $\sigma$ into an equivalent EDF schedule $\sigma'$ in which the server is replaced by a periodic task and the exchanged periodic executions are postponed to the intervals where the corresponding capacities decrease. The transformed schedule $\sigma'$ depends only on the task set, not on the aperiodic load, and is feasible exactly when~\eqref{eq:dpe} holds, which is therefore also the condition for $\sigma$~\cite{buttazzo,sb96}. DPE also supports a simple and safe resource-reclaiming rule: when a periodic job finishes before its worst case, the unused time is added to the aperiodic capacity at that job's deadline. This improves aperiodic response without affecting the periodic guarantee, since that time was already accounted for at that priority level~\cite{buttazzo}.
 
-\subsection{Improved Priority Exchange (EDF)}
-The optimal deadline-driven server is the Earliest Deadline as Late as possible (EDL) server, which minimises the average aperiodic response time but is too computationally heavy for practical use because it must repeatedly recompute processor idle times online~\cite{buttazzo,spuri96}. The Improved Priority Exchange (IPE) server~\cite{spuri94,spuri96} recovers most of EDL's benefit at far lower cost by precomputing the EDL idle-time function offline and using it to drive the server's replenishments. Two consequences follow: the server is no longer periodic and can always run at the highest priority in the system, and its replenishment schedule is determined entirely by the periodic task set. The IPE server is feasible if and only if
+\subsection{Improved Priority Exchange}
+The optimal deadline-driven server is the Earliest Deadline as Late as possible (EDL) server, which minimises the average aperiodic response time but is too heavy for practice, because it has to recompute the processor idle times online~\cite{buttazzo,sb96}. The Improved Priority Exchange (IPE) server~\cite{sb94,sb96} recovers most of EDL's benefit at far lower cost: the EDL idle-time function is precomputed offline and used to drive the server's replenishments. Two things follow~\cite{buttazzo}. First, the server is no longer periodic and can always run at the highest priority in the system. Second, its replenishment schedule depends only on the periodic task set. The IPE server is feasible if and only if
 \begin{equation}
 U_p\le 1,\label{eq:ipe}
 \end{equation}
-in which case it automatically allocates the entire residual bandwidth $1-U_p$ to aperiodic service. Spuri and Buttazzo show that IPE is nearly optimal: only in rare situations does the exact EDL server respond perceptibly faster~\cite{buttazzo,spuri96}.
+in which case it automatically allocates the whole residual bandwidth $1-U_p$ to aperiodic service. Buttazzo shows (Theorem~6.6) that no periodic instance can miss its deadline under IPE because its completion times never exceed those of the EDL schedule of the same task set, and notes that only in rare situations does the exact EDL server respond perceptibly faster than IPE~\cite{buttazzo,sb96}. The cost IPE pays is memory: when the task periods are not harmonically related, the hyperperiod $H=\mathrm{lcm}(T_1,\dots,T_n)$ can be large, and the precomputed idle-time arrays must be stored over it~\cite{buttazzo}.
 
-\section{Context and Trade-off Analysis}\label{sec:context}
+\section{Context Among Other Aperiodic Servers}\label{sec:context}
+Buttazzo presents PE as one option among several, and it is useful to place it next to the others he describes~\cite{buttazzo}. Against the two baselines the comparison is one-sided: PE shares the periodic schedulability bound of the Polling Server~\eqref{eq:guarantee} because both behave like periodic tasks, but PE is far more responsive, since it can serve a request the instant its period begins and can also serve later requests from budget that polling would have discarded. Both dominate background scheduling, which gives no responsiveness guarantee at all.
 
-\subsection{The Space of Aperiodic Servers}
-PE is one point in a well-developed design space. Under fixed priorities the principal alternatives are background scheduling, the Polling Server, the Deferrable Server~\cite{lss87,strosnider95}, the Extended Priority Exchange (EPE) server~\cite{epe88}, and the Sporadic Server~\cite{sprunt89}. Under dynamic priorities the corresponding family comprises the Dynamic Priority Exchange, Dynamic Sporadic, Total Bandwidth, EDL, and Improved Priority Exchange servers~\cite{spuri94,spuri96,buttazzo}. Orthogonal to the server approach are the slack-stealing methods~\cite{slack93} and dual-priority scheduling~\cite{davis95}, which reclaim spare capacity through priority promotion rather than a reserved budget.
+The closest fixed-priority relative after DS is the Sporadic Server (SS), proposed by Sprunt, Sha, and Lehoczky~\cite{ssl89}. Buttazzo notes that SS also preserves capacity at high priority but replenishes it in a way that still behaves like a periodic task, so it obtains a periodic-task schedulability bound with overhead that does not grow with the number of periodic tasks~\cite{buttazzo}. The runtime slack that PE cannot reclaim --- time freed when periodic jobs finish before their worst case --- is the target of the Slack Stealing algorithm of Lehoczky and Ramos-Thuel~\cite{lrt92}, which is not a server at all but a passive task that advances available slack; Buttazzo reports it performs very well but is not used in its exact form because computing the slack online is expensive~\cite{buttazzo}.
 
-\subsection{Priority Exchange versus the Deferrable Server}
-The most direct comparison is with the Deferrable Server, since PE and DS were introduced in the same work~\cite{lss87} and solve the same problem in opposite ways. The DS is markedly simpler to implement: it always keeps its capacity at the original priority and never has to track exchanges, so its overhead is essentially independent of the number of periodic tasks. PE, by contrast, must account for budget at every priority level and manage the exchanges, and its overhead grows with $n$~\cite{buttazzo}. The DS pays for its simplicity in schedulability: by holding capacity at high priority it violates the assumption that a high-priority task always executes when ready, which weakens its utilization bound. For a given periodic load, the largest DS that can be guaranteed is smaller than the largest PE server, i.e.\ $U^{\max}_{\mathrm{DS}}<U^{\max}_{\mathrm{PE}}$~\cite{buttazzo}. The two algorithms thus occupy opposite corners of a responsiveness--schedulability--overhead trade-off: DS offers slightly better aperiodic responsiveness and low overhead but a weaker periodic bound, whereas PE offers the full periodic bound at the cost of higher and task-count-dependent overhead.
-
-\subsection{Priority Exchange versus Polling and Background}
-Against the two baselines the comparison is one-sided. PE and the Polling Server share the same periodic schedulability bound~\eqref{eq:guarantee}, because both behave like periodic tasks, but PE delivers substantially better aperiodic responsiveness: it can serve a request the instant its period begins and, through preservation, can also serve later requests from budget that polling would have discarded. PE can therefore be read as ``the schedulability of polling with much improved responsiveness.'' Both dominate background scheduling, which offers no responsiveness guarantee at all.
-
-\subsection{Fixed versus Dynamic Priority}
-Moving from RM to EDF changes the achievable bounds and the cost. The deadline-driven servers reach full processor utilization---$U_p+U_s\le 1$ for DPE and the Total Bandwidth Server, and $U_p\le 1$ for IPE and EDL---and generally provide better responsiveness than their fixed-priority counterparts. The price is dynamic deadline bookkeeping and an EDF run-time, which many commercial real-time operating systems do not natively support and which complicates certification. Within the dynamic family there is a further internal trade-off: the Total Bandwidth Server attains near-optimal response with very simple bookkeeping, DPE and IPE require a capacity/deadline queue, and EDL is optimal but impractically expensive~\cite{buttazzo,spuri96}. Fixed-priority PE remains attractive precisely where predictability, tooling, and certification favour RM.
-
-\begin{table*}[t]
-\caption{Comparison of representative aperiodic service algorithms on a uniprocessor.}
+\begin{table}[t]
+\caption{Aperiodic service algorithms as presented by Buttazzo~\cite{buttazzo}.}
 \label{tab:compare}
 \centering
 \renewcommand{\arraystretch}{1.25}
-\begin{tabular}{@{}l l l l l l@{}}
+\begin{tabular}{@{}l l l l@{}}
 \toprule
-\textbf{Algorithm} & \textbf{Priority} & \textbf{Periodic bound} & \textbf{Aperiodic} & \textbf{Implementation} & \textbf{Budget} \\
- & \textbf{model} & \textbf{(guarantee)} & \textbf{responsiveness} & \textbf{overhead} & \textbf{preserved?} \\
+\textbf{Algorithm} & \textbf{Priority} & \textbf{Periodic} & \textbf{Aperiodic} \\
+ & \textbf{model} & \textbf{bound} & \textbf{response} \\
 \midrule
-Background          & any   & $U_p\le U_{lub}$ (none reserved) & very poor       & negligible            & ---     \\
-Polling Server      & RM    & periodic-task bound \eqref{eq:guarantee} & moderate        & low                   & no      \\
-Deferrable Server~\cite{lss87,strosnider95}   & RM    & weaker than periodic-task bound & good            & low                   & yes (high prio.) \\
-\textbf{Priority Exchange}~\cite{lss87} & RM & periodic-task bound \eqref{eq:guarantee} & good     & grows with $n$        & yes (exchanged down) \\
-Sporadic Server~\cite{sprunt89}     & RM    & periodic-task bound & good            & low/moderate          & yes (high prio.) \\
-Dynamic Priority Exch.~\cite{spuri96} & EDF & $U_p+U_s\le 1$ \eqref{eq:dpe} & very good        & moderate (deadline queue) & yes \\
-Total Bandwidth~\cite{spuri96}      & EDF   & $U_p+U_s\le 1$ & very good        & low                   & yes \\
-Improved Priority Exch.~\cite{spuri96} & EDF & $U_p\le 1$ \eqref{eq:ipe} & near-optimal     & high (offline EDL)    & yes \\
+Background            & any & none reserved        & very poor \\
+Polling Server        & RM  & periodic-task~\eqref{eq:guarantee} & moderate \\
+Deferrable Server~\cite{lss87}     & RM  & weaker than PE        & good \\
+\textbf{Priority Exchange}~\cite{lss87} & RM & periodic-task~\eqref{eq:guarantee} & good \\
+Sporadic Server~\cite{ssl89}       & RM  & periodic-task         & good \\
+Dynamic Prio.\ Exch.~\cite{sb96}   & EDF & $U_p+U_s\le 1$~\eqref{eq:dpe}        & very good \\
+Improved Prio.\ Exch.~\cite{sb96}  & EDF & $U_p\le 1$~\eqref{eq:ipe}            & near-optimal \\
+EDL~\cite{sb96}                    & EDF & $U_p\le 1$            & optimal \\
 \bottomrule
 \end{tabular}
-\end{table*}
+\end{table}
 
-\subsection{Trade-off Summary}
-Table~\ref{tab:compare} summarises the comparison along the axes that matter to a designer: priority model, periodic schedulability bound, aperiodic responsiveness, implementation overhead, and whether unused budget is preserved. The table makes the position of PE explicit. Among fixed-priority servers it is the option that recovers the full periodic bound while preserving budget, but it does so at an overhead that scales with the periodic task count---a cost the Sporadic Server later eliminated by achieving the same bound and comparable responsiveness with low, task-count-independent overhead.
-
-\subsection{Why the Related Work Looks the Way It Does}
-A reader may notice that recent literature rarely proposes new fixed-priority PE variants. This is not an accident of fashion but a consequence of the design space having been closed by better-engineered alternatives. The Sporadic Server~\cite{sprunt89} preserves capacity at high priority yet replenishes it in a way that still behaves like a periodic task, thereby obtaining DS-like responsiveness and PE-like schedulability without the exchange overhead; it is, tellingly, the only aperiodic-server policy admitted by the POSIX real-time standard. The runtime spare capacity that PE cannot reclaim---budget freed when periodic tasks finish before their worst case---is recovered instead by slack-stealing~\cite{slack93} and by dual-priority scheduling~\cite{davis95}; indeed Davis and Wellings explicitly observe that offline methods such as DS and PE can only make such spare capacity available as a background opportunity, and report that dual priority outperforms even the Extended Priority Exchange server at lower overhead than dynamic slack stealing. In dynamic-priority systems the simpler Total Bandwidth Server displaced DPE and IPE for most purposes. Accordingly, the references included here are chosen to trace this lineage: the foundational schedulability result~\cite{liu73}, the origin of PE and DS~\cite{lss87}, the dynamic extensions~\cite{spuri94,spuri96}, the superseding fixed-priority servers~\cite{epe88,sprunt89}, and the reclaiming alternatives~\cite{slack93,davis95}, with the monograph~\cite{buttazzo} as the unifying secondary source. Work on resource-sharing protocols, multiprocessor servers, and hardware-specific implementations is deliberately excluded as orthogonal to the uniprocessor, independent-task scope of this paper.
+Moving from RM to EDF changes both the bounds and the cost. The deadline-driven servers reach full processor utilization ($U_p+U_s\le 1$ for DPE, $U_p\le 1$ for IPE and EDL) and are generally more responsive, but they need dynamic deadline bookkeeping and an EDF runtime, which not every system supports. Within the EDF family there is a further trade-off: DPE and IPE keep a capacity/deadline queue, while EDL is optimal but too expensive to run online~\cite{buttazzo,sb96}. Table~\ref{tab:compare} summarises these along the axes Buttazzo uses. The position of PE is clear: among fixed-priority servers it recovers the full periodic bound while preserving budget, but at an overhead that scales with the periodic task count --- the cost the Sporadic Server later removed by reaching the same bound with overhead that does not depend on $n$.
 
 \section{Critical Evaluation}\label{sec:eval}
 
 \subsection{Strengths}
-The strengths of PE are concrete rather than rhetorical. First, it preserves bandwidth: as Figure~\ref{fig:pe} demonstrates, reserved time is discarded only at genuine idle instants ($t=9$ and $t=15$), never merely because a request was absent, which is the failure mode of polling. Second, it attains the full periodic-task schedulability bound~\eqref{eq:guarantee}, strictly better than the Deferrable Server's, so a designer can reserve more bandwidth for aperiodic service before the periodic set becomes unschedulable. Third, by sitting at the top of the priority order it delivers immediate, high-priority service to requests that arrive when the budget is fresh. Fourth, it degrades gracefully: rather than dropping unused budget outright, it lowers its priority step by step, so the budget remains reclaimable for as long as possible. Fifth, and most influential historically, the exchange idea generalises cleanly to EDF, where the Dynamic Priority Exchange server achieves the \emph{exact} and optimal bound $U_p+U_s\le 1$ and the Improved Priority Exchange server achieves near-optimal response with $U_p\le 1$~\cite{spuri96}.
+PE has several concrete strengths. It preserves bandwidth: as Fig.~\ref{fig:pe} shows, reserved time is discarded only at genuine idle instants ($t=9$ and $t=15$), never simply because a request was absent, which is the failure mode of polling. It attains the full periodic-task bound~\eqref{eq:guarantee}, better than the Deferrable Server's, so a designer can reserve more bandwidth for aperiodic service before the periodic set becomes unschedulable. By sitting at the top of the priority order it gives immediate, high-priority service to requests that arrive when the budget is fresh, as $J_1$ shows in the example. It degrades gracefully, lowering its priority one step at a time so the budget stays reclaimable as long as possible, as $J_2$ shows. And, historically the most influential point, the exchange idea generalises cleanly to EDF, where DPE achieves the exact bound $U_p+U_s\le 1$ and IPE achieves a near-optimal response with $U_p\le 1$~\cite{sb96}.
 
-\subsection{Limitations and Risks}
-The principal limitation is implementation complexity. PE must track reserved budget at every priority level and perform an exchange at each scheduling decision, so its runtime overhead grows with the number of periodic tasks---the very tracking that the simulator in this paper had to model explicitly. The dynamic variants compound this with a capacity/deadline queue whose operations are more complex than a simple ready queue. PE also addresses only soft aperiodic requests; it provides no built-in guarantee for firm or hard aperiodic deadlines. Its fixed-priority responsiveness, while good, is still slightly inferior to the Deferrable Server's. Finally there is an opportunity-cost risk: because the Sporadic Server matches PE's schedulability with lower overhead for fixed-priority systems, and the Total Bandwidth Server does so for dynamic systems, adopting PE today may incur complexity for no net benefit unless its specific behaviour is required.
+\subsection{Limitations}
+The main limitation is implementation complexity. PE must track reserved budget at every priority level and perform an exchange at each scheduling decision, so its overhead grows with the number of periodic tasks --- exactly the bookkeeping my simulator had to model explicitly. The dynamic variants add a capacity/deadline queue, and IPE adds an offline EDL computation and storage of the idle-time arrays over a possibly large hyperperiod. PE also targets only soft aperiodic requests; it gives no guarantee for firm or hard aperiodic deadlines. Its fixed-priority responsiveness, while good, is still slightly below the Deferrable Server's. Finally, since the Sporadic Server matches PE's schedulability with lower overhead, choosing PE today is only justified when its specific behaviour is actually needed.
 
-\subsection{Assumptions That May Be Unrealistic}
-Several modelling assumptions deserve scrutiny. The most consequential is \emph{zero overhead}: the exchange bookkeeping is the entire cost of the algorithm, so assuming it away in the schedulability bound understates PE's true price relative to simpler servers. The assumptions of \emph{no blocking and no shared resources} are also strong, since real control software uses mutual exclusion; integrating PE with a resource-access protocol such as priority or stack-resource ceilings is non-trivial and interacts with the exchange mechanism. The assumption of \emph{exact worst-case execution times} ignores the common case where periodic jobs finish early, leaving runtime slack that PE---unlike slack-stealing or dual-priority methods---cannot reclaim except at idle. Finally, $D_i=T_i$, zero release jitter, a single processor, and unit-time divisibility of aperiodic service are idealisations that a deployment would have to revisit.
+\subsection{Assumptions That May Be Optimistic}
+A few modelling assumptions deserve scrutiny. The most important is zero overhead: the exchange bookkeeping is essentially the entire cost of the algorithm, so leaving it out of the schedulability bound understates PE's true price relative to simpler servers. The assumption of no shared resources and no blocking is also strong, since real control software uses mutual exclusion, and combining PE with a resource-access protocol is not straightforward. The assumption of exact worst-case execution times ignores the common case where jobs finish early, leaving runtime slack that PE, unlike slack stealing, cannot reclaim except at idle. And $D_i=T_i$, zero release jitter, a single processor, and unit-time aperiodic service are idealisations a real deployment would have to revisit.
 
-\subsection{Runtime, Memory, and Implementation Implications}
-In terms of resources, the fixed-priority server needs per-level budget counters, giving $O(n)$ state, and an exchange decision at each scheduling point whose cost scales with $n$; this compares unfavourably with the Sporadic Server, whose replenishment accounting is essentially constant per event. The dynamic variants require a capacity/deadline queue with $O(m)$ state in the number of outstanding deadlines, and IPE additionally requires an offline EDL computation over a hyperperiod-scale interval and storage of the resulting idle-time function. None of these costs is prohibitive for small systems, but all of them grow with system size in a way that matters for scalability.
-
-\subsection{A Suitable Application}
-PE is well matched to a fixed-priority, rate-monotonic control system with a tight periodic load and a modest number of periodic tasks, where the designer cannot afford the Deferrable Server's schedulability penalty yet still needs responsive handling of occasional operator commands or alarms. A flight-control or engine-control unit running a handful of periodic loops plus sporadic mode-change and fault-handling activity fits this profile: the small task count keeps the exchange overhead bounded, and the full periodic bound buys back utilization that the DS would forfeit. In deadline-driven settings, the IPE server suits a soft-real-time multimedia or streaming server that wants provably near-optimal aperiodic response and can afford the offline precomputation.
-
-\subsection{An Unsuitable Application}
-Conversely, PE is a poor fit for a large system with many periodic tasks and stringent overhead budgets, because the exchange bookkeeping scales with the task count and erodes the very utilization it nominally protects. It is also unsuitable wherever firm or hard aperiodic deadlines must be guaranteed, since PE targets soft requests only; wherever a Sporadic Server or Total Bandwidth Server already suffices, where PE would add complexity for no measurable gain; and on multiprocessor or distributed platforms, which require partitioned or global servers of a fundamentally different design. Where certification simplicity dominates, the simpler Polling, Deferrable, or Sporadic Servers are preferable.
-
-\subsection{Possible Extensions and Open Questions}
-Several directions remain worthwhile. The Extended Priority Exchange server~\cite{epe88} already augments PE to reclaim unused periodic time; a systematic, overhead-aware comparison of EPE, dual priority, and slack stealing on a modern RTOS would clarify when, if ever, an exchange-based server is the right choice today. The relationship between the exchange idea and the Constant Bandwidth Server used in Linux \texttt{SCHED\_DEADLINE} is conceptually close---both reserve and reclaim bandwidth under EDF---and deserves a direct treatment. Empirical measurement of PE's exchange overhead on real hardware, rather than its assumed-negligible cost, would test the central assumption of its schedulability analysis. Finally, whether the exchange mechanism offers any advantage in mixed-criticality settings, where budget could in principle be exchanged across criticality levels, appears to be open.
+\subsection{A Suitable and an Unsuitable Application}
+PE fits a fixed-priority, RM control system with a tight periodic load and a modest number of tasks, where the designer cannot afford the Deferrable Server's schedulability penalty but still needs responsive handling of occasional commands or alarms. A control unit running a handful of periodic loops plus sporadic mode-change and fault handling fits this profile: the small task count keeps the exchange overhead bounded, and the full periodic bound buys back utilization the DS would forfeit. Conversely, PE is a poor fit for a large system with many periodic tasks and a tight overhead budget, where the exchange bookkeeping erodes the very utilization it protects; for firm or hard aperiodic deadlines, which it does not guarantee; and on multiprocessor or distributed platforms, which are outside the uniprocessor model assumed here.
 
 \section{Conclusion}\label{sec:conclusion}
-The Priority Exchange server demonstrated a powerful and counter-intuitive principle: high-priority budget can be preserved for unpredictable aperiodic load not by holding it, but by trading it for the runtime of lower-priority periodic work, so that the reserved time degrades gracefully through the priority order and is lost only at genuine idle instants. This buys the full rate-monotonic schedulability of a periodic task---strictly better than the Deferrable Server---at the cost of an implementation overhead that grows with the periodic task count. The same idea, carried into earliest-deadline-first scheduling, yields the exact, optimal Dynamic Priority Exchange bound and the near-optimal Improved Priority Exchange server. In current practice PE is largely superseded by the Sporadic Server for fixed-priority systems and the Total Bandwidth Server for dynamic ones, both of which match its guarantees with lower overhead, and the runtime slack it cannot reclaim is better handled by slack-stealing or dual-priority methods. Its lasting importance is therefore twofold: as a foundational lens on the responsiveness--schedulability--overhead trade-off that defines aperiodic service, and as the conceptual ancestor of the optimal dynamic-priority servers.
+The Priority Exchange server shows a counter-intuitive but effective idea: high-priority budget reserved for unpredictable aperiodic load can be preserved not by holding it, but by trading it for the runtime of lower-priority periodic work, so the reserved time degrades gracefully through the priority order and is lost only at genuine idle instants. This buys the full rate-monotonic schedulability of a periodic task --- better than the Deferrable Server --- at the cost of an overhead that grows with the periodic task count, as the bookkeeping in my simulator made concrete. Carried into EDF, the same idea gives the exact Dynamic Priority Exchange bound and the near-optimal Improved Priority Exchange server. In current practice PE is largely superseded for fixed priorities by the Sporadic Server, which matches its bound with lower overhead, but its importance remains twofold: as a clear lens on the responsiveness--schedulability--overhead trade-off that defines aperiodic service, and as the conceptual ancestor of the optimal dynamic-priority servers.
 
 \appendices
 \section{Documented AI Usage Protocol}\label{app:ai}
-In the interest of academic transparency, this appendix records how artificial intelligence tools were used in preparing the manuscript and, equally important, which intellectual tasks were performed and verified by the author.
+In the interest of academic transparency, this appendix records how AI tools were used in preparing the manuscript and which tasks were performed and verified by the author.
 
-\textbf{Tools and scope of assistance.} A large language model (Anthropic Claude) was used as a drafting and tooling aid. Its assistance covered: organising the paper according to the seminar's milestone structure; producing prose drafts of the sections; extracting and synthesising the relevant material on Priority Exchange, Dynamic Priority Exchange, and Improved Priority Exchange from the primary reference~\cite{buttazzo}; implementing a short discrete-time simulator of the fixed-priority PE algorithm used to generate and check the schedule in Figure~\ref{fig:pe}; and generating the \LaTeX{} source, including the schedule figure and the comparison table.
+\textbf{Tools and scope of assistance.} A large language model (Anthropic Claude) was used as a drafting and tooling aid. Its assistance covered: organising the paper; producing prose drafts of the sections; helping phrase the description of the PE, DPE, and IPE mechanisms drawn from the primary reference~\cite{buttazzo}; implementing the discrete-time C++ simulator used to generate and check the schedule in Fig.~\ref{fig:pe}; and generating the \LaTeX{} source, including the schedule figure and the comparison table.
 
-\textbf{Author verification.} Consistent with the seminar requirement that intellectual verification not be delegated, the author performed the following independently: selection and scoping of the topic; verification of every cited result against its source, in particular the schedulability bounds~\eqref{eq:guarantee}, \eqref{eq:dpe}, and \eqref{eq:ipe} and the PE-versus-DS comparison, which were checked against Buttazzo's monograph~\cite{buttazzo}; confirmation of the bibliographic details of the secondary references~\cite{liu73,lss87,spuri94,spuri96,sprunt89,epe88,strosnider95,slack93,davis95} against the published record; manual tracing of the simulated schedule in Figure~\ref{fig:pe} to confirm that processor time, exchanges, and budget discards are accounted for correctly; and review and revision of all technical claims and evaluative judgements. Responsibility for the correctness and the arguments of the final paper rests with the author.
+\textbf{Author verification.} Consistent with the seminar requirement that intellectual verification not be delegated, the author performed the following independently: selection and scoping of the topic; reading the relevant sections of Buttazzo's textbook (\S5.5, \S6.2, \S6.6) and verifying every cited result against that source, in particular the bounds~\eqref{eq:guarantee}, \eqref{eq:maxutil}, \eqref{eq:dpe}, and~\eqref{eq:ipe} and the PE-versus-DS comparison; confirming the bibliographic details of the original references~\cite{liu73,lss87,ssl89,sb94,sb96,lrt92} as cited by Buttazzo; manually tracing the simulated schedule in Fig.~\ref{fig:pe} against the simulator output to confirm that processor time, exchanges, and discards are accounted for correctly; and reviewing and revising all technical and evaluative statements. Responsibility for the correctness and the arguments of the final paper rests with the author.
 
 \begin{thebibliography}{00}
-\bibitem{liu73} C. L. Liu and J. W. Layland, ``Scheduling algorithms for multiprogramming in a hard-real-time environment,'' \emph{J. ACM}, vol. 20, no. 1, pp. 46--61, Jan. 1973.
 \bibitem{buttazzo} G. C. Buttazzo, \emph{Hard Real-Time Computing Systems: Predictable Scheduling Algorithms and Applications}, 3rd ed. New York, NY, USA: Springer, 2011.
-\bibitem{lss87} J. P. Lehoczky, L. Sha, and J. K. Strosnider, ``Enhanced aperiodic responsiveness in hard real-time environments,'' in \emph{Proc. IEEE Real-Time Syst. Symp. (RTSS)}, Dec. 1987, pp. 261--270.
-\bibitem{epe88} B. Sprunt, J. P. Lehoczky, and L. Sha, ``Exploiting unused periodic time for aperiodic service using the extended priority exchange algorithm,'' in \emph{Proc. 9th IEEE Real-Time Syst. Symp. (RTSS)}, 1988, pp. 251--258.
-\bibitem{sprunt89} B. Sprunt, L. Sha, and J. P. Lehoczky, ``Aperiodic task scheduling for hard real-time systems,'' \emph{Real-Time Syst.}, vol. 1, no. 1, pp. 27--60, Jun. 1989.
-\bibitem{strosnider95} J. K. Strosnider, J. P. Lehoczky, and L. Sha, ``The deferrable server algorithm for enhanced aperiodic responsiveness in hard real-time environments,'' \emph{IEEE Trans. Comput.}, vol. 44, no. 1, pp. 73--91, Jan. 1995.
-\bibitem{slack93} R. I. Davis, K. W. Tindell, and A. Burns, ``Scheduling slack time in fixed-priority pre-emptive systems,'' in \emph{Proc. IEEE Real-Time Syst. Symp. (RTSS)}, Dec. 1993, pp. 222--231.
-\bibitem{spuri94} M. Spuri and G. C. Buttazzo, ``Efficient aperiodic service under earliest deadline scheduling,'' in \emph{Proc. IEEE Real-Time Syst. Symp. (RTSS)}, Dec. 1994.
-\bibitem{davis95} R. I. Davis and A. J. Wellings, ``Dual priority scheduling,'' in \emph{Proc. 16th IEEE Real-Time Syst. Symp. (RTSS)}, Pisa, Italy, Dec. 1995, pp. 100--109.
-\bibitem{spuri96} M. Spuri and G. C. Buttazzo, ``Scheduling aperiodic tasks in dynamic priority systems,'' \emph{Real-Time Syst.}, vol. 10, no. 2, pp. 179--210, 1996.
+\bibitem{liu73} C. L. Liu and J. W. Layland, ``Scheduling algorithms for multiprogramming in a hard-real-time environment,'' \emph{J. ACM}, vol. 20, no. 1, pp. 46--61, Jan. 1973.
+\bibitem{lss87} J. P. Lehoczky, L. Sha, and J. K. Strosnider, ``Enhanced aperiodic responsiveness in hard real-time environments,'' in \emph{Proc. IEEE Real-Time Syst. Symp. (RTSS)}, Dec. 1987.
+\bibitem{ssl89} B. Sprunt, L. Sha, and J. Lehoczky, ``Aperiodic task scheduling for hard real-time systems,'' \emph{Real-Time Syst.}, vol. 1, no. 1, pp. 27--60, Jun. 1989.
+\bibitem{sb94} M. Spuri and G. C. Buttazzo, ``Efficient aperiodic service under earliest deadline scheduling,'' in \emph{Proc. IEEE Real-Time Syst. Symp. (RTSS)}, Dec. 1994.
+\bibitem{sb96} M. Spuri and G. C. Buttazzo, ``Scheduling aperiodic tasks in dynamic priority systems,'' \emph{Real-Time Syst.}, vol. 10, no. 2, pp. 179--210, 1996.
+\bibitem{lrt92} J. P. Lehoczky and S. Ramos-Thuel, ``An optimal algorithm for scheduling soft-aperiodic tasks in fixed-priority preemptive systems,'' in \emph{Proc. IEEE Real-Time Syst. Symp. (RTSS)}, Dec. 1992.
 \end{thebibliography}
 
 \end{document}
