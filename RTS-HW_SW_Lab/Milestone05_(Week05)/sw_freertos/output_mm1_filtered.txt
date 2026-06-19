@@ -1,0 +1,43 @@
+[VEH 1] request: V1 main EAST straight        origin=EAST turn=STRAIGHT emergency=0
+[RSU] GRANT V1  effPrio=11  crossingCount=1  CWC=0x00
+[VEH 2] request: V2 main WEST straight        origin=WEST turn=STRAIGHT emergency=0
+[VEH 3] request: V3 side NORTH straight       origin=NORTH turn=STRAIGHT emergency=0
+[RSU] V1 finished. crossingCount=0
+[RSU] GRANT V2  effPrio=11  crossingCount=1  CWC=0x00
+[VEH 4] request: V4 side NORTH right          origin=NORTH turn=RIGHT emergency=0
+[VEH 5] request: V5 side SOUTH left           origin=SOUTH turn=LEFT emergency=0
+[VEH 1] request: V1 main EAST straight        origin=EAST turn=STRAIGHT emergency=0
+[RSU] V2 finished. crossingCount=0
+[RSU] GRANT V3  effPrio=21  crossingCount=1  CWC=0x00
+[RSU] V3 finished. crossingCount=0
+[RSU] GRANT V4  effPrio=20  crossingCount=1  CWC=0x00
+[VEH 2] request: V2 main WEST straight        origin=WEST turn=STRAIGHT emergency=0
+[VEH 0] request: V0 emergency EAST straight   origin=EAST turn=STRAIGHT emergency=1
+[RSU] V4 finished. crossingCount=0
+[RSU] I2V_YIELD broadcast: emergency waiting, no new normal grants
+[RSU] GRANT V0  effPrio=0  crossingCount=1  CWC=0x00
+[VEH 3] request: V3 side NORTH straight       origin=NORTH turn=STRAIGHT emergency=0
+[RSU] V0 finished. crossingCount=0
+[RSU] GRANT V5  effPrio=22  crossingCount=1  CWC=0x00
+[RSU] V5 finished. crossingCount=0
+[RSU] GRANT V1  effPrio=11  crossingCount=1  CWC=0x00
+[VEH 4] request: V4 side NORTH right          origin=NORTH turn=RIGHT emergency=0
+[RSU] V1 finished. crossingCount=0
+[RSU] GRANT V2  effPrio=11  crossingCount=1  CWC=0x00
+[VEH 5] request: V5 side SOUTH left           origin=SOUTH turn=LEFT emergency=0
+[VEH 1] request: V1 main EAST straight        origin=EAST turn=STRAIGHT emergency=0
+[RSU] V2 finished. crossingCount=0
+[RSU] GRANT V3  effPrio=21  crossingCount=1  CWC=0x00
+[RSU] V3 finished. crossingCount=0
+[RSU] GRANT V4  effPrio=20  crossingCount=1  CWC=0x00
+[VEH 2] request: V2 main WEST straight        origin=WEST turn=STRAIGHT emergency=0
+[VEH 0] request: V0 emergency EAST straight   origin=EAST turn=STRAIGHT emergency=1
+[RSU] V4 finished. crossingCount=0
+[RSU] I2V_YIELD broadcast: emergency waiting, no new normal grants
+[RSU] GRANT V0  effPrio=0  crossingCount=1  CWC=0x00
+[VEH 3] request: V3 side NORTH straight       origin=NORTH turn=STRAIGHT emergency=0
+[RSU] V0 finished. crossingCount=0
+[RSU] GRANT V1  effPrio=11  crossingCount=1  CWC=0x00
+[RSU] V1 finished. crossingCount=0
+[RSU] GRANT V5  effPrio=22  crossingCount=1  CWC=0x00
+[VEH 4] request: V4 side NORTH right          origin=NORTH turn=RIGHT emergency=0

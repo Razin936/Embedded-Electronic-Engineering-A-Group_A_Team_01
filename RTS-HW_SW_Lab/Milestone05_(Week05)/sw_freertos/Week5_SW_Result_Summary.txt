@@ -1,0 +1,47 @@
+Week 5 FreeRTOS Software Implementation Result
+
+Project:
+Cross-Traffic Intersection Management for Autonomous Vehicles
+
+Implemented software side:
+- Vehicle tasks V0 to V5
+- RSU controller task
+- FreeRTOS queues for request, grant and leave messages
+- M/M/1 and M/M/2 service mode
+- Emergency vehicle priority
+- I2V yield broadcast during emergency waiting
+- V2V enter and leave messages
+- Aging/fairness logic to avoid V5 starvation
+- Software interface to hw_safe_to_grant()
+
+Observed M/M/2 result:
+- V1 and V2 are granted together.
+- crossingCount reaches 2.
+- This proves non-conflicting parallel crossing in M/M/2 mode.
+
+Observed M/M/1 result:
+- Only one vehicle is granted at a time.
+- crossingCount never reaches 2.
+- This proves single-server behavior in M/M/1 mode.
+
+Emergency result:
+- Emergency vehicle V0 is queued with highest priority.
+- RSU sends I2V_YIELD broadcast while emergency waits.
+- V0 is granted before normal vehicles after the intersection becomes free.
+
+Fairness result:
+- V5 is eventually granted.
+- This shows that starvation is avoided.
+
+Safety result:
+- No ASSERT failure appears.
+- No collision alarm appears.
+- V4 and V5 are not granted together.
+
+Generated evidence files:
+- output_mm2_filtered.txt
+- output_mm1_filtered.txt
+- Week5_SW_Result_Summary.txt
+
+Conclusion:
+The Week 5 FreeRTOS software partition is implemented and tested successfully.
