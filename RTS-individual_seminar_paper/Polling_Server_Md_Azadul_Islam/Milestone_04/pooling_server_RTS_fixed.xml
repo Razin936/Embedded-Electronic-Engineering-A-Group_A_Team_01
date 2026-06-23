@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.6//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_6.dtd'>
+<nta>
+	<declaration>const int BUDGET = 2;
+
+clock g;
+clock s;
+clock idle;
+
+int queue = 0;
+
+bool job1_wait = false;
+bool job2_wait = false;
+
+bool served1 = false;
+bool served2 = false;
+
+bool budget_destroyed = false;
+
+broadcast chan startCycle;</declaration>
+	<template>
+		<name x="5" y="5">Job1</name>
+		<declaration>// Place local declarations here.
+</declaration>
+		<location id="id0" x="-238" y="-229">
+			<name x="-248" y="-263">BefireA1</name>
+			<label kind="invariant" x="-248" y="-212">g &lt;= 1</label>
+		</location>
+		<location id="id1" x="59" y="-229">
+			<name x="50" y="-263">A1Arrived</name>
+		</location>
+		<init ref="id0"/>
+		<transition id="id2">
+			<source ref="id0"/>
+			<target ref="id1"/>
+			<label kind="guard" x="-212" y="-255">g == 1</label>
+			<label kind="assignment" x="-220" y="-229">queue++, job1_wait = true</label>
+		</transition>
+		<transition id="id3">
+			<source ref="id1"/>
+			<target ref="id0"/>
+			<label kind="synchronisation" x="-100" y="-298">startCycle?</label>
+			<nail x="59" y="-280"/>
+			<nail x="-238" y="-280"/>
+		</transition>
+	</template>
+	<template>
+		<name>Job2</name>
+		<location id="id4" x="-161" y="-93">
+			<name x="-171" y="-127">BeforeA2</name>
+			<label kind="invariant" x="-171" y="-76">g &lt;= 6</label>
+		</location>
+		<location id="id5" x="161" y="-93">
+			<name x="151" y="-127">A2Arrived</name>
+		</location>
+		<init ref="id4"/>
+		<transition id="id6">
+			<source ref="id4"/>
+			<target ref="id5"/>
+			<label kind="guard" x="-143" y="-127">g == 6</label>
+			<label kind="assignment" x="-143" y="-93">queue++, job2_wait = true</label>
+		</transition>
+		<transition id="id7">
+			<source ref="id5"/>
+			<target ref="id4"/>
+			<label kind="synchronisation" x="-40" y="-160">startCycle?</label>
+			<nail x="161" y="-145"/>
+			<nail x="-161" y="-145"/>
+		</transition>
+	</template>
+	<template>
+		<name>PollingServer</name>
+		<location id="id8" x="-170" y="-136">
+			<name x="-180" y="-170">WaitFirstPoll</name>
+			<label kind="invariant" x="-180" y="-119">g &lt;= 2</label>
+		</location>
+		<location id="id9" x="425" y="-136">
+			<name x="415" y="-170">WaitSecondPoll</name>
+			<label kind="invariant" x="415" y="-119">g &lt;= 5</label>
+		</location>
+		<location id="id10" x="212" y="-136">
+			<name x="202" y="-170">ServeJob1</name>
+			<label kind="invariant" x="202" y="-119">s &lt;= BUDGET</label>
+		</location>
+		<location id="id11" x="433" y="42">
+			<name x="423" y="8">BudgetDestroyed</name>
+			<committed/>
+		</location>
+		<location id="id12" x="229" y="42">
+			<name x="219" y="8">WaitThirdPoll</name>
+			<label kind="invariant" x="219" y="59">g &lt;= 10</label>
+		</location>
+		<location id="id13" x="42" y="42">
+			<name x="32" y="8">Check3</name>
+			<committed/>
+		</location>
+		<location id="id14" x="25" y="-136">
+			<name x="15" y="-170">Check1</name>
+			<committed/>
+		</location>
+		<location id="id15" x="-170" y="42">
+			<name x="-180" y="8">ServeJob2</name>
+			<label kind="invariant" x="-180" y="59">s &lt;= BUDGET</label>
+		</location>
+		<location id="id16" x="-170" y="-42">
+			<name x="-180" y="-76">Idle</name>
+			<label kind="invariant" x="-180" y="-25">idle &lt;= 1</label>
+		</location>
+		<location id="id17" x="646" y="-68">
+			<name x="636" y="-102">Check2</name>
+			<committed/>
+		</location>
+		<init ref="id8"/>
+		<transition id="id18">
+			<source ref="id16"/>
+			<target ref="id8"/>
+			<label kind="guard" x="-170" y="-123">idle &gt;= 1</label>
+			<label kind="synchronisation" x="-170" y="-106">startCycle!</label>
+			<label kind="assignment" x="-170" y="-89">g = 0, s = 0, idle = 0</label>
+		</transition>
+		<transition id="id19">
+			<source ref="id15"/>
+			<target ref="id16"/>
+			<label kind="guard" x="-165" y="-5">s == BUDGET</label>
+			<label kind="assignment" x="-165" y="29">queue--, job2_wait = false, served2 = true, idle = 0</label>
+		</transition>
+		<transition id="id20">
+			<source ref="id13"/>
+			<target ref="id15"/>
+			<label kind="guard" x="-143" y="55">queue &gt; 0 &amp;&amp; job2_wait</label>
+			<label kind="assignment" x="-143" y="89">s = 0</label>
+		</transition>
+		<transition id="id21">
+			<source ref="id12"/>
+			<target ref="id13"/>
+			<label kind="guard" x="52" y="51">g == 10</label>
+		</transition>
+		<transition id="id22">
+			<source ref="id11"/>
+			<target ref="id12"/>
+		</transition>
+		<transition id="id23">
+			<source ref="id17"/>
+			<target ref="id11"/>
+			<label kind="guard" x="650" y="-13">queue == 0</label>
+			<label kind="assignment" x="650" y="21">budget_destroyed = true</label>
+		</transition>
+		<transition id="id24">
+			<source ref="id9"/>
+			<target ref="id17"/>
+			<label kind="guard" x="641" y="-127">g == 5</label>
+		</transition>
+		<transition id="id25">
+			<source ref="id10"/>
+			<target ref="id9"/>
+			<label kind="guard" x="230" y="-170">s == BUDGET</label>
+			<label kind="assignment" x="230" y="-136">queue--, job1_wait = false, served1 = true</label>
+		</transition>
+		<transition id="id26">
+			<source ref="id14"/>
+			<target ref="id10"/>
+			<label kind="guard" x="43" y="-170">queue &gt; 0 &amp;&amp; job1_wait</label>
+			<label kind="assignment" x="43" y="-136">s = 0</label>
+		</transition>
+		<transition id="id27">
+			<source ref="id8"/>
+			<target ref="id14"/>
+			<label kind="guard" x="-170" y="-187">g == 2</label>
+		</transition>
+	</template>
+	<system>system Job1, Job2, PollingServer;</system>
+	<queries>
+		<query>
+			<formula>E&lt;&gt; served1</formula>
+			<comment/>
+		</query>
+		<query>
+			<formula>E&lt;&gt; budget_destroyed</formula>
+			<comment/>
+		</query>
+		<query>
+			<formula>E&lt;&gt; PollingServer.WaitThirdPoll &amp;&amp; job2_wait</formula>
+			<comment/>
+		</query>
+		<query>
+			<formula>E&lt;&gt; served2</formula>
+			<comment/>
+		</query>
+		<query>
+			<formula>A[] not deadlock</formula>
+			<comment>Confirms the model now loops forever without freezing</comment>
+		</query>
+	</queries>
+</nta>
