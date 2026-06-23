@@ -1,0 +1,231 @@
+\documentclass[tikz,border=12pt]{standalone}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{xcolor}
+\usepackage{tikz}
+
+\usetikzlibrary{
+    patterns,
+    arrows.meta,
+    positioning
+}
+
+\begin{document}
+
+\begin{tikzpicture}[
+    x=0.66cm,
+    y=1cm,
+    font=\footnotesize,
+    >=Latex
+]
+
+% Maximum timeline value
+\def\xmax{20}
+
+% -------------------------------------------------
+% Vertical grid lines
+% -------------------------------------------------
+\foreach \x in {0,2,4,6,8,10,12,14,16,18,20}{
+    \draw[gray!25] (\x,0.15) -- (\x,3.15);
+}
+
+% -------------------------------------------------
+% Time axis
+% -------------------------------------------------
+\draw[->,thick]
+    (0,0) -- (\xmax+0.8,0)
+    node[right] {$t$};
+
+% Small ticks at every time unit
+\foreach \x in {0,1,...,20}{
+    \draw (\x,0) -- (\x,-0.08);
+}
+
+% Time labels
+\foreach \x in {0,2,4,6,8,10,12,14,16,18,20}{
+    \node[below=2pt] at (\x,-0.08) {\scriptsize \x};
+}
+
+% -------------------------------------------------
+% Row labels
+% -------------------------------------------------
+\node[left] at (-0.35,2.10) {$\tau_1$};
+\node[left] at (-0.35,1.30) {$\tau_2$};
+\node[left] at (-0.35,0.52) {Aperiodic};
+
+% -------------------------------------------------
+% Task tau_1: first execution from t=0 to t=2
+% -------------------------------------------------
+\fill[blue!20]
+    (0,1.85) rectangle (2,2.40);
+
+\draw[thick]
+    (0,1.85) rectangle (2,2.40);
+
+% Exchanged budget at tau_1 level
+\fill[
+    pattern=north east lines,
+    pattern color=blue!65
+]
+    (0,2.40) rectangle (2,2.62);
+
+\draw
+    (0,2.40) rectangle (2,2.62);
+
+% -------------------------------------------------
+% Task tau_1: second execution from t=10 to t=12
+% -------------------------------------------------
+\fill[blue!20]
+    (10,1.85) rectangle (12,2.40);
+
+\draw[thick]
+    (10,1.85) rectangle (12,2.40);
+
+% Exchanged budget at tau_1 level
+\fill[
+    pattern=north east lines,
+    pattern color=blue!65
+]
+    (10,2.40) rectangle (12,2.62);
+
+\draw
+    (10,2.40) rectangle (12,2.62);
+
+% -------------------------------------------------
+% Task tau_2 execution from t=2 to t=5
+% -------------------------------------------------
+\fill[red!20]
+    (2,1.05) rectangle (5,1.60);
+
+\draw[thick]
+    (2,1.05) rectangle (5,1.60);
+
+% -------------------------------------------------
+% Task tau_2 execution from t=6 to t=9
+% -------------------------------------------------
+\fill[red!20]
+    (6,1.05) rectangle (9,1.60);
+
+\draw[thick]
+    (6,1.05) rectangle (9,1.60);
+
+% -------------------------------------------------
+% Budget parked at tau_2 priority level
+% -------------------------------------------------
+\fill[
+    pattern=north east lines,
+    pattern color=red!65
+]
+    (2,1.60) rectangle (9,1.82);
+
+\draw
+    (2,1.60) rectangle (9,1.82);
+
+% -------------------------------------------------
+% Aperiodic job J_1
+% -------------------------------------------------
+\fill[green!35]
+    (5,0.25) rectangle (6,0.80);
+
+\draw[thick]
+    (5,0.25) rectangle (6,0.80);
+
+\node at (5.5,0.525) {$J_1$};
+
+% -------------------------------------------------
+% Aperiodic job J_2
+% -------------------------------------------------
+\fill[green!35]
+    (12,0.25) rectangle (13,0.80);
+
+\draw[thick]
+    (12,0.25) rectangle (13,0.80);
+
+\node at (12.5,0.525) {$J_2$};
+
+% -------------------------------------------------
+% Job arrival arrows
+% -------------------------------------------------
+\draw[-{Latex[length=2.5mm]},thick]
+    (5,3.15) -- (5,2.70);
+
+\node[above] at (5,3.15) {$J_1$};
+
+\draw[-{Latex[length=2.5mm]},thick]
+    (12,3.15) -- (12,2.70);
+
+\node[above] at (12,3.15) {$J_2$};
+
+% -------------------------------------------------
+% Annotation: exchange with tau_1
+% -------------------------------------------------
+\node[
+    align=center,
+    anchor=south
+]
+at (1.0,3.85)
+{
+    exchange:\\
+    $\tau_1$ advances
+};
+
+\draw[-{Latex[length=2mm]},thick]
+    (1.0,3.80) -- (1.0,2.66);
+
+% -------------------------------------------------
+% Annotation: budget moves to tau_2 level
+% -------------------------------------------------
+\node[
+    align=center,
+    anchor=south
+]
+at (4.0,3.85)
+{
+    budget degrades\\
+    to $\tau_2$'s level
+};
+
+\draw[-{Latex[length=2mm]},thick]
+    (3.7,3.80) -- (2.6,1.84);
+
+% -------------------------------------------------
+% Annotation: budget discarded
+% -------------------------------------------------
+\node[
+    align=center,
+    anchor=south
+]
+at (8.4,3.85)
+{
+    discarded\\
+    at idle $(t=9)$
+};
+
+\draw[-{Latex[length=2mm]},thick]
+    (8.4,3.80) -- (8.4,1.84);
+
+% -------------------------------------------------
+% Server-period restart markers
+% -------------------------------------------------
+\foreach \x in {0,5,10,15,20}{
+    \node at (\x,-0.70) {$\blacktriangle$};
+}
+
+% -------------------------------------------------
+% Legend
+% -------------------------------------------------
+\node[
+    anchor=west,
+    font=\footnotesize
+]
+at (0,-1.25)
+{
+    $\blacktriangle$ = server period restart
+    \quad
+    ($C_s$ replenished every $T_s=5$)
+};
+
+\end{tikzpicture}
+
+\end{document}
