@@ -31,6 +31,9 @@
   belowskip=10pt
 }
 
+% Robustness for long tokens / URLs / inline code in narrow IEEE columns
+\tolerance=1000
+\emergencystretch=1em
 
 \begin{document}
 
@@ -46,6 +49,8 @@ md-jubair-salehin.razin@stud.hshl.de
 }}
 
 \maketitle
+\thispagestyle{plain}
+\pagestyle{plain}
 
 \begin{abstract}
 High-level synthesis turns a behavioral description of a digital system into a register-transfer-level design, and one of its central tasks is scheduling: deciding in which clock cycle each operation of a data-flow graph executes. This paper gives a self-contained account of force-directed scheduling, the heuristic introduced by Paulin and Knight for the time-constrained problem of meeting a fixed latency with the fewest functional units. We explain the full mechanism: as-soon-as-possible and as-late-as-possible analyses produce a time frame and a mobility for every operation; treating each operation as uniformly distributed over its frame yields a distribution graph that estimates the expected demand on each resource type per cycle; and a spring-like force, combining a self term with predecessor and successor terms, scores every candidate placement so that the schedule which flattens demand is built one decision at a time. We support the account with a compact C++ implementation whose output is used as the worked example, and we show how the resulting schedule maps onto an RTL netlist of VHDL entities. We then place the method in context against unconstrained bounding schedules, greedy list scheduling, and exact integer linear programming, summarizing the tradeoffs in a single comparison. Finally we evaluate force-directed scheduling critically, separating its concrete strengths from its hidden assumptions, its scalability, the embedded cases where it does and does not fit, and one extension we propose. We argue that the method is a deliberate middle ground that gains a global view without the cost of exact search, but that per-decision recomputation, the absence of backtracking, and its reliance on uniform distributions and data-independent delays bound its use to small and medium datapaths.
@@ -97,7 +102,7 @@ critique, and explicitly flagged speculation.
 \subsection{Problem statement and assumptions}
 Let the behavior be a data-flow graph $G(V,E)$ in which each vertex
 $v_i \in V$ is an operation and each edge $(v_i,v_j)\in E$ is a data dependency
-requiring $v_i$ to finish before $v_j$ starts. FDS solves the following: given
+requiring $v_i$ to finish before $v_j$ starts~\cite{b5}. FDS solves the following: given
 a latency bound $\lambda$ (the number of available control steps), assign a
 start step to every operation so that all dependencies hold, the schedule fits
 in $\lambda$ steps, and the number of functional units of each type is as small
@@ -266,7 +271,7 @@ unscheduled operation in every step of its frame, and (3)~irrevocably commits
 the single operation--step pair of \emph{lowest} force. Committing one
 operation tightens neighboring frames; the loop repeats until every operation
 is scheduled. In the example the first commitment is $v_3\!\to\!s_3$; the
-remaining commitments place $v_2\!\to\!s_1$, $v_1\!\to\!s_2$, $v_4\!\to\!s_3$ and
+remaining operations settle at $v_2\!\to\!s_1$, $v_1\!\to\!s_2$, $v_4\!\to\!s_3$ and
 $v_5\!\to\!s_4$, so the multiplier demand becomes one operation per step
 (Fig.~\ref{fig:dg}, ``after'') and a single multiplier serves the schedule where
 ASAP would have required three.
@@ -334,27 +339,29 @@ Run on the graph of Fig.~\ref{fig:dfg}, the program reproduces the time frames
 of Table~\ref{tab:frames} and the distribution graph of Fig.~\ref{fig:dg}
 exactly. Its first commitment is $v_3\!\to\!s_3$, which carries the most negative
 total force, $-0.917$ (the self-force of $-0.67$ together with a negative
-successor force); the remaining commitments are $v_2\!\to\!s_1$,
+successor force); the remaining operations settle at $v_2\!\to\!s_1$,
 $v_1\!\to\!s_2$, $v_4\!\to\!s_3$ and $v_5\!\to\!s_4$. The multiplier peak falls
 from three under the ASAP schedule to one and the adder peak stays at one,
 confirming the hand analysis.
 
 \subsection{From schedule to an RTL netlist}\label{ssec:rtl}
-The product of HLS is not the schedule itself but the RTL netlist the schedule
-and the resource allocation imply: a set of functional units, the registers
-that carry values across control-step boundaries, and a controller. For the
-scheduled example this netlist is \emph{one multiplier} and \emph{one
-adder/ALU}, both shared across control steps, the registers holding the
-intermediate results $v_1$--$v_4$, and a four-state finite-state controller---
-one state per control step---that in each step drives the operand multiplexers
-of the shared units and latches their outputs. Each functional unit is a
-separate VHDL entity; Listing~\ref{lst:vhdl} shows the multiplier entity. The
-controller activates the units exactly as the schedule prescribes: $s_1$
-computes $v_2$ and $s_2$ computes $v_1$ on the shared multiplier, $s_3$ computes
-$v_3$ on the multiplier and $v_4$ on the adder in parallel, and $s_4$ computes
-$v_5$ on the adder. Against the ASAP baseline, which would instantiate three
-multipliers, the force-directed schedule yields a netlist with a single
-multiplier at the same latency.
+The product of HLS is not the schedule itself but the RTL netlist that the
+schedule and the resource allocation \emph{imply}: a set of functional units, the
+registers that carry values across control-step boundaries, operand
+multiplexers, and a controller. For the scheduled example this implied netlist
+comprises \emph{one multiplier} and \emph{one adder/ALU}, both shared across
+control steps, registers holding the intermediate results $v_1$--$v_4$, and a
+four-state finite-state controller~\cite{b5}---one state per control step---that
+would drive the operand multiplexers of the shared units and latch their
+outputs. We realize the two functional units explicitly as VHDL
+entities---Listing~\ref{lst:vhdl} shows the multiplier entity and the adder is
+analogous---while the registers, multiplexers, and controller are described at
+the level of the implied netlist rather than synthesized here. The schedule
+prescribes the unit activations directly: $s_1$ computes $v_2$ and $s_2$ computes
+$v_1$ on the shared multiplier, $s_3$ computes $v_3$ on the multiplier and $v_4$
+on the adder in parallel, and $s_4$ computes $v_5$ on the adder. Against the ASAP
+baseline, which would instantiate three multipliers, the force-directed schedule
+yields a netlist with a single multiplier at the same latency.
 
 \begin{lstlisting}[language=VHDL,caption={Shared multiplier as a VHDL entity.},label=lst:vhdl]
 library ieee;
@@ -509,27 +516,49 @@ data-independent delays) both follow directly from that central idea. It remains
 a reference point for scheduling research and a clear lens through which to
 understand the resource--latency tradeoff.
 
-\section*{Acknowledgment}
-The author thanks Prof.\ Dr.\ Achim Rettberg and M.Sc.\ Ali Alhalabi for their
-supervision of this seminar.
-
 \section*{Declaration on the Use of AI Tools}
-In preparing this paper, a large language model (Claude, Anthropic)
-% >>> state the exact model version and the date(s) of use
-was used to assist with structuring, drafting, and \LaTeX{} formatting, and with
-describing the author's own C++ and VHDL. All technical statements were checked
-against the cited sources, and the C++ implementation was executed by the author
-to verify every numerical result. The comparative positioning and the critical
-evaluation---the choice of tradeoff axes, the strengths and limitations asserted,
-the application-fit judgement, and the proposed extension---are the author's own.
-Fact, interpretation, critique, and speculation are kept separate throughout the
-text, and the author is solely responsible for the content.
+\textbf{Tools and scope of assistance.} \emph{Claude (Opus~4.7, Anthropic)} was
+used in the early stages to build conceptual understanding of force-directed
+scheduling and to locate and verify bibliographic references.
+\emph{ChatGPT (GPT-5.5~Thinking, OpenAI)} was used for part of the related-work
+comparison and the reference search, for the critical-evaluation material that
+underlies Section~\ref{sec:eval} (strengths, limitations, hidden assumptions,
+and the suitable/unsuitable application analysis), and for the implementation and
+figures: developing the discrete-time C++ simulator (the force routine of
+Listing~\ref{lst:force}) and compiling it into the accompanying executable,
+writing the VHDL functional-unit entities (Listing~\ref{lst:vhdl}), and producing
+the \LaTeX{}/TikZ data-flow graph and the distribution-graph plot
+(Figs.~\ref{fig:dfg} and~\ref{fig:dg}). \emph{Claude (Opus~4.8, Anthropic)} was
+used in the final stage to draft the IEEE-style prose of the paper---the
+introduction, the problem statement and assumptions, the algorithm description
+(time frames, distribution graphs, forces, and the scheduling loop), the mapping
+from schedule to RTL netlist, the comparison table (Table~\ref{tab:compare}), the
+discussion of FDS against ASAP/ALAP, list scheduling, and ILP, and the
+conclusion---to format the figures, tables, and listings in \LaTeX{}, and to
+outline the accompanying slides.
+
+\textbf{Author verification.} Consistent with the seminar requirement that
+intellectual verification not be delegated, the author performed the following
+independently: selection and scoping of the topic; reading the relevant sections
+of Paulin and Knight~\cite{b1} and De Micheli~\cite{b2} and verifying every cited
+result against those sources, in particular the
+relations~\eqref{eq:mobility}, \eqref{eq:prob}, \eqref{eq:dg}, \eqref{eq:self},
+and~\eqref{eq:total}; confirming the bibliographic details of all
+references~\cite{b1,b2,b3,b4,b5}; compiling and running the C++ simulator and
+manually tracing its output against the time frames of Table~\ref{tab:frames} and
+the distribution graph of Fig.~\ref{fig:dg}, in particular confirming the first
+commitment $v_3\!\to\!s_3$ at total force $-0.917$ and the reduction of the
+multiplier peak from three to one; and reviewing and revising all technical and
+evaluative statements, keeping fact, interpretation, critique, and speculation
+separate throughout the text. Responsibility for the correctness and the
+arguments of the final paper rests with the author.
 
 \begin{thebibliography}{00}
 \bibitem{b1} P. G. Paulin and J. P. Knight, ``Force-directed scheduling for the behavioral synthesis of ASIC's,'' \textit{IEEE Trans. Comput.-Aided Design Integr. Circuits Syst.}, vol. 8, no. 6, pp. 661--679, Jun. 1989.
 \bibitem{b2} G. De Micheli, \textit{Synthesis and Optimization of Digital Circuits}. New York, NY, USA: McGraw-Hill, 1994.
-\bibitem{b3} J. Teich, \textit{Digitale Hardware/Software-Systeme: Synthese und Optimierung}. Berlin, Germany: Springer-Verlag, 1997.
+\bibitem{b3} J. Teich and C. Haubelt, \textit{Digitale Hardware/Software-Systeme: Synthese und Optimierung}, 2nd ed. Berlin, Germany: Springer-Verlag, 2007.
 \bibitem{b4} P. G. Paulin and J. P. Knight, ``Force-directed scheduling in automatic data path synthesis,'' in \textit{Proc. 24th ACM/IEEE Design Automation Conf. (DAC)}, Miami Beach, FL, USA, 1987, pp. 195--202.
+\bibitem{b5} C. Haubelt and J. Teich, \textit{Digitale Hardware/Software-Systeme: Spezifikation und Verifikation}. Berlin, Germany: Springer-Verlag, 2010.
 \end{thebibliography}
 
 \end{document}
