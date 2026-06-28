@@ -1,0 +1,177 @@
+{
+  "protocol_version": "0.2",
+  "student_id": "1232714",
+  "student_name": "MD Rafiul Islam",
+  "course": "SS2026 ELE HW/SW Codesign Seminar",
+  "milestone": "Milestone 1",
+  "topic": "ILP-Based Scheduling for High-Level Synthesis",
+  "entries": [
+    {
+      "id": "ilp-m1-001",
+      "timestamp": "2026-06-28T09:30:00+02:00",
+      "parent_id": null,
+      "objective": "Understand the assigned topic and extract the main technical problem for Milestone 1.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Explain ILP-based scheduling for High-Level Synthesis in beginner-friendly but technical terms. Include the scheduling problem, operation graph, resource constraints, latency, and why ILP is useful.",
+      "ai_output_summary": "The AI explained that HLS scheduling assigns operations to control steps while obeying data dependencies and resource limits. It described ILP as a mathematical way to encode operation-to-cycle decisions with binary variables and constraints.",
+      "verification": {
+        "actions": [
+          "I compared the explanation with the submitted ILP seminar paper sections on HLS overview, scheduling problem, mathematical basics, and formal ILP model.",
+          "I checked that the example y = a*b + c*d is used consistently with operations O1, O2, and O3."
+        ],
+        "level": "source-and-consistency-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The output was simplified and needed checking against the paper and reference books.",
+          "The AI did not replace source reading."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Technical understanding",
+        "usage_type": "planning-and-technical-support",
+        "direct_text_reused": false
+      },
+      "reflection": "I understood that ILP scheduling is a constrained optimization problem, not just a timing table."
+    },
+    {
+      "id": "ilp-m1-002",
+      "timestamp": "2026-06-28T09:30:00+02:00",
+      "parent_id": null,
+      "objective": "Build a concise formal model for the scheduling problem.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Help me write the core ILP variables and constraints for HLS scheduling: uniqueness, dependency, resource, and latency objective.",
+      "ai_output_summary": "The AI summarized the model using x_i,t binary variables, a start-time expression S_i, one-time scheduling constraints, dependency constraints, resource constraints, and objective minimize latency.",
+      "verification": {
+        "actions": [
+          "I checked that the model matches the simplified formulation in the seminar paper.",
+          "I verified that each operation is scheduled exactly once and that O3 starts after O1 and O2."
+        ],
+        "level": "source-and-consistency-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The exact notation may differ from textbooks, so I kept it simple and explained it clearly.",
+          "The model does not yet include memory, loops, or multi-cycle details."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "General",
+        "usage_type": "planning-and-technical-support",
+        "direct_text_reused": false
+      },
+      "reflection": "Formal model"
+    },
+    {
+      "id": "ilp-m1-003",
+      "timestamp": "2026-06-28T09:30:00+02:00",
+      "parent_id": null,
+      "objective": "Prepare the application example for the technical briefing.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Use y = a*b + c*d to explain how resource availability changes the schedule. Compare one multiplier with two multipliers.",
+      "ai_output_summary": "The AI explained that with one multiplier O1 and O2 must be serialized, producing a 3-cycle schedule, while two multipliers allow parallel execution and a 2-cycle schedule.",
+      "verification": {
+        "actions": [
+          "I checked the C++ results and RTL explanation in the ILP seminar paper.",
+          "I checked that both schedules still compute the same output y = 26 in the VHDL validation example."
+        ],
+        "level": "source-and-consistency-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The example is small, so it should be described as a demonstrator and not as proof of industrial scalability."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Application example",
+        "usage_type": "planning-and-technical-support",
+        "direct_text_reused": false
+      },
+      "reflection": "I learned how the same expression can create different hardware schedules depending on allocation."
+    },
+    {
+      "id": "ilp-m1-004",
+      "timestamp": "2026-06-28T09:30:00+02:00",
+      "parent_id": null,
+      "objective": "Identify assumptions and open questions for feedback.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "What assumptions and limitations should I include in Milestone 1 for ILP-based scheduling in HLS?",
+      "ai_output_summary": "The AI suggested assumptions about known operation delays, simple resource types, and offline design-time scheduling, plus limitations about loops, memory, pipelining, branches, and scalability.",
+      "verification": {
+        "actions": [
+          "I compared these points with the runtime and limitations sections of the seminar paper.",
+          "I checked the course checklist expectation that unclear points and questions should be included."
+        ],
+        "level": "source-and-consistency-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "Some limitations are beyond the scope of the current implementation, so I must label them as extensions and not as implemented features."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "General",
+        "usage_type": "planning-and-technical-support",
+        "direct_text_reused": false
+      },
+      "reflection": "Assumptions and open questions"
+    },
+    {
+      "id": "ilp-m1-005",
+      "timestamp": "2026-06-28T09:30:00+02:00",
+      "parent_id": null,
+      "objective": "Organize Milestone 1 as a structured technical briefing instead of polished prose.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Create a 2-4 page Milestone 1 outline for ILP-based HLS scheduling with problem statement, core idea, formal model, algorithm, limitations, and open questions.",
+      "ai_output_summary": "The AI proposed a structured briefing with sections for motivation, HLS context, operation graph, ILP model, algorithm steps, runtime, limitations, and source-use notes.",
+      "verification": {
+        "actions": [
+          "I compared the structure with the milestone checklist PDF, which expects problem statement, core idea, formalism, assumptions, resource aspects, and questions."
+        ],
+        "level": "source-and-consistency-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The outline needed to be adapted to my actual seminar paper and not submitted as generic AI text."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "General",
+        "usage_type": "planning-and-technical-support",
+        "direct_text_reused": false
+      },
+      "reflection": "Milestone structure"
+    }
+  ],
+  "exported_at": "2026-06-28T09:30:00+02:00"
+}
