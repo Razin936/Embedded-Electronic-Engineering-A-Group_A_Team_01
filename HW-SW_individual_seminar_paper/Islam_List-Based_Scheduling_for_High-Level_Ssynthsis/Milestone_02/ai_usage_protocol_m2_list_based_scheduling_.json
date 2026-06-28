@@ -1,0 +1,117 @@
+{
+  "protocol_version": "0.2",
+  "student_id": "2220070",
+  "student_name": "Md Azadul Islam",
+  "course": "Seminar Work / High-Level Synthesis",
+  "milestone": "Milestone 2: Scientific Contextualization and Tradeoff Analysis",
+  "topic": "List-Based Scheduling for High-Level Synthesis",
+  "exported_at": "2026-06-28T08:33:11+00:00",
+  "entries": [
+    {
+      "id": "e-m2-context",
+      "timestamp": "2026-06-28T08:33:11+00:00",
+      "parent_id": null,
+      "objective": "Prepare the second milestone by placing the topic into a wider scientific and engineering context.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "I am working on Milestone 2 for my seminar topic, List-Based Scheduling for High-Level Synthesis. I already have the first milestone about the basic technical understanding. Now I need help to put the topic into a wider scientific context. I want to compare list-based scheduling with related approaches and explain the important tradeoffs in a structured but not overly polished way.",
+      "ai_output_summary": "The AI helped structure Milestone 2 around HLS context, related scheduling approaches, design alternatives, tradeoffs, embedded-system consequences, and reference justification.",
+      "verification": {
+        "actions": [
+          "Checked that the milestone compares approaches instead of only listing references.",
+          "Checked that assumptions, tradeoffs, and embedded-system consequences are included.",
+          "Checked that the student name and ID are included correctly in the milestone and protocol files."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "revised",
+        "issues": [
+          "The corrected version explicitly includes Student ID 2220070 in all files.",
+          "The prompt is written in a natural student-style form instead of a command-style form.",
+          "The final version should still be checked against the assigned book chapter or lecture material."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Entire Milestone 2 briefing",
+        "usage_type": "comparison-structuring",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction helped me move from basic understanding to scientific contextualization. It clarified how list-based scheduling fits between simple ASAP/ALAP methods and more complex optimization approaches."
+    },
+    {
+      "id": "e-m2-tradeoffs",
+      "timestamp": "2026-06-28T08:33:11+00:00",
+      "parent_id": "e-m2-context",
+      "objective": "Develop a clear tradeoff analysis for list-based scheduling and related scheduling methods.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "For the same milestone, I want to explain the engineering tradeoffs clearly. I need help comparing list-based scheduling with methods like ASAP, ALAP, force-directed scheduling, exact optimization, and loop pipelining. The comparison should focus on practical design decisions such as latency, area, runtime, scalability, and resource constraints.",
+      "ai_output_summary": "The AI prepared a tradeoff table covering optimality versus feasibility, runtime versus schedule quality, simplicity versus global reasoning, area versus latency, determinism versus flexibility, and memory realism.",
+      "verification": {
+        "actions": [
+          "Checked that each tradeoff has both an advantage and a limitation.",
+          "Checked that the comparison stays connected to HLS and embedded hardware.",
+          "Checked that the resource-latency example is consistent with the first milestone."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "Some tradeoffs are qualitative and should be supported later by implementation results if possible.",
+          "Memory-port conflicts are mentioned but not modeled deeply."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Tradeoff Analysis; Assumptions Behind Different Approaches",
+        "usage_type": "argument-critique",
+        "direct_text_reused": false
+      },
+      "reflection": "The tradeoff section helps show that the topic is not only about an algorithm, but also about engineering decisions in constrained hardware design."
+    },
+    {
+      "id": "e-m2-references",
+      "timestamp": "2026-06-28T08:33:11+00:00",
+      "parent_id": "e-m2-context",
+      "objective": "Select and justify references that are directly useful for the Milestone 2 context discussion.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "I also need references for Milestone 2. I want to include only sources that are useful for explaining HLS scheduling, resource constraints, and related scheduling approaches. Please help me organize suitable references and explain why each one is relevant.",
+      "ai_output_summary": "The AI helped organize references for foundational HLS, force-directed scheduling, broader HLS context, and FPGA/HLS tool-flow relevance.",
+      "verification": {
+        "actions": [
+          "Checked that selected references are directly connected to HLS, scheduling, or resource tradeoffs.",
+          "Checked that less relevant sources such as pure place-and-route or general operating-system scheduling are not treated as central.",
+          "Checked that the BibTeX file includes an AI usage protocol entry with the correct student ID."
+        ],
+        "level": "secondary-source-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The exact assigned source from the professor should remain the main reference if it differs from these sources.",
+          "Citation style may need to be adjusted to the final paper template."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Selected References and Justification; references_milestone2_list_based_scheduling_corrected.bib",
+        "usage_type": "literature-search-support",
+        "direct_text_reused": false
+      },
+      "reflection": "The reference selection became more focused by separating directly relevant HLS scheduling sources from only indirectly related hardware or software scheduling topics."
+    }
+  ]
+}
