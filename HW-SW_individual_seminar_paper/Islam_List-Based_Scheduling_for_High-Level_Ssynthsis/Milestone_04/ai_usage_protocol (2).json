@@ -1,0 +1,117 @@
+{
+  "protocol_version": "0.2",
+  "student_id": "2220070",
+  "student_name": "Md Azadul Islam",
+  "course": "Seminar Work / High-Level Synthesis",
+  "milestone": "Milestone 4: Scientific Communication: Paper and Talk",
+  "topic": "List-Based Scheduling for High-Level Synthesis",
+  "exported_at": "2026-06-28T08:52:43+00:00",
+  "entries": [
+    {
+      "id": "e-m4-paper-structure",
+      "timestamp": "2026-06-28T08:52:43+00:00",
+      "parent_id": null,
+      "objective": "Prepare the final paper structure by integrating the first three milestones.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "I am preparing Milestone 4 for my seminar topic, List-Based Scheduling for High-Level Synthesis. I already have the first three milestones: technical understanding, scientific context, and critical evaluation. Now I need help organizing them into a final paper structure that communicates the topic clearly and keeps facts, interpretation, and critique separate.",
+      "ai_output_summary": "The AI helped organize the final paper into sections covering introduction, background, list-based scheduling method, example, scientific context, critical evaluation, embedded-system relevance, conclusion, and AI usage protocol.",
+      "verification": {
+        "actions": [
+          "Checked that the final paper structure integrates Milestones 1, 2, and 3 instead of starting independently.",
+          "Checked that the structure includes technical explanation, context, critical evaluation, and conclusion.",
+          "Checked that the student name and ID are included correctly in the milestone and protocol files."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "revised",
+        "issues": [
+          "The final paper structure still needs to be adapted to the exact course template if the professor provides one.",
+          "The final paper should include actual implementation figures or screenshots if available.",
+          "The corrected version explicitly includes Student ID 2220070 in all files."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Proposed Final Paper Structure; Integration of Previous Milestones",
+        "usage_type": "comparison-structuring",
+        "direct_text_reused": false
+      },
+      "reflection": "This helped me see how the previous milestones can become one coherent final paper instead of separate disconnected parts."
+    },
+    {
+      "id": "e-m4-talk-plan",
+      "timestamp": "2026-06-28T08:52:43+00:00",
+      "parent_id": "e-m4-paper-structure",
+      "objective": "Prepare a presentation plan that explains the topic visually and clearly.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "For the same Milestone 4, I also need a talk or presentation plan. I do not want the slides to be a text-heavy copy of the paper. I want a clear slide structure that explains the motivation, the scheduling idea, the small example, tradeoffs, strengths, limitations, and final judgment.",
+      "ai_output_summary": "The AI prepared a slide-by-slide presentation plan with motivation, HLS flow, scheduling problem, DFG example, list-based scheduling concept, schedules for one ALU and two ALUs, tradeoff, related approaches, strengths, limitations, embedded-system relevance, conclusion, and discussion questions.",
+      "verification": {
+        "actions": [
+          "Checked that the slides focus on explanation and discussion rather than copying paper text.",
+          "Checked that the slide plan includes examples, diagrams, formal sketches, tradeoffs, and critical judgment.",
+          "Checked that the example is consistent with the earlier milestones."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "Actual slide design and figures still need to be created separately.",
+          "The talk length should be adjusted to the time limit given by the lecturer."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Proposed Slide Structure; Suggested Visuals and Diagrams",
+        "usage_type": "idea-generation",
+        "direct_text_reused": false
+      },
+      "reflection": "This made the presentation easier to plan because the slides now follow a clear explanation path from motivation to conclusion."
+    },
+    {
+      "id": "e-m4-communication-script",
+      "timestamp": "2026-06-28T08:52:43+00:00",
+      "parent_id": "e-m4-talk-plan",
+      "objective": "Develop clear opening, closing, and discussion questions for the presentation.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "I want to make the presentation easier to deliver. Please help me prepare a natural opening, a short conclusion, and some discussion questions for the audience. The language should sound like a student presenting the topic, not like a generated final essay.",
+      "ai_output_summary": "The AI helped draft a short natural talk opening, a closing statement, and discussion questions about priority rules, multi-cycle operations, memory constraints, exact methods, and FPGA timing validation.",
+      "verification": {
+        "actions": [
+          "Checked that the opening introduces HLS and scheduling clearly.",
+          "Checked that the closing contains both the usefulness and limitation of list-based scheduling.",
+          "Checked that the discussion questions connect to the critical evaluation from Milestone 3."
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [
+          "The student should practice the talk and adjust wording to sound natural in their own speaking style.",
+          "The discussion questions can be reduced if the presentation time is short."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Talk Opening; Talk Closing; Discussion Questions",
+        "usage_type": "text-revision",
+        "direct_text_reused": false
+      },
+      "reflection": "The opening and closing help me present the topic more confidently and keep the talk focused."
+    }
+  ]
+}
