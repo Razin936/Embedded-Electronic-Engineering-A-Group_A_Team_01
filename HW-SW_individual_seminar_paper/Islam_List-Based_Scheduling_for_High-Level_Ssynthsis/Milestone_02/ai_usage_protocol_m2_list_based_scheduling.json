@@ -1,0 +1,117 @@
+{
+  "protocol_version": "0.2",
+  "student_id": "2220070",
+  "student_name": "Md Azadul Islam",
+  "course": "Seminar Work / High-Level Synthesis",
+  "milestone": "Milestone 2: Scientific Contextualization and Tradeoff Analysis",
+  "topic": "List-Based Scheduling for High-Level Synthesis",
+  "exported_at": "2026-06-28T08:13:38+00:00",
+  "entries": [
+    {
+      "id": "e-m2-context",
+      "timestamp": "2026-06-28T08:13:38+00:00",
+      "parent_id": null,
+      "objective": "Create Milestone 2 for List-Based Scheduling in HLS with scientific contextualization and tradeoff analysis.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Now make similar way for milestone 2 for my topic List-Based Scheduling for High-Level Synthesis.",
+      "ai_output_summary": "Generated a structured Milestone 2 artifact comparing list-based scheduling with ASAP, ALAP, force-directed scheduling, ILP/exact scheduling, loop pipelining, manual RTL, and HLS tool flows.",
+      "verification": {
+        "actions": [
+          "Checked the uploaded milestone checklist for Milestone 2 requirements: related approaches, competing strategies, assumptions, tradeoffs, embedded systems consequences, and justification of selected/excluded references.",
+          "Checked that the artifact compares approaches instead of only summarizing papers.",
+          "Checked that the artifact includes direct and indirect related work."
+        ],
+        "level": "primary-source-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The final paper should still verify details against the exact assigned book chapters or lecture material.",
+          "The comparison is suitable for seminar framing but can be shortened if the professor wants fewer pages.",
+          "Tool-specific details were kept general to avoid overfocusing on vendor manuals."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Entire Milestone 2 briefing",
+        "usage_type": "comparison-structuring",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction clarified how list-based scheduling fits between simple ASAP/ALAP methods and more complex global or exact scheduling methods. The most useful insight is the latency-area-power tradeoff for constrained embedded hardware."
+    },
+    {
+      "id": "e-m2-tradeoffs",
+      "timestamp": "2026-06-28T08:13:38+00:00",
+      "parent_id": "e-m2-context",
+      "objective": "Develop engineering tradeoffs for HLS scheduling approaches.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Analyze scientific and engineering tradeoffs for list-based scheduling compared with other scheduling methods.",
+      "ai_output_summary": "Created tradeoff tables covering optimality versus feasibility, runtime versus schedule quality, area versus latency, determinism versus flexibility, control simplicity versus performance, and memory realism.",
+      "verification": {
+        "actions": [
+          "Checked that each tradeoff has both an advantage and a limitation.",
+          "Checked that embedded-system constraints such as timing, memory, energy, determinism, and deployment context are included.",
+          "Checked that the implementation example links 1-ALU/2-ALU resource choices to latency differences."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "revised",
+        "issues": [
+          "Some tradeoffs are qualitative and should be supported by implementation screenshots or schedule tables in the final paper.",
+          "Memory-port conflicts are mentioned but not modeled in detail."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Tradeoff Analysis; Consequences for Embedded Systems",
+        "usage_type": "argument-critique",
+        "direct_text_reused": false
+      },
+      "reflection": "The tradeoff analysis helps move the milestone from a simple related-work list to a scientific comparison of design alternatives."
+    },
+    {
+      "id": "e-m2-references",
+      "timestamp": "2026-06-28T08:13:38+00:00",
+      "parent_id": "e-m2-context",
+      "objective": "Select and justify references for Milestone 2.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Create BibTeX references for foundational HLS, list scheduling context, force-directed scheduling, and HLS tool-flow comparison.",
+      "ai_output_summary": "Created a BibTeX file including De Micheli, Gajski et al., Coussy and Morawiec, Paulin and Knight, Canis et al., and the AI usage protocol entry.",
+      "verification": {
+        "actions": [
+          "Checked core bibliographic information for foundational HLS and force-directed scheduling references.",
+          "Selected references based on direct relevance to scheduling, HLS flow, and resource tradeoffs.",
+          "Excluded unrelated place-and-route or general OS scheduling references from the core bibliography."
+        ],
+        "level": "secondary-source-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The professor's assigned book chapter should remain the main authority if it differs from these references.",
+          "The user should confirm whether the seminar requires a specific citation style."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Selected References and Justification; references_milestone2_list_based_scheduling.bib",
+        "usage_type": "literature-search-support",
+        "direct_text_reused": false
+      },
+      "reflection": "Reference selection was based on relevance to scheduling and HLS rather than collecting many weakly related papers."
+    }
+  ]
+}
