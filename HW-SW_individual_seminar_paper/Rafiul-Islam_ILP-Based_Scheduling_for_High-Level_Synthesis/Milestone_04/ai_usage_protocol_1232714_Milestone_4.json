@@ -1,0 +1,176 @@
+{
+  "protocol_version": "0.2",
+  "student_id": "1232714",
+  "student_name": "MD Rafiul Islam",
+  "course": "SS2026 ELE HW/SW Codesign Seminar",
+  "milestone": "Milestone 4",
+  "topic": "ILP-Based Scheduling for High-Level Synthesis",
+  "entries": [
+    {
+      "id": "ilp-m4-001",
+      "timestamp": "2026-06-28T09:30:00+02:00",
+      "parent_id": null,
+      "objective": "Synthesize the final paper message.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Create the main communication thesis for a final paper on ILP-based scheduling for HLS.",
+      "ai_output_summary": "The AI formulated the central message: ILP turns HLS scheduling into binary optimization where constraints enforce correctness and the objective minimizes latency under resource limits.",
+      "verification": {
+        "actions": [
+          "I checked this statement against the abstract, formal model, and conclusion of the seminar paper.",
+          "I verified that the message is accurate for the implemented example."
+        ],
+        "level": "source-and-consistency-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The thesis must mention \"for the formulated model\" to avoid overgeneralization."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "General",
+        "usage_type": "planning-and-technical-support",
+        "direct_text_reused": false
+      },
+      "reflection": "Final paper message"
+    },
+    {
+      "id": "ilp-m4-002",
+      "timestamp": "2026-06-28T09:30:00+02:00",
+      "parent_id": null,
+      "objective": "Plan a 10-minute seminar presentation.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Create a 10-slide talk plan for ILP-based scheduling for High-Level Synthesis, including motivation, example, ILP model, results, RTL validation, and conclusion.",
+      "ai_output_summary": "The AI proposed a slide order from motivation and HLS flow to example graph, ILP variables/constraints, algorithm, two result cases, RTL validation, and balanced conclusion.",
+      "verification": {
+        "actions": [
+          "I checked the course organization requirement for a 10-minute presentation plus discussion.",
+          "I aligned each slide with one paper section."
+        ],
+        "level": "source-and-consistency-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The talk plan should avoid too many equations and should focus on one clear example."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "General",
+        "usage_type": "planning-and-technical-support",
+        "direct_text_reused": false
+      },
+      "reflection": "Talk structure"
+    },
+    {
+      "id": "ilp-m4-003",
+      "timestamp": "2026-06-28T09:30:00+02:00",
+      "parent_id": null,
+      "objective": "Prepare answer directions for discussion questions.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "What questions might the professor ask about ILP-based scheduling, and how should I answer safely?",
+      "ai_output_summary": "The AI suggested likely questions about why ILP is used, whether the C++ program is a full solver, why latency changes with multipliers, what VHDL validates, and what the main limitation is.",
+      "verification": {
+        "actions": [
+          "I checked that the answers match the paper and do not claim more than implemented.",
+          "I prepared concise answers for oral discussion."
+        ],
+        "level": "source-and-consistency-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "Answers should be adapted during the real discussion and not memorized word-for-word."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "General",
+        "usage_type": "planning-and-technical-support",
+        "direct_text_reused": false
+      },
+      "reflection": "Discussion preparation"
+    },
+    {
+      "id": "ilp-m4-004",
+      "timestamp": "2026-06-28T09:30:00+02:00",
+      "parent_id": null,
+      "objective": "Check scientific writing and AI transparency.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Give me a final checklist for citations, AI usage protocol, plagiarism avoidance, and GitHub deliverables for the ILP seminar paper.",
+      "ai_output_summary": "The AI listed checks for IEEE template, source citations, figure captions, C++/VHDL consistency, AI usage JSON/BibTeX, and original wording.",
+      "verification": {
+        "actions": [
+          "I compared the checklist with the HWSW seminar slides and milestone checklist.",
+          "I ensured the generated AI protocol says direct_text_reused=false."
+        ],
+        "level": "source-and-consistency-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The checklist supports but does not guarantee academic compliance; final responsibility remains with the student."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "General",
+        "usage_type": "planning-and-technical-support",
+        "direct_text_reused": false
+      },
+      "reflection": "Submission checklist"
+    },
+    {
+      "id": "ilp-m4-005",
+      "timestamp": "2026-06-28T09:30:00+02:00",
+      "parent_id": null,
+      "objective": "Convert milestone work into final communication.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "How should Milestones 1-3 feed into Milestone 4 paper and talk for ILP-based HLS scheduling?",
+      "ai_output_summary": "The AI explained that Milestone 1 provides technical understanding, Milestone 2 provides context/tradeoffs, and Milestone 3 provides critical evaluation; Milestone 4 combines these into paper and talk.",
+      "verification": {
+        "actions": [
+          "I checked this against the milestone checklist PDF which describes final paper and talk as synthesis of previous milestones.",
+          "I ensured the paper/talk communication remains concise."
+        ],
+        "level": "source-and-consistency-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The final slides should not simply read the paper; they should explain the central idea visually."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "General",
+        "usage_type": "planning-and-technical-support",
+        "direct_text_reused": false
+      },
+      "reflection": "Milestone synthesis"
+    }
+  ],
+  "exported_at": "2026-06-28T09:30:00+02:00"
+}
