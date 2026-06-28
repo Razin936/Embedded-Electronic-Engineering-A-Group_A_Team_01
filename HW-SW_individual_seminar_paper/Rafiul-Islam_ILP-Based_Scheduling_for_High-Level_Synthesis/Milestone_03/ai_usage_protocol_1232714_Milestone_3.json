@@ -1,0 +1,176 @@
+{
+  "protocol_version": "0.2",
+  "student_id": "1232714",
+  "student_name": "MD Rafiul Islam",
+  "course": "SS2026 ELE HW/SW Codesign Seminar",
+  "milestone": "Milestone 3",
+  "topic": "ILP-Based Scheduling for High-Level Synthesis",
+  "entries": [
+    {
+      "id": "ilp-m3-001",
+      "timestamp": "2026-06-28T09:30:00+02:00",
+      "parent_id": null,
+      "objective": "Evaluate the strengths of ILP-based scheduling.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "What are the main strengths of ILP-based scheduling for High-Level Synthesis?",
+      "ai_output_summary": "The AI highlighted formal constraints, transparent objectives, optimality for the model, explicit resource handling, and usefulness for small critical kernels and design-space exploration.",
+      "verification": {
+        "actions": [
+          "I checked these strengths against the formal model and result sections of the seminar paper.",
+          "I verified that the claims are tied to the small example and general ILP properties."
+        ],
+        "level": "source-and-consistency-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "Strengths must not be overstated as universal industrial practicality."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "General",
+        "usage_type": "planning-and-technical-support",
+        "direct_text_reused": false
+      },
+      "reflection": "Strengths"
+    },
+    {
+      "id": "ilp-m3-002",
+      "timestamp": "2026-06-28T09:30:00+02:00",
+      "parent_id": null,
+      "objective": "Evaluate limitations and risks.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Critically evaluate limitations of ILP-based scheduling in HLS, including scalability, memory, loops, branching, and solver dependence.",
+      "ai_output_summary": "The AI identified scalability, model size, memory dependencies, control flow, multi-cycle operations, and solver dependence as main limitations or extension points.",
+      "verification": {
+        "actions": [
+          "I checked that the seminar paper already mentions variable growth, constraint growth, solver/heuristic tradeoff, and simplified implementation.",
+          "I separated implemented limitations from possible future extensions."
+        ],
+        "level": "source-and-consistency-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "Some listed issues are outside the paper scope and should be described as future work."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "General",
+        "usage_type": "planning-and-technical-support",
+        "direct_text_reused": false
+      },
+      "reflection": "Limitations"
+    },
+    {
+      "id": "ilp-m3-003",
+      "timestamp": "2026-06-28T09:30:00+02:00",
+      "parent_id": null,
+      "objective": "Assess runtime and overhead in a clear mathematical way.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Help me express runtime and overhead for the ILP scheduling model using number of operations, time steps, dependencies, and resource types.",
+      "ai_output_summary": "The AI summarized approximate growth: assignment variables scale with |V|*T, dependency constraints with |E|, and resource constraints with resource types times time steps.",
+      "verification": {
+        "actions": [
+          "I checked that this matches the paper runtime discussion.",
+          "I avoided presenting this as exact solver runtime complexity."
+        ],
+        "level": "source-and-consistency-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "Solver runtime depends on solver implementation and instance structure, so the explanation must stay qualitative."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "General",
+        "usage_type": "planning-and-technical-support",
+        "direct_text_reused": false
+      },
+      "reflection": "Runtime/overhead"
+    },
+    {
+      "id": "ilp-m3-004",
+      "timestamp": "2026-06-28T09:30:00+02:00",
+      "parent_id": null,
+      "objective": "Transfer the approach to suitable and unsuitable application examples.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Give examples where ILP-based HLS scheduling is suitable and where it is unsuitable.",
+      "ai_output_summary": "The AI suggested suitability for small arithmetic kernels, FPGA accelerator exploration, and academic explanation, and less suitability for huge memory- or control-heavy designs.",
+      "verification": {
+        "actions": [
+          "I checked that examples align with HLS and embedded systems context.",
+          "I kept the transfer discussion tied to the paper example and not to unsupported claims."
+        ],
+        "level": "source-and-consistency-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "Application examples are illustrative, not benchmark results."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "General",
+        "usage_type": "planning-and-technical-support",
+        "direct_text_reused": false
+      },
+      "reflection": "Transfer to applications"
+    },
+    {
+      "id": "ilp-m3-005",
+      "timestamp": "2026-06-28T09:30:00+02:00",
+      "parent_id": null,
+      "objective": "Identify extensions for future work.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "What extensions would make the ILP-based HLS scheduling demonstration more realistic?",
+      "ai_output_summary": "The AI suggested adding a real solver, larger graphs, multi-cycle operations, memory-port constraints, power/area objectives, and automatic VHDL generation.",
+      "verification": {
+        "actions": [
+          "I checked that these are plausible extensions of the current implementation.",
+          "I ensured they are not written as if already implemented."
+        ],
+        "level": "source-and-consistency-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "Future-work ideas need careful wording to avoid claiming unimplemented features."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "General",
+        "usage_type": "planning-and-technical-support",
+        "direct_text_reused": false
+      },
+      "reflection": "Extensions and open questions"
+    }
+  ],
+  "exported_at": "2026-06-28T09:30:00+02:00"
+}
