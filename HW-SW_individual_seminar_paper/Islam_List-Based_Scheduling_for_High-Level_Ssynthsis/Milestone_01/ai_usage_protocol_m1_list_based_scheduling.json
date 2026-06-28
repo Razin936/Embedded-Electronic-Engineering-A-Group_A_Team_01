@@ -1,0 +1,82 @@
+{
+  "protocol_version": "0.2",
+  "student_id": "TODO",
+  "student_name": "Md Azadul Islam",
+  "course": "Seminar Work / High-Level Synthesis",
+  "milestone": "Milestone 1: Technical Understanding and Research Framing",
+  "topic": "List-Based Scheduling for High-Level Synthesis",
+  "exported_at": "2026-06-28T07:55:32+00:00",
+  "entries": [
+    {
+      "id": "e-m1-structure",
+      "timestamp": "2026-06-28T07:55:32+00:00",
+      "parent_id": null,
+      "objective": "Create a structured Milestone 1 technical briefing for the topic List-Based Scheduling for High-Level Synthesis.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "This is my topic: List-Based Scheduling for High-Level Synthesis. Make first milestone for my topic. JSON and BibTeX file.",
+      "ai_output_summary": "Generated a concise milestone artifact with problem statement, motivation, core idea, formal model, list-scheduling pseudocode, assumptions, resource/runtime aspects, open questions, and checklist status.",
+      "verification": {
+        "actions": [
+          "Checked the uploaded Milestone 1 checklist requirements: problem statement, core idea, formalism/algorithm, assumptions, resource aspects, and unclear points.",
+          "Checked that the milestone is structured as bullet points and technical notes rather than polished final-paper prose.",
+          "Checked bibliographic metadata for the main reference De Micheli, Synthesis and Optimization of Digital Circuits."
+        ],
+        "level": "primary-source-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "Student ID is left as TODO because it was not provided.",
+          "The final submission should be checked against the exact assigned book chapter or paper used by the professor.",
+          "Priority functions and operation latencies should be adjusted if the implementation uses a different model."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Entire Milestone 1 briefing",
+        "usage_type": "comparison-structuring",
+        "direct_text_reused": false
+      },
+      "reflection": "The AI output helped structure the first milestone and clarify the difference between ASAP/ALAP, mobility, and list-based scheduling. The student must still verify the technical details with the assigned source and own implementation results."
+    },
+    {
+      "id": "e-m1-formalism",
+      "timestamp": "2026-06-28T07:55:32+00:00",
+      "parent_id": "e-m1-structure",
+      "objective": "Formulate the formal scheduling model and resource constraints for list-based scheduling.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "Explain the formalism, algorithm, assumptions, runtime, memory, scalability, and resource aspects for list-based scheduling in HLS.",
+      "ai_output_summary": "Produced DFG notation G=(V,E), precedence constraints, resource constraints, latency definition, mobility formula, and simplified list-scheduling pseudocode.",
+      "verification": {
+        "actions": [
+          "Checked that dependency constraints are represented using a data-flow graph.",
+          "Checked that resource constraints limit simultaneous operations per functional-unit type.",
+          "Checked that mobility is described as ALAP minus ASAP."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "revised",
+        "issues": [
+          "The runtime complexity is approximate and depends on implementation details.",
+          "Memory access scheduling is not fully modeled in the first milestone."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Formal Model; Runtime, Memory, Scalability, and Resource Aspects",
+        "usage_type": "terminology-clarification",
+        "direct_text_reused": false
+      },
+      "reflection": "The formal model made the topic easier to connect to implementation results such as C++ schedule tables and VHDL/Questa waveforms."
+    }
+  ]
+}

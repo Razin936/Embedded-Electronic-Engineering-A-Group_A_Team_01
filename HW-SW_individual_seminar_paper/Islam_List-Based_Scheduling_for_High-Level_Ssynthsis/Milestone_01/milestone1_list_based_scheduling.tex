@@ -1,0 +1,303 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[margin=2.3cm]{geometry}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+\title{Milestone 1: Technical Understanding and Research Framing\\
+\large List-Based Scheduling for High-Level Synthesis}
+\author{Student: Md Azadul Islam\\Student ID: TODO}
+\date{28 June 2026}
+
+\begin{document}
+\maketitle
+
+\section*{Purpose of this Milestone}
+This document is a structured technical briefing for Milestone 1.
+It is intentionally written as concise technical notes, bullet points, formulas, and a small example.
+The goal is to show understanding of the topic before writing the final seminar paper.
+
+\section{Problem Statement and Motivation}
+
+\begin{itemize}[leftmargin=*]
+    \item High-Level Synthesis (HLS) transforms an algorithmic or behavioral description into a hardware implementation.
+    \item In HLS, \textbf{scheduling} decides in which clock cycle or control step each operation is executed.
+    \item The main problem: operations have data dependencies and hardware resources are limited.
+    \item Example: if only one adder is available, two independent additions may not be executed in the same cycle.
+    \item Therefore, scheduling must balance:
+    \begin{itemize}
+        \item low latency,
+        \item limited number of functional units,
+        \item dependency correctness,
+        \item hardware area,
+        \item and timing/resource constraints.
+    \end{itemize}
+    \item \textbf{List-based scheduling} is a constructive heuristic used to create a feasible schedule step by step.
+\end{itemize}
+
+\section{Core Technical Idea}
+
+\begin{itemize}[leftmargin=*]
+    \item The input program is represented as a \textbf{data-flow graph} (DFG).
+    \item Nodes represent operations such as addition, multiplication, comparison, or memory access.
+    \item Edges represent data dependencies.
+    \item At each control step, the algorithm builds a list of \textbf{ready operations}.
+    \item An operation is ready when all predecessor operations are already scheduled and their results are available.
+    \item If more ready operations exist than available hardware resources, a priority rule decides which operations are scheduled first.
+    \item Typical priority criteria:
+    \begin{itemize}
+        \item critical path length,
+        \item mobility,
+        \item number of successors,
+        \item operation latency,
+        \item urgency caused by deadlines or latency constraints.
+    \end{itemize}
+\end{itemize}
+
+\section{Formal Model}
+
+\subsection*{Data-Flow Graph}
+
+\[
+G = (V,E)
+\]
+
+\begin{itemize}[leftmargin=*]
+    \item $V$: set of operations.
+    \item $E$: set of dependency edges.
+    \item $(u,v) \in E$ means operation $v$ depends on the result of operation $u$.
+    \item $l(v)$: latency of operation $v$.
+    \item $type(v)$: required resource type of operation $v$.
+    \item $R_r$: number of available resources of type $r$.
+    \item $t(v)$: scheduled start control step of operation $v$.
+\end{itemize}
+
+\subsection*{Precedence Constraint}
+
+For every dependency edge $(u,v)$:
+
+\[
+t(v) \geq t(u) + l(u)
+\]
+
+Meaning: operation $v$ can only start after operation $u$ has finished.
+
+\subsection*{Resource Constraint}
+
+For every resource type $r$ and control step $c$:
+
+\[
+\left| \{ v \in V \mid type(v)=r \land t(v) \leq c < t(v)+l(v) \} \right| \leq R_r
+\]
+
+Meaning: at any control step, the number of simultaneously active operations of one resource type must not exceed the available hardware units.
+
+\subsection*{Schedule Latency}
+
+\[
+L = \max_{v \in V}(t(v)+l(v)-1)
+\]
+
+Meaning: the total schedule length is determined by the last finishing operation.
+
+\section{ASAP, ALAP, and Mobility}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{ASAP scheduling}: schedules each operation as soon as possible while respecting dependencies.
+    \item \textbf{ALAP scheduling}: schedules each operation as late as possible under a latency bound.
+    \item \textbf{Mobility}: shows how flexible an operation is.
+\end{itemize}
+
+\[
+mobility(v)=ALAP(v)-ASAP(v)
+\]
+
+\begin{itemize}[leftmargin=*]
+    \item Low mobility means the operation is urgent.
+    \item High mobility means the operation can be moved more freely.
+    \item A common list-scheduling priority is: schedule low-mobility or critical-path operations first.
+\end{itemize}
+
+\section{List-Based Scheduling Algorithm}
+
+\subsection*{Simplified Pseudocode}
+
+\begin{verbatim}
+Input:
+  Data-flow graph G=(V,E)
+  Available resources R
+  Priority rule P
+
+Step 1:
+  Compute priorities, for example critical path or mobility.
+
+Step 2:
+  Set current control step c = 1.
+
+Step 3:
+  Find all ready operations.
+  An operation is ready if all predecessors are scheduled.
+
+Step 4:
+  Sort ready operations using priority rule P.
+
+Step 5:
+  Schedule highest-priority ready operations while resources are available.
+
+Step 6:
+  Move to next control step and repeat until all operations are scheduled.
+\end{verbatim}
+
+\section{Small Example for My Topic}
+
+Example expression:
+
+\[
+z = (a+b)\times(c+d)+e
+\]
+
+Operations:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{llll}
+\toprule
+Operation & Meaning & Resource & Dependency \\
+\midrule
+$v_1$ & $a+b$ & ALU & none \\
+$v_2$ & $c+d$ & ALU & none \\
+$v_3$ & $v_1 \times v_2$ & Multiplier & $v_1,v_2$ \\
+$v_4$ & $v_3+e$ & ALU & $v_3$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection*{Case A: 1 ALU + 1 Multiplier}
+
+\begin{itemize}[leftmargin=*]
+    \item $v_1$ and $v_2$ are independent, but only one ALU is available.
+    \item Therefore, they cannot be executed in the same cycle.
+    \item A possible schedule:
+    \begin{itemize}
+        \item Cycle 1: $v_1=a+b$
+        \item Cycle 2: $v_2=c+d$
+        \item Cycle 3: $v_3=v_1 \times v_2$
+        \item Cycle 4: $v_4=v_3+e$
+    \end{itemize}
+    \item Result: 4-cycle schedule.
+\end{itemize}
+
+\subsection*{Case B: 2 ALUs + 1 Multiplier}
+
+\begin{itemize}[leftmargin=*]
+    \item $v_1$ and $v_2$ can run in parallel because two ALUs are available.
+    \item A possible schedule:
+    \begin{itemize}
+        \item Cycle 1: $v_1=a+b$ and $v_2=c+d$
+        \item Cycle 2: $v_3=v_1 \times v_2$
+        \item Cycle 3: $v_4=v_3+e$
+    \end{itemize}
+    \item Result: 3-cycle schedule.
+\end{itemize}
+
+\section{Assumptions and Scope Limitations}
+
+\begin{itemize}[leftmargin=*]
+    \item The program is represented as a static data-flow graph.
+    \item Operation latencies are known before scheduling.
+    \item The number of functional units is fixed.
+    \item The clock period is assumed to be already chosen.
+    \item Memory access conflicts are not deeply modeled in the basic version.
+    \item Control-flow complexity such as branches and loops is not the main focus of this first milestone.
+    \item Binding and allocation are related HLS steps, but this milestone focuses mainly on scheduling.
+    \item List scheduling is a heuristic; it usually gives a good feasible schedule, but it does not always guarantee a globally optimal schedule.
+\end{itemize}
+
+\section{Runtime, Memory, Scalability, and Resource Aspects}
+
+\begin{itemize}[leftmargin=*]
+    \item List scheduling is practical because it avoids solving a full global optimization problem.
+    \item It is usually faster and simpler than exact optimization methods.
+    \item Main data structures:
+    \begin{itemize}
+        \item data-flow graph,
+        \item ready list,
+        \item scheduled operation table,
+        \item resource availability table.
+    \end{itemize}
+    \item Approximate memory usage:
+    \[
+    O(|V|+|E|)
+    \]
+    because the graph nodes and edges must be stored.
+    \item Approximate runtime depends on implementation:
+    \begin{itemize}
+        \item computing dependency information: about $O(|V|+|E|)$,
+        \item selecting operations from a priority list may require sorting or a priority queue,
+        \item with a priority queue, selection can be around $O(|V|\log |V|)$ plus graph traversal.
+    \end{itemize}
+    \item Scalability issue: for very large graphs, priority choice and memory constraints become more important.
+    \item Hardware tradeoff:
+    \begin{itemize}
+        \item more functional units can reduce latency,
+        \item but more functional units increase hardware area and possibly power consumption.
+    \end{itemize}
+\end{itemize}
+
+\section{Why This Topic Is Relevant for Embedded Systems}
+
+\begin{itemize}[leftmargin=*]
+    \item Embedded systems often need efficient hardware with limited area, power, and memory.
+    \item HLS helps designers move from high-level algorithm descriptions to hardware implementations.
+    \item Scheduling directly affects:
+    \begin{itemize}
+        \item execution latency,
+        \item throughput,
+        \item required number of adders, multipliers, and registers,
+        \item control logic complexity.
+    \end{itemize}
+    \item List-based scheduling is important because it gives a practical way to generate schedules under resource constraints.
+\end{itemize}
+
+\section{Unclear Points and Questions for Feedback}
+
+\begin{itemize}[leftmargin=*]
+    \item Which priority rule should be emphasized in the final paper: critical path, mobility, or number of successors?
+    \item Should the final paper compare list scheduling with ASAP, ALAP, and force-directed scheduling?
+    \item Should memory accesses be modeled as separate resources?
+    \item Should operation latencies be one-cycle only, or should multi-cycle multiplication be included?
+    \item How much implementation evidence should be included: C++ output, VHDL/Questa waveform, or both?
+    \item Should the final presentation show the schedule table or the data-flow graph first?
+\end{itemize}
+
+\section{Milestone 1 Checklist Status}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{p{0.75\linewidth}c}
+\toprule
+Requirement & Status \\
+\midrule
+Technical problem stated in own words & Done \\
+Main contribution explained & Done \\
+Central algorithm/formalism identified & Done \\
+Assumptions and scope limitations identified & Done \\
+Runtime, memory, scalability, and resources considered & Done \\
+Unclear points documented & Done \\
+Relevance for embedded systems explained & Done \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section*{Short Summary}
+
+List-based scheduling is a practical HLS scheduling method. It schedules ready operations step by step while respecting data dependencies and limited hardware resources. Its main strength is simplicity and scalability. Its main weakness is that the final schedule depends strongly on priority rules and may not be globally optimal.
+
+\bibliographystyle{plain}
+\bibliography{references_milestone1_list_based_scheduling}
+
+\end{document}
