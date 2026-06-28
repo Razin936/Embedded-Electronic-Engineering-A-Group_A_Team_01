@@ -1,0 +1,117 @@
+{
+  "protocol_version": "0.2",
+  "student_id": "2220070",
+  "student_name": "Md Azadul Islam",
+  "course": "Seminar Work / High-Level Synthesis",
+  "milestone": "Milestone 1: Technical Understanding and Research Framing",
+  "topic": "List-Based Scheduling for High-Level Synthesis",
+  "exported_at": "2026-06-28T08:26:21+00:00",
+  "entries": [
+    {
+      "id": "e-m1-understanding",
+      "timestamp": "2026-06-28T08:26:21+00:00",
+      "parent_id": null,
+      "objective": "Prepare a structured technical understanding for the first milestone of the seminar topic.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "I am preparing the first milestone for my seminar topic, List-Based Scheduling for High-Level Synthesis. I want to organize my understanding in a clear technical way with problem statement, motivation, core idea, algorithm, assumptions, resource aspects, and open questions. Please help me make it suitable for a milestone submission, not like a polished final paper.",
+      "ai_output_summary": "The AI helped structure the milestone into concise technical sections: problem statement, motivation, core idea, formal model, pseudocode, small scheduling example, assumptions, runtime and memory aspects, embedded-system relevance, and feedback questions.",
+      "verification": {
+        "actions": [
+          "Checked that the milestone follows the required Milestone 1 structure: technical problem, main idea, algorithm/formalism, assumptions, resource aspects, and unclear points.",
+          "Checked that the text is written as structured technical notes rather than polished final-paper prose.",
+          "Checked that the student name and ID are included correctly in the milestone and protocol files."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "revised",
+        "issues": [
+          "The first version had the student ID missing in some files, so the corrected version explicitly includes Student ID 2220070.",
+          "The AI prompt was rewritten in a natural student-style form instead of a command-style form.",
+          "The technical details should still be checked against the assigned textbook chapter or lecture slides before final submission."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Entire Milestone 1 briefing",
+        "usage_type": "comparison-structuring",
+        "direct_text_reused": false
+      },
+      "reflection": "This interaction helped transform the topic into a clear technical briefing. I used the structure and explanations, but the final version should still be reviewed with the course material and my own implementation results."
+    },
+    {
+      "id": "e-m1-formal-model",
+      "timestamp": "2026-06-28T08:26:21+00:00",
+      "parent_id": "e-m1-understanding",
+      "objective": "Clarify the formal model used in list-based scheduling for HLS.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "For the same milestone, I also need to explain the basic formal model behind list-based scheduling. I want the explanation to be understandable for a beginner, but still technical enough for a seminar milestone. Please include the data-flow graph, precedence constraints, resource constraints, mobility, and latency.",
+      "ai_output_summary": "The AI explained the data-flow graph G=(V,E), precedence constraints, resource constraints, schedule latency, ASAP/ALAP timing, and mobility in a compact technical form.",
+      "verification": {
+        "actions": [
+          "Checked that the precedence constraint prevents dependent operations from starting too early.",
+          "Checked that the resource constraint limits the number of simultaneously active operations of the same resource type.",
+          "Checked that mobility is described as ALAP minus ASAP."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The model is simplified and does not deeply cover memory-port conflicts, branches, or loops.",
+          "The final seminar paper may need more references and a deeper discussion of real HLS tools."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Formal Model; ASAP, ALAP, and Mobility",
+        "usage_type": "terminology-clarification",
+        "direct_text_reused": false
+      },
+      "reflection": "The formal model made the scheduling topic easier to connect with the implementation example and later waveform explanation."
+    },
+    {
+      "id": "e-m1-example",
+      "timestamp": "2026-06-28T08:26:21+00:00",
+      "parent_id": "e-m1-understanding",
+      "objective": "Create a small example that connects the theory to implementation.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5 Thinking"
+      },
+      "prompt": "I want to include a small example for the milestone using the expression z = (a+b) * (c+d) + e. Please help me show how the schedule changes when I use one ALU compared with two ALUs, so that the resource-latency tradeoff becomes clear.",
+      "ai_output_summary": "The AI prepared a small scheduling example showing that one ALU plus one multiplier gives a 4-cycle schedule, while two ALUs plus one multiplier can give a 3-cycle schedule.",
+      "verification": {
+        "actions": [
+          "Checked that v3 depends on both v1 and v2.",
+          "Checked that v4 depends on v3.",
+          "Checked that the two additions can run in parallel only when two ALUs are available."
+        ],
+        "level": "methodological-check"
+      },
+      "evaluation": {
+        "status": "accepted",
+        "issues": [
+          "The example assumes one-cycle operations and ignores memory access.",
+          "The example is useful for explanation but is not enough to represent all real HLS scheduling problems."
+        ],
+        "usefulness": "high"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Small Example for My Topic",
+        "usage_type": "modeling-support",
+        "direct_text_reused": false
+      },
+      "reflection": "The example gives a simple way to explain why resource constraints matter in list-based scheduling."
+    }
+  ]
+}
