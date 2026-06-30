@@ -4,11 +4,11 @@
   "course": "HW/SW Codesign",
   "milestone": "M2",
   "topic": "Force-Directed Scheduling for High-Level Synthesis",
-  "exported_at": "2026-06-14T11:59:44+00:00",
+  "exported_at": "2026-06-29T10:12:07+00:00",
   "entries": [
     {
       "id": "e-7c35fad8",
-      "timestamp": "2026-06-14T23:52:00+00:00",
+      "timestamp": "2026-06-29T10:12:07+00:00",
       "parent_id": null,
       "objective": "Define the formal scheduling problem.",
       "ai_tool": {
@@ -39,7 +39,7 @@
     },
     {
       "id": "e-fa75a5b1",
-      "timestamp": "2026-06-14T23:59:00+00:00",
+      "timestamp": "2026-06-29T10:12:07+00:00",
       "parent_id": null,
       "objective": "Formalize ASAP scheduling.",
       "ai_tool": {
@@ -70,7 +70,7 @@
     },
     {
       "id": "e-afc40274",
-      "timestamp": "2026-06-15T00:06:00+00:00",
+      "timestamp": "2026-06-29T10:12:07+00:00",
       "parent_id": null,
       "objective": "Formalize ALAP scheduling.",
       "ai_tool": {
@@ -103,7 +103,7 @@
     },
     {
       "id": "e-63ec2a7b",
-      "timestamp": "2026-06-15T00:13:00+00:00",
+      "timestamp": "2026-06-29T10:12:07+00:00",
       "parent_id": null,
       "objective": "Define mobility and time frame.",
       "ai_tool": {
@@ -134,7 +134,7 @@
     },
     {
       "id": "e-c3cdba73",
-      "timestamp": "2026-06-15T00:20:00+00:00",
+      "timestamp": "2026-06-29T10:12:07+00:00",
       "parent_id": null,
       "objective": "Define operation probability.",
       "ai_tool": {
@@ -165,7 +165,7 @@
     },
     {
       "id": "e-ae79979d",
-      "timestamp": "2026-06-15T00:27:00+00:00",
+      "timestamp": "2026-06-29T10:12:07+00:00",
       "parent_id": null,
       "objective": "Construct the distribution graph.",
       "ai_tool": {
@@ -196,7 +196,7 @@
     },
     {
       "id": "e-83264df0",
-      "timestamp": "2026-06-15T00:34:00+00:00",
+      "timestamp": "2026-06-29T10:12:07+00:00",
       "parent_id": null,
       "objective": "Define self-force.",
       "ai_tool": {
@@ -229,7 +229,7 @@
     },
     {
       "id": "e-4cb51da8",
-      "timestamp": "2026-06-15T00:41:00+00:00",
+      "timestamp": "2026-06-29T10:12:07+00:00",
       "parent_id": null,
       "objective": "Define predecessor and successor force.",
       "ai_tool": {
@@ -262,7 +262,7 @@
     },
     {
       "id": "e-c319b6c8",
-      "timestamp": "2026-06-15T00:48:00+00:00",
+      "timestamp": "2026-06-29T10:12:07+00:00",
       "parent_id": null,
       "objective": "Develop pseudocode for the full algorithm.",
       "ai_tool": {
@@ -293,7 +293,7 @@
     },
     {
       "id": "e-42fbcaad",
-      "timestamp": "2026-06-15T00:55:00+00:00",
+      "timestamp": "2026-06-29T10:12:07+00:00",
       "parent_id": null,
       "objective": "Distinguish exact and heuristic scheduling.",
       "ai_tool": {
@@ -326,7 +326,7 @@
     },
     {
       "id": "e-f2feb60a",
-      "timestamp": "2026-06-15T01:02:00+00:00",
+      "timestamp": "2026-06-29T10:12:07+00:00",
       "parent_id": null,
       "objective": "Compare FDS and list scheduling formally.",
       "ai_tool": {
@@ -359,7 +359,7 @@
     },
     {
       "id": "e-f60d2b2b",
-      "timestamp": "2026-06-15T01:09:00+00:00",
+      "timestamp": "2026-06-29T10:12:07+00:00",
       "parent_id": null,
       "objective": "Choose formal notation for the paper.",
       "ai_tool": {
@@ -392,7 +392,7 @@
     },
     {
       "id": "e-8d8dbb51",
-      "timestamp": "2026-06-15T01:16:00+00:00",
+      "timestamp": "2026-06-29T10:12:07+00:00",
       "parent_id": null,
       "objective": "Prepare a manual example table.",
       "ai_tool": {
@@ -425,7 +425,7 @@
     },
     {
       "id": "e-db962adc",
-      "timestamp": "2026-06-15T01:23:00+00:00",
+      "timestamp": "2026-06-29T10:12:07+00:00",
       "parent_id": null,
       "objective": "Explain resource pressure visually.",
       "ai_tool": {
@@ -456,7 +456,7 @@
     },
     {
       "id": "e-6f2a06d5",
-      "timestamp": "2026-06-15T01:30:00+00:00",
+      "timestamp": "2026-06-29T10:12:07+00:00",
       "parent_id": null,
       "objective": "Analyze runtime and overhead qualitatively.",
       "ai_tool": {
@@ -489,7 +489,7 @@
     },
     {
       "id": "e-1ba9647d",
-      "timestamp": "2026-06-15T01:37:00+00:00",
+      "timestamp": "2026-06-29T10:12:07+00:00",
       "parent_id": null,
       "objective": "Check mathematical consistency of candidate selection.",
       "ai_tool": {
@@ -520,7 +520,7 @@
     },
     {
       "id": "e-48f8ccc0",
-      "timestamp": "2026-06-15T01:44:00+00:00",
+      "timestamp": "2026-06-29T10:12:07+00:00",
       "parent_id": null,
       "objective": "Identify constraints for the application example.",
       "ai_tool": {
@@ -551,7 +551,7 @@
     },
     {
       "id": "e-498c9ba5",
-      "timestamp": "2026-06-15T01:51:00+00:00",
+      "timestamp": "2026-06-29T10:12:07+00:00",
       "parent_id": null,
       "objective": "Create a step-by-step algorithm explanation.",
       "ai_tool": {
@@ -584,7 +584,7 @@
     },
     {
       "id": "e-f57ea9fb",
-      "timestamp": "2026-06-15T01:58:00+00:00",
+      "timestamp": "2026-06-29T10:12:07+00:00",
       "parent_id": null,
       "objective": "Prepare an algorithm limitations section.",
       "ai_tool": {
@@ -612,99 +612,6 @@
         "direct_text_reused": false
       },
       "reflection": "This made the milestone more critical and less like promotion of the algorithm."
-    },
-    {
-      "id": "e-219375b5",
-      "timestamp": "2026-06-15T02:05:00+00:00",
-      "parent_id": null,
-      "objective": "Prepare a transition to implementation.",
-      "ai_tool": {
-        "name": "ChatGPT",
-        "model": "GPT-5.5 Thinking"
-      },
-      "prompt": "Write what the M3 implementation should prove based on the M2 formal description.",
-      "ai_output_summary": "The AI stated that the implementation should compute ASAP/ALAP windows, build distribution graphs, evaluate force for candidates, and output a schedule for a small CDFG.",
-      "verification": {
-        "actions": [
-          "Checked that this matches the professor requirement for C/C++ implementation of the main feature.",
-          "Kept VHDL/RTL as an optional or later demonstration."
-        ],
-        "level": "primary-source-check"
-      },
-      "evaluation": {
-        "status": "accepted",
-        "issues": [],
-        "usefulness": "high"
-      },
-      "integration": {
-        "used_in_work": true,
-        "section": "M2 outlook to M3",
-        "usage_type": "verification-support",
-        "direct_text_reused": false
-      },
-      "reflection": "This made the next milestone concrete."
-    },
-    {
-      "id": "e-9aae80df",
-      "timestamp": "2026-06-15T02:12:00+00:00",
-      "parent_id": null,
-      "objective": "Review for plagiarism and originality risk.",
-      "ai_tool": {
-        "name": "ChatGPT",
-        "model": "GPT-5.5 Thinking"
-      },
-      "prompt": "Review my M2 structure for possible plagiarism or overdependence on AI text.",
-      "ai_output_summary": "The AI recommended using AI for structure and checking but manually writing final prose, citing sources for textbook concepts, and avoiding direct copying from PDFs.",
-      "verification": {
-        "actions": [
-          "Compared with professor plagiarism warning.",
-          "Decided to cite main references for definitions and algorithms."
-        ],
-        "level": "primary-source-check"
-      },
-      "evaluation": {
-        "status": "accepted",
-        "issues": [],
-        "usefulness": "high"
-      },
-      "integration": {
-        "used_in_work": true,
-        "section": "M2 writing ethics",
-        "usage_type": "verification-support",
-        "direct_text_reused": false
-      },
-      "reflection": "This shaped the writing workflow and reduced compliance risk."
-    },
-    {
-      "id": "e-c20b087d",
-      "timestamp": "2026-06-15T02:19:00+00:00",
-      "parent_id": null,
-      "objective": "Summarize M2 final outcome.",
-      "ai_tool": {
-        "name": "ChatGPT",
-        "model": "GPT-5.5 Thinking"
-      },
-      "prompt": "Summarize M2 in a professional way: formal problem, formulas, algorithm, comparison, runtime, and implementation plan.",
-      "ai_output_summary": "The AI condensed the milestone into a final checklist of formal model, equations, pseudocode, small example, limitations, and next implementation tasks.",
-      "verification": {
-        "actions": [
-          "Checked against all M2 entries.",
-          "Manually edited the summary to match the milestone report organization."
-        ],
-        "level": "methodological-check"
-      },
-      "evaluation": {
-        "status": "accepted",
-        "issues": [],
-        "usefulness": "high"
-      },
-      "integration": {
-        "used_in_work": true,
-        "section": "M2 conclusion",
-        "usage_type": "summarization",
-        "direct_text_reused": false
-      },
-      "reflection": "M2 ended with a complete algorithmic foundation for the C++ implementation."
     }
   ]
 }

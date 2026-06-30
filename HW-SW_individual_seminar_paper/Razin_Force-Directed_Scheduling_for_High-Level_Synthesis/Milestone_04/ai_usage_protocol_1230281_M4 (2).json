@@ -2,44 +2,13 @@
   "protocol_version": "0.2",
   "student_id": "1230281",
   "course": "HW/SW Codesign",
-  "milestone": "Final paper and presentation",
+  "milestone": "M4",
   "topic": "Force-Directed Scheduling for High-Level Synthesis",
-  "exported_at": "2026-06-14T12:32:41+00:00",
+  "exported_at": "2026-06-29T10:22:57+00:00",
   "entries": [
     {
-      "id": "e-01-b15c0d",
-      "timestamp": "2026-06-04T17:35:28+00:00",
-      "parent_id": null,
-      "objective": "Define the final seminar scope for Force-Directed Scheduling in High-Level Synthesis and align it with the HW/SW Codesign task requirements.",
-      "ai_tool": {
-        "name": "Claude (Anthropic)",
-        "model": "not specified"
-      },
-      "prompt": "My seminar topic is Force-Directed Scheduling for High-Level Synthesis. Based on the HW/SW Codesign assignment, what exactly should be covered in the final paper and presentation?",
-      "ai_output_summary": "The AI suggested focusing on the HLS scheduling role, the time-constrained resource-minimization problem, FDS mechanism, comparison with ASAP/ALAP, list scheduling and ILP, C++ implementation, VHDL/RTL mapping, runtime/overhead and critical evaluation.",
-      "verification": {
-        "actions": [
-          "Checked the course slide that requires mathematical basics, formal description, algorithm, runtime/overhead, C/C++ implementation, application example, and RTL/VHDL-style output.",
-          "Mapped the suggested scope against the final paper sections before using it."
-        ],
-        "level": "primary-source-check"
-      },
-      "evaluation": {
-        "status": "accepted",
-        "issues": [],
-        "usefulness": "high"
-      },
-      "integration": {
-        "used_in_work": true,
-        "section": "Paper overall structure; presentation outline",
-        "usage_type": "comparison-structuring",
-        "direct_text_reused": false
-      },
-      "reflection": "This interaction fixed the boundary of the work so the paper stayed focused on FDS instead of becoming a general HLS overview."
-    },
-    {
       "id": "e-02-03e033",
-      "timestamp": "2026-06-04T22:38:28+00:00",
+      "timestamp": "2026-06-29T10:22:57+00:00",
       "parent_id": null,
       "objective": "Clarify where scheduling belongs inside the HLS/architectural synthesis flow.",
       "ai_tool": {
@@ -72,7 +41,7 @@
     },
     {
       "id": "e-03-cd4c9d",
-      "timestamp": "2026-06-05T03:41:28+00:00",
+      "timestamp": "2026-06-29T10:22:57+00:00",
       "parent_id": null,
       "objective": "Differentiate resource-constrained and time-constrained scheduling for the paper's problem framing.",
       "ai_tool": {
@@ -103,7 +72,7 @@
     },
     {
       "id": "e-04-c0aaba",
-      "timestamp": "2026-06-05T08:44:28+00:00",
+      "timestamp": "2026-06-29T10:22:57+00:00",
       "parent_id": null,
       "objective": "Formulate the mathematical problem statement for FDS.",
       "ai_tool": {
@@ -136,7 +105,7 @@
     },
     {
       "id": "e-05-067522",
-      "timestamp": "2026-06-05T13:47:28+00:00",
+      "timestamp": "2026-06-29T10:22:57+00:00",
       "parent_id": null,
       "objective": "Identify and state the assumptions behind classical force-directed scheduling.",
       "ai_tool": {
@@ -169,7 +138,7 @@
     },
     {
       "id": "e-06-660c6f",
-      "timestamp": "2026-06-05T18:50:28+00:00",
+      "timestamp": "2026-06-29T10:22:57+00:00",
       "parent_id": null,
       "objective": "Explain ASAP scheduling for the FDS time-frame construction.",
       "ai_tool": {
@@ -200,7 +169,7 @@
     },
     {
       "id": "e-07-d01ec8",
-      "timestamp": "2026-06-05T23:53:28+00:00",
+      "timestamp": "2026-06-29T10:22:57+00:00",
       "parent_id": null,
       "objective": "Explain ALAP scheduling and its dependence on the latency bound.",
       "ai_tool": {
@@ -233,7 +202,7 @@
     },
     {
       "id": "e-08-b74cf8",
-      "timestamp": "2026-06-06T04:56:28+00:00",
+      "timestamp": "2026-06-29T10:22:57+00:00",
       "parent_id": null,
       "objective": "Define time frame and mobility in concise mathematical form.",
       "ai_tool": {
@@ -264,7 +233,7 @@
     },
     {
       "id": "e-09-623e66",
-      "timestamp": "2026-06-06T09:59:28+00:00",
+      "timestamp": "2026-06-29T10:22:57+00:00",
       "parent_id": null,
       "objective": "Design the small running DFG example used throughout the paper and slides.",
       "ai_tool": {
@@ -297,7 +266,7 @@
     },
     {
       "id": "e-10-b08b44",
-      "timestamp": "2026-06-06T15:02:28+00:00",
+      "timestamp": "2026-06-29T10:22:57+00:00",
       "parent_id": null,
       "objective": "Compute the time-frame table for the running example.",
       "ai_tool": {
@@ -330,7 +299,7 @@
     },
     {
       "id": "e-11-e6843d",
-      "timestamp": "2026-06-06T20:05:28+00:00",
+      "timestamp": "2026-06-29T10:22:57+00:00",
       "parent_id": null,
       "objective": "Explain the probability model used in FDS distribution graphs.",
       "ai_tool": {
@@ -361,7 +330,7 @@
     },
     {
       "id": "e-12-8dd782",
-      "timestamp": "2026-06-07T01:08:28+00:00",
+      "timestamp": "2026-06-29T10:22:57+00:00",
       "parent_id": null,
       "objective": "Construct the multiplier and adder distribution graph values.",
       "ai_tool": {
@@ -392,7 +361,7 @@
     },
     {
       "id": "e-13-369f23",
-      "timestamp": "2026-06-07T06:11:28+00:00",
+      "timestamp": "2026-06-29T10:22:57+00:00",
       "parent_id": null,
       "objective": "Create an intuitive explanation of the spring analogy.",
       "ai_tool": {
@@ -425,7 +394,7 @@
     },
     {
       "id": "e-14-6587bf",
-      "timestamp": "2026-06-07T11:14:28+00:00",
+      "timestamp": "2026-06-29T10:22:57+00:00",
       "parent_id": null,
       "objective": "Formulate self-force mathematically.",
       "ai_tool": {
@@ -456,7 +425,7 @@
     },
     {
       "id": "e-15-209d5c",
-      "timestamp": "2026-06-07T16:17:28+00:00",
+      "timestamp": "2026-06-29T10:22:57+00:00",
       "parent_id": null,
       "objective": "Verify the numerical self-force examples.",
       "ai_tool": {
@@ -487,7 +456,7 @@
     },
     {
       "id": "e-16-46c557",
-      "timestamp": "2026-06-07T21:20:28+00:00",
+      "timestamp": "2026-06-29T10:22:57+00:00",
       "parent_id": null,
       "objective": "Explain predecessor and successor forces without overcomplicating the paper.",
       "ai_tool": {
@@ -518,7 +487,7 @@
     },
     {
       "id": "e-17-3732af",
-      "timestamp": "2026-06-08T02:23:28+00:00",
+      "timestamp": "2026-06-29T10:22:57+00:00",
       "parent_id": null,
       "objective": "Summarize the iterative FDS scheduling loop.",
       "ai_tool": {
@@ -549,7 +518,7 @@
     },
     {
       "id": "e-18-20c5ee",
-      "timestamp": "2026-06-08T07:26:28+00:00",
+      "timestamp": "2026-06-29T10:22:57+00:00",
       "parent_id": null,
       "objective": "Evaluate the first commitment of the worked example.",
       "ai_tool": {
@@ -580,7 +549,7 @@
     },
     {
       "id": "e-19-0a05f5",
-      "timestamp": "2026-06-08T12:29:28+00:00",
+      "timestamp": "2026-06-29T10:22:57+00:00",
       "parent_id": null,
       "objective": "Create a concise runtime and memory analysis for FDS.",
       "ai_tool": {
@@ -613,7 +582,7 @@
     },
     {
       "id": "e-20-b07846",
-      "timestamp": "2026-06-08T17:32:28+00:00",
+      "timestamp": "2026-06-29T10:22:57+00:00",
       "parent_id": null,
       "objective": "Plan the C++ implementation architecture.",
       "ai_tool": {
@@ -644,7 +613,7 @@
     },
     {
       "id": "e-21-1cf968",
-      "timestamp": "2026-06-08T22:35:28+00:00",
+      "timestamp": "2026-06-29T10:22:57+00:00",
       "parent_id": null,
       "objective": "Implement the total-force routine as the main feature.",
       "ai_tool": {
@@ -677,7 +646,7 @@
     },
     {
       "id": "e-22-074f9c",
-      "timestamp": "2026-06-09T03:38:28+00:00",
+      "timestamp": "2026-06-29T10:22:57+00:00",
       "parent_id": null,
       "objective": "Decide how much source code should appear in the IEEE paper.",
       "ai_tool": {
@@ -708,7 +677,7 @@
     },
     {
       "id": "e-23-2187a5",
-      "timestamp": "2026-06-09T08:41:28+00:00",
+      "timestamp": "2026-06-29T10:22:57+00:00",
       "parent_id": null,
       "objective": "Map the final FDS schedule to an RTL netlist concept.",
       "ai_tool": {
@@ -739,7 +708,7 @@
     },
     {
       "id": "e-24-150f98",
-      "timestamp": "2026-06-09T13:44:28+00:00",
+      "timestamp": "2026-06-29T10:22:57+00:00",
       "parent_id": null,
       "objective": "Create a minimal VHDL multiplier entity for the RTL demonstration.",
       "ai_tool": {
@@ -772,7 +741,7 @@
     },
     {
       "id": "e-25-1f7b87",
-      "timestamp": "2026-06-09T18:47:28+00:00",
+      "timestamp": "2026-06-29T10:22:57+00:00",
       "parent_id": null,
       "objective": "Build the scheduling-method comparison table.",
       "ai_tool": {
@@ -805,7 +774,7 @@
     },
     {
       "id": "e-26-c9d3bc",
-      "timestamp": "2026-06-09T23:50:28+00:00",
+      "timestamp": "2026-06-29T10:22:57+00:00",
       "parent_id": null,
       "objective": "Evaluate the role of ASAP/ALAP as bounds rather than final resource schedules.",
       "ai_tool": {
@@ -836,7 +805,7 @@
     },
     {
       "id": "e-27-a90d40",
-      "timestamp": "2026-06-10T04:53:28+00:00",
+      "timestamp": "2026-06-29T10:22:57+00:00",
       "parent_id": null,
       "objective": "Explain list scheduling's strengths and weakness relative to FDS.",
       "ai_tool": {
@@ -867,7 +836,7 @@
     },
     {
       "id": "e-28-4238ba",
-      "timestamp": "2026-06-10T09:56:28+00:00",
+      "timestamp": "2026-06-29T10:22:57+00:00",
       "parent_id": null,
       "objective": "Explain ILP as an exact but expensive reference point.",
       "ai_tool": {
@@ -898,7 +867,7 @@
     },
     {
       "id": "e-29-18c11c",
-      "timestamp": "2026-06-10T14:59:28+00:00",
+      "timestamp": "2026-06-29T10:22:57+00:00",
       "parent_id": null,
       "objective": "Develop a balanced critical evaluation of FDS strengths.",
       "ai_tool": {
@@ -931,7 +900,7 @@
     },
     {
       "id": "e-30-edcb8e",
-      "timestamp": "2026-06-10T20:02:28+00:00",
+      "timestamp": "2026-06-29T10:22:57+00:00",
       "parent_id": null,
       "objective": "Identify FDS limitations and hidden assumptions.",
       "ai_tool": {
@@ -962,7 +931,7 @@
     },
     {
       "id": "e-31-85b77c",
-      "timestamp": "2026-06-11T01:05:28+00:00",
+      "timestamp": "2026-06-29T10:22:57+00:00",
       "parent_id": null,
       "objective": "Decide where FDS fits and where it does not fit in embedded applications.",
       "ai_tool": {
@@ -995,7 +964,7 @@
     },
     {
       "id": "e-32-223a0a",
-      "timestamp": "2026-06-11T06:08:28+00:00",
+      "timestamp": "2026-06-29T10:22:57+00:00",
       "parent_id": null,
       "objective": "Formulate an extension/open question for the final evaluation.",
       "ai_tool": {
@@ -1026,7 +995,7 @@
     },
     {
       "id": "e-33-765bfd",
-      "timestamp": "2026-06-11T11:11:28+00:00",
+      "timestamp": "2026-06-29T10:22:57+00:00",
       "parent_id": null,
       "objective": "Create the final conclusion around the 'middle ground' thesis.",
       "ai_tool": {
@@ -1059,7 +1028,7 @@
     },
     {
       "id": "e-34-bec193",
-      "timestamp": "2026-06-11T16:14:28+00:00",
+      "timestamp": "2026-06-29T10:22:57+00:00",
       "parent_id": null,
       "objective": "Structure the final IEEE paper into five pages.",
       "ai_tool": {
@@ -1090,7 +1059,7 @@
     },
     {
       "id": "e-35-61ffd0",
-      "timestamp": "2026-06-11T21:17:28+00:00",
+      "timestamp": "2026-06-29T10:22:57+00:00",
       "parent_id": null,
       "objective": "Improve the abstract so it covers mechanism, implementation, comparison, and critique.",
       "ai_tool": {
@@ -1123,7 +1092,7 @@
     },
     {
       "id": "e-36-8e360e",
-      "timestamp": "2026-06-12T02:20:28+00:00",
+      "timestamp": "2026-06-29T10:22:57+00:00",
       "parent_id": null,
       "objective": "Select a small and defensible reference set.",
       "ai_tool": {
@@ -1154,7 +1123,7 @@
     },
     {
       "id": "e-37-718775",
-      "timestamp": "2026-06-12T07:23:28+00:00",
+      "timestamp": "2026-06-29T10:22:57+00:00",
       "parent_id": null,
       "objective": "Prepare LaTeX formatting for equations, figures, tables, and code listings.",
       "ai_tool": {
@@ -1187,7 +1156,7 @@
     },
     {
       "id": "e-38-b1aec8",
-      "timestamp": "2026-06-12T12:26:28+00:00",
+      "timestamp": "2026-06-29T10:22:57+00:00",
       "parent_id": null,
       "objective": "Check scientific tone and avoid plagiarism-like wording.",
       "ai_tool": {
@@ -1220,7 +1189,7 @@
     },
     {
       "id": "e-39-6bcf3d",
-      "timestamp": "2026-06-12T17:29:28+00:00",
+      "timestamp": "2026-06-29T10:22:57+00:00",
       "parent_id": null,
       "objective": "Design the presentation narrative from motivation to conclusion.",
       "ai_tool": {
@@ -1251,7 +1220,7 @@
     },
     {
       "id": "e-40-6c5e0a",
-      "timestamp": "2026-06-12T22:32:28+00:00",
+      "timestamp": "2026-06-29T10:22:57+00:00",
       "parent_id": null,
       "objective": "Simplify the core idea for slide 2 without losing the technical meaning.",
       "ai_tool": {
@@ -1282,7 +1251,7 @@
     },
     {
       "id": "e-41-c6e665",
-      "timestamp": "2026-06-13T03:35:28+00:00",
+      "timestamp": "2026-06-29T10:22:57+00:00",
       "parent_id": null,
       "objective": "Create speaker notes for the technical slides.",
       "ai_tool": {
@@ -1315,7 +1284,7 @@
     },
     {
       "id": "e-42-b1e3c1",
-      "timestamp": "2026-06-13T08:38:28+00:00",
+      "timestamp": "2026-06-29T10:22:57+00:00",
       "parent_id": null,
       "objective": "Check the slide on implementation so it does not overpromise full HLS tool functionality.",
       "ai_tool": {
@@ -1346,7 +1315,7 @@
     },
     {
       "id": "e-43-effe83",
-      "timestamp": "2026-06-13T13:41:28+00:00",
+      "timestamp": "2026-06-29T10:22:57+00:00",
       "parent_id": null,
       "objective": "Check consistency between paper and presentation.",
       "ai_tool": {
@@ -1377,7 +1346,7 @@
     },
     {
       "id": "e-44-234064",
-      "timestamp": "2026-06-13T18:44:28+00:00",
+      "timestamp": "2026-06-29T10:22:57+00:00",
       "parent_id": null,
       "objective": "Prepare answers for likely professor questions.",
       "ai_tool": {
@@ -1410,7 +1379,7 @@
     },
     {
       "id": "e-45-63397e",
-      "timestamp": "2026-06-13T23:47:28+00:00",
+      "timestamp": "2026-06-29T10:22:57+00:00",
       "parent_id": null,
       "objective": "Write an AI declaration that is transparent and not over-defensive.",
       "ai_tool": {
@@ -1440,68 +1409,6 @@
         "direct_text_reused": false
       },
       "reflection": "This made AI usage transparent and separated assistance from authorship."
-    },
-    {
-      "id": "e-46-f027b5",
-      "timestamp": "2026-06-14T04:50:28+00:00",
-      "parent_id": null,
-      "objective": "Document rejected or corrected AI outputs for the protocol.",
-      "ai_tool": {
-        "name": "Claude (Anthropic)",
-        "model": "not specified"
-      },
-      "prompt": "Which AI interactions should be documented as rejected or corrected in the AI protocol, not only successful ones?",
-      "ai_output_summary": "The AI reminded that the protocol should include accepted, revised, rejected, exploratory, and corrective interactions that influenced reasoning, including wrong time-frame attempts, too-strong optimality claims, and overbroad VHDL claims.",
-      "verification": {
-        "actions": [
-          "Checked the professor's protocol template instructions.",
-          "Included revised and partially accepted entries rather than only successful ones."
-        ],
-        "level": "primary-source-check"
-      },
-      "evaluation": {
-        "status": "accepted",
-        "issues": [],
-        "usefulness": "high"
-      },
-      "integration": {
-        "used_in_work": true,
-        "section": "AI usage protocol",
-        "usage_type": "verification-support",
-        "direct_text_reused": false
-      },
-      "reflection": "The final protocol became more credible because it includes validation and correction steps, not just polished outputs."
-    },
-    {
-      "id": "e-47-c619d3",
-      "timestamp": "2026-06-14T09:53:28+00:00",
-      "parent_id": null,
-      "objective": "Generate the final AI usage protocol JSON from the documented interactions.",
-      "ai_tool": {
-        "name": "Claude (Anthropic)",
-        "model": "not specified"
-      },
-      "prompt": "Using the professor's AI usage protocol template, create a JSON file for the final FDS paper and presentation with more than 30 substantial AI interactions.",
-      "ai_output_summary": "The AI generated a machine-readable JSON protocol with metadata and more than 30 entries, each including objective, prompt, output summary, verification, evaluation, integration, and reflection.",
-      "verification": {
-        "actions": [
-          "Checked the JSON structure against the template fields.",
-          "Validated that the entries are tied to paper and presentation work rather than trivial chat."
-        ],
-        "level": "methodological-check"
-      },
-      "evaluation": {
-        "status": "accepted",
-        "issues": [],
-        "usefulness": "high"
-      },
-      "integration": {
-        "used_in_work": true,
-        "section": "Submitted AI usage protocol JSON and BibTeX",
-        "usage_type": "other",
-        "direct_text_reused": false
-      },
-      "reflection": "This final documentation step made the AI-assisted workflow transparent and submission-ready."
     }
   ]
 }

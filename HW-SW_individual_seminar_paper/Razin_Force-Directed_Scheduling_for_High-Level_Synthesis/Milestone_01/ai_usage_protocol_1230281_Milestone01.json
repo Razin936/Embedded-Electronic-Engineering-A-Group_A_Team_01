@@ -4,42 +4,11 @@
   "course": "HW/SW Codesign",
   "milestone": "M1",
   "topic": "Force-Directed Scheduling for High-Level Synthesis",
-  "exported_at": "2026-06-14T11:59:44+00:00",
+  "exported_at": "2026-06-29T10:05:46+00:00",
   "entries": [
     {
-      "id": "e-3d66c174",
-      "timestamp": "2026-06-14T12:12:00+00:00",
-      "parent_id": null,
-      "objective": "Understand the seminar task and milestone expectations.",
-      "ai_tool": {
-        "name": "ChatGPT",
-        "model": "GPT-5.5 Thinking"
-      },
-      "prompt": "Read the HW/SW Codesign seminar PDF and explain what must be delivered for the topic Force-Directed Scheduling for High-Level Synthesis.",
-      "ai_output_summary": "The AI identified the seminar as a topic-based paper and presentation task, using the IEEE style, scientific writing, references, GitHub documentation, and an implementation-oriented elaboration.",
-      "verification": {
-        "actions": [
-          "Checked the course PDF for paper length, presentation duration, IEEE template, plagiarism warning, GitHub usage, and elaboration items.",
-          "Compared the AI summary with the professor slide that lists mathematical basics, formal algorithm, runtime/overhead, C/C++ implementation, application example, and RTL output."
-        ],
-        "level": "primary-source-check"
-      },
-      "evaluation": {
-        "status": "accepted",
-        "issues": [],
-        "usefulness": "high"
-      },
-      "integration": {
-        "used_in_work": true,
-        "section": "M1 task framing",
-        "usage_type": "summarization",
-        "direct_text_reused": false
-      },
-      "reflection": "This interaction fixed the boundary of the work: the milestone is not only a general summary but must prepare a technical and implementable seminar topic."
-    },
-    {
       "id": "e-7ceaba19",
-      "timestamp": "2026-06-14T12:19:00+00:00",
+      "timestamp": "2026-06-29T10:05:46+00:00",
       "parent_id": null,
       "objective": "Clarify the exact topic and avoid neighboring-topic confusion.",
       "ai_tool": {
@@ -70,7 +39,7 @@
     },
     {
       "id": "e-b0d69a48",
-      "timestamp": "2026-06-14T12:26:00+00:00",
+      "timestamp": "2026-06-29T10:05:46+00:00",
       "parent_id": null,
       "objective": "Build an initial technical vocabulary for HLS scheduling.",
       "ai_tool": {
@@ -103,7 +72,7 @@
     },
     {
       "id": "e-336c53c5",
-      "timestamp": "2026-06-14T12:33:00+00:00",
+      "timestamp": "2026-06-29T10:05:46+00:00",
       "parent_id": null,
       "objective": "Identify the main reference chapters.",
       "ai_tool": {
@@ -134,7 +103,7 @@
     },
     {
       "id": "e-38297478",
-      "timestamp": "2026-06-14T12:40:00+00:00",
+      "timestamp": "2026-06-29T10:05:46+00:00",
       "parent_id": null,
       "objective": "Create a first research framing for the seminar paper.",
       "ai_tool": {
@@ -167,7 +136,7 @@
     },
     {
       "id": "e-3f5b99db",
-      "timestamp": "2026-06-14T12:47:00+00:00",
+      "timestamp": "2026-06-29T10:05:46+00:00",
       "parent_id": null,
       "objective": "Derive possible research questions.",
       "ai_tool": {
@@ -200,7 +169,7 @@
     },
     {
       "id": "e-cec47b53",
-      "timestamp": "2026-06-14T12:54:00+00:00",
+      "timestamp": "2026-06-29T10:05:46+00:00",
       "parent_id": null,
       "objective": "Plan the M1 milestone structure.",
       "ai_tool": {
@@ -231,7 +200,7 @@
     },
     {
       "id": "e-428d8e22",
-      "timestamp": "2026-06-14T13:01:00+00:00",
+      "timestamp": "2026-06-29T10:05:46+00:00",
       "parent_id": null,
       "objective": "Explain the role of CDFG/DFG in the topic.",
       "ai_tool": {
@@ -262,7 +231,7 @@
     },
     {
       "id": "e-fe3859e8",
-      "timestamp": "2026-06-14T13:08:00+00:00",
+      "timestamp": "2026-06-29T10:05:46+00:00",
       "parent_id": null,
       "objective": "Understand ASAP and ALAP as support machinery.",
       "ai_tool": {
@@ -293,7 +262,7 @@
     },
     {
       "id": "e-45b04246",
-      "timestamp": "2026-06-14T13:15:00+00:00",
+      "timestamp": "2026-06-29T10:05:46+00:00",
       "parent_id": null,
       "objective": "Understand the meaning of force intuitively.",
       "ai_tool": {
@@ -326,7 +295,7 @@
     },
     {
       "id": "e-b598dc68",
-      "timestamp": "2026-06-14T13:22:00+00:00",
+      "timestamp": "2026-06-29T10:05:46+00:00",
       "parent_id": null,
       "objective": "Choose a small application example for the paper.",
       "ai_tool": {
@@ -359,7 +328,7 @@
     },
     {
       "id": "e-499eea6c",
-      "timestamp": "2026-06-14T13:29:00+00:00",
+      "timestamp": "2026-06-29T10:05:46+00:00",
       "parent_id": null,
       "objective": "Create a reference-management plan.",
       "ai_tool": {
@@ -391,39 +360,8 @@
       "reflection": "This helped document not only citations but why each source matters."
     },
     {
-      "id": "e-42c567b8",
-      "timestamp": "2026-06-14T13:36:00+00:00",
-      "parent_id": null,
-      "objective": "Critique an overly general AI summary.",
-      "ai_tool": {
-        "name": "ChatGPT",
-        "model": "GPT-5.5 Thinking"
-      },
-      "prompt": "Here is a general AI summary of HLS scheduling. Tell me what is missing for my specific topic FDS.",
-      "ai_output_summary": "The AI identified missing details: ASAP/ALAP mobility, distribution graphs, self/predecessor/successor forces, candidate-step scoring, and a concrete implementation of the force function.",
-      "verification": {
-        "actions": [
-          "Compared missing items with the professor elaboration list.",
-          "Confirmed that the missing items are essential to the algorithm, not optional additions."
-        ],
-        "level": "methodological-check"
-      },
-      "evaluation": {
-        "status": "accepted",
-        "issues": [],
-        "usefulness": "high"
-      },
-      "integration": {
-        "used_in_work": true,
-        "section": "M1 gap analysis",
-        "usage_type": "argument-critique",
-        "direct_text_reused": false
-      },
-      "reflection": "This interaction corrected the direction from general HLS to the specific FDS main feature."
-    },
-    {
       "id": "e-f9273957",
-      "timestamp": "2026-06-14T13:43:00+00:00",
+      "timestamp": "2026-06-29T10:05:46+00:00",
       "parent_id": null,
       "objective": "Define scope exclusions.",
       "ai_tool": {
@@ -454,7 +392,7 @@
     },
     {
       "id": "e-029d8b7d",
-      "timestamp": "2026-06-14T13:50:00+00:00",
+      "timestamp": "2026-06-29T10:05:46+00:00",
       "parent_id": null,
       "objective": "Build an initial comparison table.",
       "ai_tool": {
@@ -487,7 +425,7 @@
     },
     {
       "id": "e-db0e7a81",
-      "timestamp": "2026-06-14T13:57:00+00:00",
+      "timestamp": "2026-06-29T10:05:46+00:00",
       "parent_id": null,
       "objective": "Validate the professor-specific deliverables.",
       "ai_tool": {
@@ -518,7 +456,7 @@
     },
     {
       "id": "e-8ddec95d",
-      "timestamp": "2026-06-14T14:04:00+00:00",
+      "timestamp": "2026-06-29T10:05:46+00:00",
       "parent_id": null,
       "objective": "Translate learning explanation into scientific wording.",
       "ai_tool": {
@@ -551,7 +489,7 @@
     },
     {
       "id": "e-18a8de00",
-      "timestamp": "2026-06-14T14:11:00+00:00",
+      "timestamp": "2026-06-29T10:05:46+00:00",
       "parent_id": null,
       "objective": "Identify risks of AI hallucination.",
       "ai_tool": {
@@ -582,7 +520,7 @@
     },
     {
       "id": "e-7d1e5d0e",
-      "timestamp": "2026-06-14T14:18:00+00:00",
+      "timestamp": "2026-06-29T10:05:46+00:00",
       "parent_id": null,
       "objective": "Create a seminar-story explanation for personal understanding.",
       "ai_tool": {
@@ -615,7 +553,7 @@
     },
     {
       "id": "e-9ab722af",
-      "timestamp": "2026-06-14T14:25:00+00:00",
+      "timestamp": "2026-06-29T10:05:46+00:00",
       "parent_id": null,
       "objective": "Prepare possible professor questions.",
       "ai_tool": {
@@ -646,7 +584,7 @@
     },
     {
       "id": "e-7c1cf094",
-      "timestamp": "2026-06-14T14:32:00+00:00",
+      "timestamp": "2026-06-29T10:05:46+00:00",
       "parent_id": null,
       "objective": "Evaluate whether the topic is implementation-feasible.",
       "ai_tool": {
@@ -677,7 +615,7 @@
     },
     {
       "id": "e-83eb6ea8",
-      "timestamp": "2026-06-14T14:39:00+00:00",
+      "timestamp": "2026-06-29T10:05:46+00:00",
       "parent_id": null,
       "objective": "Summarize M1 decisions.",
       "ai_tool": {
