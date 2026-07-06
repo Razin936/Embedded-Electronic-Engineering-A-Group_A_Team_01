@@ -1,0 +1,790 @@
+\documentclass[10pt,conference]{IEEEtran}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage[section]{placeins}
+\usepackage{balance}
+
+% Images are in the same folder as this .tex file
+\graphicspath{{./}}
+\DeclareGraphicsExtensions{.png,.pdf,.jpg,.jpeg}
+
+% ---- Tighter spacing around floats ----
+\setlength{\textfloatsep}{10pt plus 2pt minus 2pt}
+\setlength{\intextsep}{8pt plus 2pt minus 2pt}
+\setlength{\floatsep}{8pt plus 2pt minus 2pt}
+\setlength{\dblfloatsep}{8pt plus 2pt minus 2pt}
+\setlength{\dbltextfloatsep}{10pt plus 2pt minus 2pt}
+
+% ---- Listing style ----
+\lstset{
+	basicstyle=\ttfamily\scriptsize,
+	breaklines=true,
+	breakatwhitespace=false,
+	columns=fullflexible,
+	frame=single,
+	framerule=0.4pt,
+	framesep=2pt,
+	xleftmargin=0pt,
+	xrightmargin=0pt,
+	linewidth=\columnwidth,
+	captionpos=b,
+	abovecaptionskip=5pt,
+	belowcaptionskip=4pt,
+	aboveskip=8pt,
+	belowskip=8pt,
+	keepspaces=true,
+	showstringspaces=false
+}
+
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+
+\title{Cross-Traffic Intersection Management for Autonomous Vehicles}
+
+\author{
+	\IEEEauthorblockN{
+		Faysal Ahammed Tonmoy,
+		MD Jubair Salehin Razin,
+		MD Rafiul Islam,
+		MD Azadul Islam
+	}
+	\IEEEauthorblockA{
+		Embedded Electronic Engineering Lab A\\
+		Team A $\cdot$ Group 01
+	}
+}
+
+\begin{document}
+	
+	\maketitle
+	
+	\begin{abstract}
+		This paper presents the design of a Road-Side-Unit (RSU) based autonomous intersection
+		controller that replaces fixed traffic signals with an on-demand grant scheme for cooperative
+		vehicles. Starting from a set of functional and non-functional requirements, the controller is
+		specified as a network of UPPAAL timed automata and formally verified against safety and
+		reachability queries, including collision freedom and deadlock freedom. The verified model is
+		then mapped into a deterministic C baseline and then into a hardware/software codesign proposal.
+		The software part keeps scheduling, messaging, and priority logic in FreeRTOS, while the
+		repeated conflict checking is proposed as a VHDL safety coprocessor. The system supports both
+		M/M/1 and M/M/2 crossing service, emergency pre-emption, V2I/I2V/V2V communication, and
+		fairness logic for avoiding starvation.
+	\end{abstract}
+	
+	\begin{IEEEkeywords}
+		RSU, hardware/software codesign, FreeRTOS, VHDL, UPPAAL, autonomous intersection, M/M/1, M/M/2,
+		emergency priority, formal verification.
+	\end{IEEEkeywords}
+	
+	\section{Introduction}
+	
+	Autonomous and cooperative vehicles do not need a fixed-cycle traffic light to coordinate an
+	intersection. A Road-Side Unit (RSU) can grant crossing permission on demand and react to the
+	actual traffic pattern. The central engineering problem is that this dynamic grant scheme must
+	remain safe: the RSU has to avoid collisions, resolve priority between emergency and normal
+	traffic, and behave predictably enough to be verified.
+	
+	This paper compares two service disciplines for the crossing zone. The first is a conservative
+	M/M/1 model where only one vehicle may occupy the intersection at a time. The second is an M/M/2
+	model where two non-conflicting vehicles may cross simultaneously. The project follows a
+	model-based path: requirements first, then UPPAAL verification, then a deterministic C baseline,
+	and finally a hardware/software codesign proposal using FreeRTOS and a VHDL safety coprocessor.
+	
+	The contribution of this paper is:
+	
+	\begin{itemize}
+		\item a functional and non-functional requirements specification for the RSU controller;
+		\item UPPAAL timed-automata models of the controller and vehicle fleet;
+		\item comparison of a single-queue and a four-queue UPPAAL model;
+		\item a quantitative comparison of waiting time and crossing throughput for M/M/1 and M/M/2 service;
+		\item a deterministic C baseline based on the verified model;
+		\item a hardware/software partitioning proposal with FreeRTOS software and VHDL conflict checking;
+		\item validation of M/M/1, M/M/2, emergency priority, and safety behaviour.
+	\end{itemize}
+	
+	\section{Related Work}
+	\label{sec:related}
+	
+	Reservation-based control of intersections for autonomous vehicles was popularised by Dresner and
+	Stone, whose Autonomous Intersection Management (AIM) scheme lets vehicles reserve space-time slots
+	from a central manager instead of obeying fixed signals~\cite{dresner}. Later cooperative
+	intersection management approaches, surveyed by Chen and Englund, extend this idea with
+	vehicle-to-infrastructure and vehicle-to-vehicle communication and with a range of scheduling and
+	priority policies~\cite{chen}. The RSU grant scheme in this paper follows the same reservation-style
+	principle: a vehicle may enter the conflict zone only once the infrastructure has granted it.
+	
+	Most AIM and cooperative-intersection studies evaluate throughput and delay through simulation, but
+	comparatively few provide a formal safety guarantee for the admission logic itself. Formal
+	verification of such timing-dependent controllers builds on the theory of timed automata introduced
+	by Alur and Dill~\cite{alur}, for which the UPPAAL model checker offers an established modelling and
+	verification environment~\cite{uppaal}. This work combines the two directions: the reservation-style
+	RSU controller is expressed as a network of UPPAAL timed automata and formally checked for collision
+	and deadlock freedom before being mapped to a deterministic C baseline and a hardware/software
+	codesign proposal. The single-queue and four-queue variants studied here therefore contribute a
+	formally verified, per-approach view of the intersection admission problem rather than a purely
+	simulation-based one.
+	
+	\section{Requirements and System Scope}
+	
+	The system is an RSU-based autonomous intersection controller. Vehicles arrive from North, South,
+	East, and West. Normal vehicles communicate with the RSU using V2I messages such as request,
+	grant, wait, and done. Emergency vehicles additionally broadcast a V2V emergency beacon to warn
+	nearby vehicles. The RSU manages waiting vehicles, checks path conflicts, grants or withholds
+	crossing permission, and prevents unsafe simultaneous movement.
+	
+	Figure~\ref{fig:usecase} shows the main actors of the system: normal vehicles, emergency vehicles,
+	the RSU controller, and a simulation or monitoring component.
+	
+	\begin{figure*}[t]
+		\centering
+		\includegraphics[trim=0 0 0 0,clip,width=\linewidth]{Use_Case.png}
+		\caption{Use-case diagram of the RSU-based autonomous intersection management system. Normal and
+			emergency vehicles interact with the RSU through V2I and V2V messages. The RSU checks requests,
+			conflicts, priority, and crossing permission, while the monitor observes queue state, grant state,
+			and waiting time.}
+		\label{fig:usecase}
+	\end{figure*}
+	
+	Table~\ref{tab:reqs} lists the main functional and non-functional requirements used in the design.
+	
+	\begin{table}[t]
+		\centering
+		\footnotesize
+		\caption{Main Functional and Non-Functional Requirements}
+		\label{tab:reqs}
+		\begin{tabularx}{\columnwidth}{@{}llY@{}}
+			\toprule
+			\textbf{ID} & \textbf{Type} & \textbf{Requirement} \\
+			\midrule
+			FR2   & Functional & Vehicle sends a V2I crossing request to the RSU \\
+			FR8   & Functional & RSU checks whether vehicle paths conflict \\
+			FR9   & Functional & RSU sends GRANT only when the vehicle can safely enter \\
+			FR15  & Functional & System supports emergency vehicle priority \\
+			NFR1  & Safety     & System is collision-free in the critical zone \\
+			NFR3  & Safety     & System is deadlock-free \\
+			NFR4  & Fairness   & System prevents starvation \\
+			NFR6  & Priority   & Emergency requests are handled with higher priority \\
+			NFR10 & Determinism& System behaves deterministically \\
+			NFR18 & Comparison & System supports M/M/1 vs.\ M/M/2 comparison \\
+			\bottomrule
+		\end{tabularx}
+	\end{table}
+	
+	\section{System Scenario and Traffic Model}
+	
+	The main street runs East--West and the side street runs North--South. The RSU controls the shared
+	conflict zone at the intersection. The verified scenario instantiates six vehicles, summarized in
+	Table~\ref{tab:fleet}. Vehicle V0 is the emergency vehicle. V1 and V2 are the main-road pair used
+	to show non-conflicting parallel crossing in M/M/2 mode. V4 and V5 form the critical conflict pair:
+	North-right and South-left.
+	
+	\begin{table*}[t]
+		\centering
+		\footnotesize
+		\caption{Vehicle Fleet as Instantiated in the Verified UPPAAL System Block}
+		\label{tab:fleet}
+		\begin{tabularx}{\textwidth}{@{}lllccY@{}}
+			\toprule
+			\textbf{Vehicle} & \textbf{Origin} & \textbf{Movement} & \textbf{Emergency} & \textbf{Period} & \textbf{Role} \\
+			\midrule
+			V0 & East  & Straight & Yes & 30 & Emergency vehicle on main street \\
+			V1 & East  & Straight & No  & 6  & Main street, M/M/2 overlap partner \\
+			V2 & West  & Straight & No  & 8  & Main street, opposite direction \\
+			V3 & North & Straight & No  & 10 & Side street, straight \\
+			V4 & North & Right    & No  & 12 & Critical right-turn vehicle \\
+			V5 & South & Left     & No  & 12 & Critical left-turn vehicle \\
+			\bottomrule
+		\end{tabularx}
+	\end{table*}
+	
+	Figure~\ref{fig:mm1mm2} shows the queueing idea. In M/M/1 mode only one vehicle may cross at a
+	time. In M/M/2 mode two vehicles may cross at the same time only if their movements do not
+	conflict.\footnote{In this project the vehicle arrivals are periodic and the crossing times are
+		fixed, so in Kendall's notation the process is closer to D/D/1 and D/D/2 (deterministic arrivals
+		and deterministic service). The labels M/M/1 and M/M/2 are used throughout in the looser sense of a
+		single-server versus a two-server crossing, following the project convention, and are not intended
+		to assert Markovian (memoryless) arrival or service distributions.}
+	
+	\begin{figure*}[t]
+		\centering
+		\includegraphics[trim=0 0 0 0,clip,width=0.88\linewidth]{M-M-1_and_M-M-2_Queueing_Model_Diagram.png}
+		\caption{M/M/1 and M/M/2 queueing model of the intersection. The RSU queue manager admits either
+			one vehicle into the critical zone in M/M/1 mode, or up to two non-conflicting vehicles in M/M/2
+			mode.}
+		\label{fig:mm1mm2}
+	\end{figure*}
+	
+	\section{System Architecture}
+	
+	Figure~\ref{fig:arch} shows the layered system architecture. Vehicles communicate with the RSU
+	using V2I and V2V messages. Inside the RSU, the communication manager, queue manager, emergency
+	handler, conflict checker, scheduler, timer manager, and grant manager together decide whether a
+	vehicle may enter the intersection.
+	
+	\begin{figure*}[t]
+		\centering
+		\includegraphics[trim=0 0 0 0,clip,width=\linewidth]{System_Architecture.png}
+		\caption{Layered system architecture. Vehicles communicate with the RSU controller over V2I and
+			V2V channels. The RSU internal blocks are mapped to the UPPAAL model, C/FreeRTOS implementation,
+			and VHDL/FPGA safety coprocessor.}
+		\label{fig:arch}
+	\end{figure*}
+	
+	The vehicle tasks V0--V5 generate requests and react to grants. The RSU controller owns the
+	admission decision. FreeRTOS queues carry V2I, I2V, and V2V messages. A shared state region holds
+	arrays such as \texttt{waiting[]}, \texttt{crossing[]}, \texttt{origin[]}, and \texttt{turn[]}.
+	The safety coprocessor reads this state and returns \texttt{safe\_to\_grant}.
+	
+	\section{Formal Model and Abstract Baseline}
+	\label{sec:formal}
+	
+	The controller was first specified in UPPAAL as a network of timed automata with two main
+	templates: \texttt{Vehicle} and \texttt{RSU\_Controller}. The vehicle automaton waits for its
+	arrival period, sends a request, waits for a grant, enters the crossing zone, and leaves after the
+	crossing time. The RSU controller receives requests, updates queues, checks emergency priority,
+	checks safety, and grants crossing permission.
+	
+	\begin{figure}[t]
+		\centering
+		\includegraphics[trim=0 0 0 0,clip,height=2.5in,keepaspectratio]{RSU_State_Machine_Diagram.png}
+		\caption{RSU controller state machine underlying the verified UPPAAL model and its deterministic
+			C mapping.}
+		\label{fig:fsm}
+	\end{figure}
+	
+	\begin{figure*}[t]
+		\centering
+		\includegraphics[trim=0 0 0 0,clip,width=0.30\linewidth]{RSU_Activity_Diagram.png}
+		\caption{Activity flow of the RSU controller from receiving vehicle requests to checking emergency
+			priority, updating queues, performing safety checks, granting access, and completing the crossing.}
+		\label{fig:activity}
+	\end{figure*}
+	
+	\subsection{UPPAAL Model Variants}
+	\label{sec:uppaal_variants}
+	
+	Two UPPAAL variants were used during modelling. The first variant uses four separate approach
+	queues, one queue for each incoming road direction. The second variant uses a simpler single
+	waiting structure for the six-vehicle intersection model. Both models keep the same safety idea:
+	the RSU may grant a vehicle only when the intersection capacity is not exceeded and no conflicting
+	vehicle is already crossing. The comparison is useful because the single-queue model is easier to
+	read and verify first, while the four-queue model is closer to the real intersection structure
+	where vehicles arrive from East, West, North, and South approaches.
+	
+	\subsubsection{Four-Queue UPPAAL Model}
+	\label{sec:uppaal_four_queue}
+	
+	The four-queue model represents one queue per approach: East, West, North, and South. Each vehicle
+	first sends a V2I request and is inserted into the queue of its origin road. The RSU then considers
+	the head vehicle of each approach queue and selects the globally best grantable candidate according
+	to emergency priority, main-street priority, turning priority, and the conflict check. The physical
+	intersection is still shared: therefore, the four queues do not mean four independent servers. In
+	M/M/1 mode only one vehicle can occupy the intersection, while in M/M/2 mode at most two
+	non-conflicting vehicles can cross together.
+	
+	\begin{figure*}[t]
+		\centering
+		\includegraphics[width=0.49\linewidth]{4_queue_1.png}
+		\hfill
+		\includegraphics[width=0.49\linewidth]{4_queue_2.png}
+		\caption{UPPAAL four-queue model. The screenshots show the vehicle/controller automata and the
+			approach-queue based RSU logic. Each road direction has its own queue, but all queues feed the
+			same shared intersection capacity.}
+		\label{fig:uppaal_4queue_model}
+	\end{figure*}
+	
+	\begin{figure*}[t]
+		\centering
+		\includegraphics[width=0.95\linewidth]{4_verifier.png}
+		\caption{Verifier result for the four-queue UPPAAL model. The checked properties include deadlock
+			freedom, collision freedom, shared capacity for M/M/1 or M/M/2, critical V4/V5 mutual exclusion,
+			emergency reachability, M/M/2 overlap reachability, and queue-bound checks for each approach.}
+		\label{fig:uppaal_4queue_verifier}
+	\end{figure*}
+	
+	\subsubsection{Single-Queue UPPAAL Model}
+	\label{sec:uppaal_single_queue}
+	
+	The single-queue model is the simpler baseline model. It keeps the same six vehicles, the same
+	emergency-priority concept, the same M/M/1 and M/M/2 service modes, and the same conflict rules.
+	However, it does not separate waiting vehicles into four road-specific queues. Instead, the
+	controller checks the waiting vehicles globally and grants the best safe candidate according to
+	priority and conflict functions. This model was useful as the first abstract verification step
+	because it focuses on the core admission decision.
+	
+	\begin{figure*}[t]
+		\centering
+		\includegraphics[width=0.49\linewidth]{1_queue.png}
+		\hfill
+		\includegraphics[width=0.49\linewidth]{1_queue_2.png}
+		\caption{UPPAAL single-queue model. The screenshots show the simpler abstract model in which the
+			RSU controls one logical waiting structure and applies emergency priority, main-street priority,
+			M/M/1 or M/M/2 capacity, and conflict checking before issuing a grant.}
+		\label{fig:uppaal_1queue_model}
+	\end{figure*}
+	
+	\begin{figure*}[t]
+		\centering
+		\includegraphics[width=0.95\linewidth]{1_queue_verifier.png}
+		\caption{Verifier result for the single-queue UPPAAL model. The checked properties show that the
+			model is deadlock-free, collision-free, respects M/M/1 or M/M/2 capacity, prevents the critical
+			V4/V5 conflict, allows the emergency vehicle to cross, and demonstrates M/M/2 overlap for two
+			compatible main-road vehicles.}
+		\label{fig:uppaal_1queue_verifier}
+	\end{figure*}
+	
+	\subsubsection{Summary and Comparison of the Two Queueing Models}
+	\label{sec:uppaal_queue_comparison}
+	
+	Two variants of the RSU-controlled intersection were modelled and verified in UPPAAL. Both share
+	the same underlying safety, priority, and conflict logic, and differ only in how waiting vehicles
+	are organised before being granted access to the intersection.
+	
+	In the single-queue model, all approaching vehicles are managed in one shared priority queue at
+	the RSU. The RSU evaluates every waiting vehicle globally and grants access to the highest-priority
+	vehicle for which intersection capacity is available. Priority follows emergency, then main road,
+	then side road, with right-turn-before-left-turn resolving conflicting manoeuvres and vehicle ID as
+	a tie-breaker. This corresponds to a single pooled queueing station, operating either in M/M/1 or
+	M/M/2 mode.
+	
+	In the four-queue model, waiting vehicles are partitioned by their approach into four separate
+	queues: East, West, North, and South. This is represented by the array \texttt{queueLen[R]} with
+	$R=4$. Service follows a head-of-line discipline: only the highest-priority vehicle of each
+	approach, namely its queue head computed by \texttt{headOfQueue}, is eligible for service. The RSU
+	then selects the globally best grantable head across the four approaches. This corresponds to a
+	per-approach controller whose four queues feed a single shared crossing.
+	
+	In both models, intersection capacity and conflict detection remain intersection-wide. At most one
+	vehicle in M/M/1 mode, or two non-conflicting vehicles in M/M/2 mode, may occupy the crossing
+	simultaneously, because the physical intersection is a single shared resource regardless of how the
+	waiting vehicles are organised. The four queues therefore share one server; they are not four
+	independent servers.
+	
+	Both models were verified against the same set of core properties, all of which hold: absence of
+	deadlock, absence of collisions, respect of the capacity bound \texttt{crossingCount}
+	$\leq$ \texttt{MM\_MODE}, mutual exclusion of the critical North-right/South-left manoeuvre, and
+	reachability of both the emergency crossing and the simultaneous crossing of two non-conflicting
+	main-road vehicles. The four-queue model additionally satisfies per-approach queue-length bounds,
+	confirming that each of the four queues behaves correctly.
+	
+	For the intersection-level safety and priority properties evaluated here, the two models are
+	behaviourally equivalent. The four-queue model differs only by enforcing head-of-line ordering
+	within each approach and by making the queue structure explicit. The single-queue model yields a
+	smaller state space and represents the intersection as one pooled resource, whereas the four-queue
+	model more closely mirrors a realistic per-approach or per-lane controller at the cost of a
+	slightly larger state space.
+	
+	\begin{table*}[t]
+		\centering
+		\scriptsize
+		\caption{Comparison of the Single-Queue and Four-Queue UPPAAL Models}
+		\label{tab:uppaal_queue_comparison}
+		\begin{tabularx}{\textwidth}{@{}lYY@{}}
+			\toprule
+			\textbf{Aspect} & \textbf{Single-queue model} & \textbf{Four-queue model} \\
+			\midrule
+			Queue structure
+			& One shared priority queue
+			& Four per-approach queues, represented by \texttt{queueLen[R]} with $R=4$ \\
+			
+			Service discipline
+			& Global priority selection over all waiting vehicles
+			& Per-approach head-of-line selection, then global arbitration between queue heads \\
+			
+			Priority rules
+			& Emergency $>$ main road $>$ side road; right-turn-before-left-turn; vehicle ID tie-break
+			& Identical priority rules \\
+			
+			Intersection capacity
+			& Shared capacity; \texttt{crossingCount} $\leq$ \texttt{MM\_MODE}
+			& Identical shared capacity; capacity is not assigned per queue \\
+			
+			Conflict handling
+			& Intersection-wide conflict check
+			& Identical intersection-wide conflict check \\
+			
+			Core safety and reachability properties
+			& All core properties hold
+			& All core properties hold, plus per-approach queue-bound checks \\
+			
+			State space
+			& Smaller and simpler
+			& Slightly larger because queue state is explicit for four approaches \\
+			
+			Represents
+			& One pooled intersection resource
+			& Per-approach or per-lane controller feeding one shared crossing \\
+			\bottomrule
+		\end{tabularx}
+	\end{table*}
+	
+	\FloatBarrier
+	
+	The model was checked against the main safety and reachability queries listed in
+	Table~\ref{tab:props} together with their run-time counterpart in the Week~3 deterministic C
+	implementation. Because the UPPAAL declaration block is already written in a C-like action
+	language, the mapping from model to code is structural. Every global array, helper function,
+	conflict function, and grant function is copied under the same name. The vehicle locations become
+	a per-vehicle state variable with a software clock, and the model's non-deterministic selection
+	over grantable vehicles is resolved deterministically by repeatedly granting the best-priority
+	grantable candidate until none remains.
+	
+	\begin{table}[t]
+		\centering
+		\scriptsize
+		\caption{Model Properties and Run-Time Checks}
+		\label{tab:props}
+		\begin{tabularx}{\columnwidth}{@{}lY@{}}
+			\toprule
+			\textbf{Property} & \textbf{Query / run-time check} \\
+			\midrule
+			Deadlock freedom & \texttt{A[] not deadlock} -- simulation never stalls \\
+			Collision freedom & \texttt{A[] noCollision()} -- \texttt{assert()} every tick \\
+			Capacity & $\mathit{crossingCount} \leq \mathit{MM\_MODE}$ -- counter assertion \\
+			Critical conflict V4/V5 & \texttt{A[] not(crossing[4]\&\&crossing[5])} -- assertion every tick \\
+			Emergency reachability & \texttt{E<> crossing[0]} -- V0 grant observed \\
+			M/M/2 overlap & \texttt{E<> crossing[1]\&\&crossing[2]} -- V1 and V2 together, \texttt{cross=2} \\
+			\bottomrule
+		\end{tabularx}
+	\end{table}
+	
+	\section{HW/SW Codesign Partition}
+	\label{sec:partition}
+	
+	Because the UPPAAL model and the C baseline already agree, the codesign partition is
+	behaviour-preserving by construction. It changes where a function runs, not the verified safety
+	contract. The partitioning rule is simple: regular, parallel, and timing-critical work moves to
+	hardware, while irregular, control-heavy, and frequently revised work stays in software.
+	
+	The scheduler loop, V2I/I2V/V2V message handling, state updates, emergency handling, and priority
+	logic stay in software. Conflict checking is different: \texttt{conflict(a,b)},
+	\texttt{conflictsWithCrossing(i)}, and \texttt{noCollision()} are pure functions of the current
+	state. Therefore, they are good candidates for hardware implementation. In hardware, all pairwise
+	conflict checks can evaluate in parallel and return a bounded-time \texttt{safe\_to\_grant} result.
+	
+	\begin{figure*}[t]
+		\centering
+		\includegraphics[trim=0 0 0 0,clip,width=0.70\linewidth]{HW-SW_proposal_diagram.png}
+		\caption{Proposed hardware/software codesign partition. The FreeRTOS software partition keeps
+			vehicle tasks, RSU control logic, queues, priority, and fairness policy. The VHDL hardware
+			partition implements the combinational conflict and safety coprocessor.}
+		\label{fig:partition}
+	\end{figure*}
+	
+	\begin{table}[t]
+		\centering
+		\scriptsize
+		\caption{HW/SW Partition Mapping}
+		\label{tab:mapping}
+		\begin{tabularx}{\columnwidth}{@{}lY@{}}
+			\toprule
+			\textbf{Function / component} & \textbf{Reason} \\
+			\midrule
+			Vehicle FSM in software & Task-based behaviour and per-vehicle timers \\
+			RSU scheduler in software & Sequential and branch-heavy control \\
+			Request, grant, and leave queues in software & V2I, I2V, and V2V message handling \\
+			Emergency handling in software & Policy decision and I2V yield control \\
+			Priority and aging in software & Stateful and most frequently revised \\
+			\texttt{conflict(a,b)} in hardware & Static rule; pairwise checks can run in parallel \\
+			\texttt{conflictsWithCrossing(i)} in hardware & Candidate conflict scan becomes a vector check \\
+			\texttt{noCollision()} in hardware and software & Safety monitor and assertion check \\
+			\texttt{safe\_to\_grant(i)} from hardware to software & Capacity and conflict decision in one bit \\
+			\bottomrule
+		\end{tabularx}
+	\end{table}
+	
+	\section{FreeRTOS Software Architecture}
+	\label{sec:freertos}
+	
+	The software side is organized as a FreeRTOS task set. One vehicle task is used for each vehicle
+	V0--V5. The RSU controller task reads requests, applies emergency priority, checks the hardware
+	safety output, and sends grant or wait messages. FreeRTOS queues carry request, grant, and leave
+	messages.
+	
+	\begin{figure*}[t]
+		\centering
+		\includegraphics[trim=0 0 0 0,clip,width=0.75\linewidth]{Communication_Diagram.png}
+		\caption{V2I and V2V communication model. Vehicles send request and done messages to the RSU.
+			The RSU replies with grant, wait, or deny messages. Emergency vehicles additionally broadcast a
+			V2V beacon that triggers yield behaviour.}
+		\label{fig:comm}
+	\end{figure*}
+	
+	\begin{table}[t]
+		\centering
+		\footnotesize
+		\caption{FreeRTOS Software Components}
+		\label{tab:freertos}
+		\begin{tabularx}{\columnwidth}{@{}llY@{}}
+			\toprule
+			\textbf{Component} & \textbf{Implementation} & \textbf{Purpose} \\
+			\midrule
+			Vehicle task V0--V5 & FreeRTOS task & Request, wait, cross, leave \\
+			RSU task & FreeRTOS task & Priority scan and grant decision \\
+			Request queue & FreeRTOS queue & V2I request and emergency request messages \\
+			Grant queue & FreeRTOS queue & I2V grant messages \\
+			Leave queue & FreeRTOS queue & Vehicle completion messages \\
+			Yield broadcast & Task notification & Emergency yield warning \\
+			Aging logic & Software counter & Bounded waiting for low-priority movements \\
+			HW interface & \texttt{hw\_safe\_to\_grant(i)} & Register-mapped safety query \\
+			\bottomrule
+		\end{tabularx}
+	\end{table}
+	
+	\section{Emergency and Fairness Handling}
+	\label{sec:fairness}
+	
+	While the emergency vehicle V0 is waiting, the controller blocks new grants to normal vehicles and
+	broadcasts an I2V yield message. V0 is granted only when the intersection becomes safe. Emergency
+	priority therefore changes the order of service, but it does not bypass the safety check.
+	
+	\begin{figure*}[t]
+		\centering
+		\includegraphics[trim=0 0 0 0,clip,width=0.78\linewidth]{Emergency_Vehicle_Sequence_Diagram.png}
+		\caption{Sequence of an emergency pre-emption. The emergency request and V2V beacon activate
+			emergency mode, normal traffic yields, the RSU checks safety, grants the emergency vehicle, and
+			then returns to normal scheduling.}
+		\label{fig:emerg}
+	\end{figure*}
+	
+	The strict-priority baseline can starve the lowest-priority movement, especially V5. To reduce
+	this risk, an aging counter can be used. The longer a vehicle waits, the more its effective
+	priority improves. This fairness extension remains in software because it is stateful and
+	policy-dependent. It only changes which safe vehicle is selected; it never overrides the hardware
+	safety decision.
+	
+	\section{Hardware Safety Coprocessor and Interface}
+	
+	The hardware side of the design is a combinational conflict and safety coprocessor. It receives
+	the vehicle state, including origin, turn direction, emergency flag, and crossing flag. It checks
+	whether any pair of currently crossing vehicles conflicts and whether a candidate vehicle is safe
+	to grant.
+	
+	\begin{table}[t]
+		\centering
+		\scriptsize
+		\caption{HW/SW Interface Registers}
+		\label{tab:regs}
+		\begin{tabularx}{\columnwidth}{@{}lY@{}}
+			\toprule
+			\textbf{Register} & \textbf{Meaning} \\
+			\midrule
+			\texttt{STATE\_VEH[i]} W, 6b & \texttt{origin}(2), \texttt{turn}(2), \texttt{emergency}(1), \texttt{crossing}(1) \\
+			\texttt{MODE} W, 1b & 0 = M/M/1, 1 = M/M/2 \\
+			\texttt{CAND} W, 3b & Candidate vehicle ID under test \\
+			\texttt{CTRL} W, 1b & Start or latch inputs \\
+			\texttt{ST\_SAFE} R, 1b & \texttt{safe\_to\_grant(CAND)} \\
+			\texttt{ST\_NOCOL} R, 1b & \texttt{noCollision()} over the fleet \\
+			\texttt{ST\_CWC} R, $N$b & \texttt{conflictsWithCrossing[i]} vector \\
+			\texttt{ST\_ALARM} R/IRQ, 1b & Latched collision alarm \\
+			\bottomrule
+		\end{tabularx}
+	\end{table}
+	
+	\section{Test and Validation Methodology}
+	
+	Verification proceeds bottom-up. First, the UPPAAL model is checked. Then the deterministic C
+	baseline is executed with run-time assertions. Finally, the FreeRTOS and hardware components are
+	tested against the same safety and reachability expectations.
+	
+	\begin{table}[t]
+		\centering
+		\scriptsize
+		\caption{Test Cases and Status}
+		\label{tab:tests}
+		\begin{tabularx}{\columnwidth}{@{}lYl@{}}
+			\toprule
+			\textbf{ID} & \textbf{Test case / expected result} & \textbf{Status} \\
+			\midrule
+			T1 & M/M/1: \texttt{crossingCount} never $>1$ & Pass C \\
+			T2 & M/M/2: V1 and V2 may cross together & Pass C \\
+			T3 & Emergency V0 gets highest priority & Pass C \\
+			T4 & I2V yield broadcast appears & Pass C \\
+			T5 & V4/V5 never granted together & Pass C + UPPAAL \\
+			T6 & Fairness: V5 eventually granted & Planned \\
+			T7 & No collision-assertion failure & Pass C \\
+			T8 & No hardware collision alarm appears & Planned \\
+			\bottomrule
+		\end{tabularx}
+	\end{table}
+	
+	\section{Results and Discussion}
+	\label{sec:results}
+	
+	\subsection{M/M/1 Result}
+	
+	In M/M/1 mode, only one vehicle is granted at a time. The value of \texttt{crossingCount} never
+	reaches 2, which confirms single-server behaviour.
+	
+	\begin{lstlisting}[caption={M/M/1 log excerpt.},label={fig:mm1log}]
+		[t= 6] RSU GRANT -> V1 (EAST STRAIGHT) cross=1
+		[t= 8] V2 REQ (WEST STRAIGHT) -> RSU  <-- queued
+		[t=11] V1 DONE -> Idle cross=0
+		[t=12] RSU GRANT -> V2 (WEST STRAIGHT) cross=1
+	\end{lstlisting}
+	
+	\subsection{M/M/2 Result}
+	
+	In M/M/2 mode, V1 and V2 can be granted together because their movements are non-conflicting.
+	The value of \texttt{crossingCount} reaches 2, proving that the second service slot is used safely.
+	
+	\begin{lstlisting}[caption={M/M/2 log excerpt.},label={fig:mm2log}]
+		[t= 6] V1 REQ (EAST STRAIGHT) -> RSU
+		[t= 6] RSU GRANT -> V1 (EAST STRAIGHT) cross=1
+		[t= 8] V2 REQ (WEST STRAIGHT) -> RSU
+		[t= 8] RSU GRANT -> V2 (WEST STRAIGHT) cross=2  <-- M/M/2
+		[t=11] V1 DONE -> Idle cross=1
+		[t=12] V4 REQ (NORTH RIGHT) -> RSU
+		[t=12] V5 REQ (SOUTH LEFT) -> RSU
+		[t=14] RSU GRANT -> V4 (NORTH RIGHT) cross=1   <-- V4 only
+	\end{lstlisting}
+	
+	\subsection{Quantitative Comparison of M/M/1 and M/M/2}
+	\label{sec:quant}
+	
+	To quantify the benefit of the second service slot, waiting and crossing-completion times were
+	extracted directly from the deterministic run logs of Listings~\ref{fig:mm1log}
+	and~\ref{fig:mm2log}, using the arrival periods and crossing times of Table~\ref{tab:fleet}. All
+	values are given in the abstract time units of the model. Table~\ref{tab:quant} reports the results
+	for the non-conflicting main-road pair V1 and V2, which is the pair eligible for parallel crossing
+	in M/M/2 mode. The waiting time of a vehicle is measured from its request to its grant, and the
+	makespan is the time at which the last of the two vehicles finishes crossing.
+	
+	\begin{table}[t]
+		\centering
+		\footnotesize
+		\caption{Quantitative Comparison of M/M/1 and M/M/2 for the Main-Road Pair (V1, V2), in Model Time Units}
+		\label{tab:quant}
+		\begin{tabularx}{\columnwidth}{@{}lYY@{}}
+			\toprule
+			\textbf{Metric} & \textbf{M/M/1} & \textbf{M/M/2} \\
+			\midrule
+			V1 waiting time & 0 & 0 \\
+			V2 waiting time & 4 & 0 \\
+			Mean waiting time (V1, V2) & 2.0 & 0.0 \\
+			Max concurrent crossings & 1 & 2 \\
+			Makespan to clear V1 and V2 & 17 & 13 \\
+			\bottomrule
+		\end{tabularx}
+	\end{table}
+	
+	In M/M/1 mode, V2 must wait for V1 to leave the intersection before it can be granted, giving a
+	mean waiting time of 2.0 time units for the pair and a makespan of 17. In M/M/2 mode, V1 and V2 are
+	granted in parallel because their straight movements from opposite approaches do not conflict; both
+	waiting times fall to zero and the pair clears at $t=13$, a reduction of 4 time units (about
+	$24\%$) in makespan. This quantifies the throughput benefit of the pooled second server. Crucially,
+	the improvement does not weaken safety: in the same M/M/2 run the critical pair V4 and V5 is still
+	correctly serialised, with V4 granted alone at $t=14$ (waiting time 2) and V5 held back, so the
+	second slot is used only for non-conflicting movements.
+	
+	\subsection{Emergency Result}
+	
+	V0 is queued with highest priority. The RSU broadcasts an I2V yield message, waits until the
+	intersection is safe, and then grants V0 exclusively. This confirms emergency pre-emption without
+	violating the conflict rules.
+	
+	\subsection{Safety Result}
+	
+	Across the tested runs, the collision condition never fails. The model keeps
+	\texttt{crossingCount} within the selected mode and never grants the conflicting V4/V5 pair
+	together.
+	
+	\begin{table}[t]
+		\centering
+		\scriptsize
+		\caption{Final Validation Summary}
+		\label{tab:summary}
+		\begin{tabularx}{\columnwidth}{@{}lYl@{}}
+			\toprule
+			\textbf{Feature} & \textbf{Evidence} & \textbf{Status} \\
+			\midrule
+			M/M/1 serial crossing & \texttt{crossingCount} $\leq 1$ & Pass \\
+			M/M/2 parallel crossing & V1 and V2 together & Pass \\
+			Emergency priority & V0 exclusive grant & Pass \\
+			I2V yield broadcast & Observed during emergency request & Pass \\
+			V4/V5 mutual exclusion & 0 joint-crossing violations & Pass \\
+			Software safety assertions & 0 failures & Pass \\
+			Fairness with aging & Starvation fix proposed & Planned \\
+			HW collision alarm & Proposed hardware monitor & Planned \\
+			\bottomrule
+		\end{tabularx}
+	\end{table}
+	
+	\section{Limitations and Future Work}
+	\label{sec:limitations}
+	
+	The current results are based on the deterministic C baseline and UPPAAL verification. The
+	quantitative comparison is drawn from a single illustrative scenario rather than a statistical
+	sweep of arrival rates, so the reported waiting times and makespan should be read as indicative of
+	the M/M/2 benefit rather than as steady-state averages. The FreeRTOS implementation and VHDL safety
+	coprocessor are planned as the next implementation step. Future work includes hardware simulation
+	in ModelSim, end-to-end timing measurement, a statistical evaluation of waiting time and throughput
+	over randomised arrival patterns, fairness verification with aging, and deployment on FPGA or PCB
+	hardware.
+	
+	\section{Conclusion}
+	
+	This paper presented an RSU-based autonomous intersection controller from requirements to UPPAAL
+	verification, C baseline implementation, and hardware/software codesign proposal. The UPPAAL model
+	shows that the system is deadlock-free, collision-free, respects M/M/1 and M/M/2 capacity, supports
+	emergency priority, and allows safe parallel crossing for non-conflicting movements. A quantitative
+	comparison of the two service modes shows that M/M/2 removes the waiting time of the non-conflicting
+	main-road pair and shortens the time to clear it by about $24\%$ in the studied scenario, without
+	weakening the conflict guarantees. The comparison between the single-queue and four-queue models
+	shows that both preserve the same safety behaviour, while the four-queue model represents a more
+	realistic per-approach controller.
+	
+	\section*{AI Usage Disclosure}
+	
+	Portions of the requirements interpretation, UPPAAL comparison, HW/SW partitioning discussion,
+	interface design, quantitative analysis, and verification planning in this paper were developed
+	with AI assistance.
+	
+	\balance
+	
+	\begin{thebibliography}{9}
+		
+		\bibitem{req}
+		Team~A -- Group~01, ``Autonomous Intersection RSU Controller: Functional and Non-Functional
+		Requirements,'' internal project document, Hochschule Hamm-Lippstadt, 2026.
+		
+		\bibitem{uppaalmodel}
+		Team~A -- Group~01, ``RSU M/M/1 and M/M/2 priority emergency intersection: UPPAAL Timed-Automata
+		Model,'' internal project artefact, Hochschule Hamm-Lippstadt, 2026.
+		
+		\bibitem{week3}
+		Team~A -- Group~01, ``Cross-Traffic Intersection Management for Autonomous Vehicles -- Week 3:
+		First Abstract Implementation,'' internal seminar report, Hochschule Hamm-Lippstadt, 2026.
+		
+		\bibitem{week4}
+		Team~A -- Group~01, ``Hardware/Software Codesign Proposal: Cross-Traffic Intersection Management
+		for Autonomous Vehicles,'' Week 4 milestone report, Hochschule Hamm-Lippstadt, 2026.
+		
+		\bibitem{freertos}
+		Real Time Engineers Ltd., \emph{The FreeRTOS Reference Manual}, accessed 2026.
+		
+		\bibitem{dresner}
+		K.~Dresner and P.~Stone, ``A Multiagent Approach to Autonomous Intersection Management,''
+		\emph{Journal of Artificial Intelligence Research}, vol.~31, pp.~591--656, 2008.
+		
+		\bibitem{chen}
+		L.~Chen and C.~Englund, ``Cooperative Intersection Management: A Survey,'' \emph{IEEE
+			Transactions on Intelligent Transportation Systems}, vol.~17, no.~2, pp.~570--586, 2016.
+		
+		\bibitem{alur}
+		R.~Alur and D.~L.~Dill, ``A Theory of Timed Automata,'' \emph{Theoretical Computer Science},
+		vol.~126, no.~2, pp.~183--235, 1994.
+		
+		\bibitem{uppaal}
+		G.~Behrmann, A.~David, and K.~G.~Larsen, ``A Tutorial on Uppaal,'' in \emph{Formal Methods for
+			the Design of Real-Time Systems (SFM-RT 2004)}, LNCS vol.~3185, Springer, 2004, pp.~200--236.
+		
+	\end{thebibliography}
+	
+\end{document}
