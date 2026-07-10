@@ -1,0 +1,337 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,automata}
+\usepackage{booktabs}
+
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+\begin{document}
+
+\title{List-Based Scheduling for High-Level Synthesis}
+
+\author{\IEEEauthorblockN{Md Azadul Islam}
+\IEEEauthorblockA{\textit{Hochschule Hamm-Lippstadt University of Applied Science} \\
+Lippstadt, Germany \\
+md-azadul.islam@stud.hshl.de}
+}
+
+\maketitle
+
+\begin{abstract}
+High-Level Synthesis (HLS) translates an algorithmic description into a register-transfer level (RTL) hardware implementation. One of the central HLS tasks is scheduling, in which operations are assigned to control steps while respecting data dependencies and resource constraints. This paper studies List-Based Scheduling as a practical heuristic for resource-constrained scheduling. A small arithmetic example is first analyzed with the unconstrained ASAP and ALAP schedules to derive operation mobilities and a latency lower bound, then implemented as a C++ list scheduler, and finally realized as two VHDL RTL designs. The experiments compare a design with one arithmetic logic unit (ALU) and one multiplier against a design with two ALUs and one multiplier. The C++ scheduler reports a latency of 4 cycles for the one-ALU design and 3 cycles for the two-ALU design; the mobility analysis shows that the 3-cycle result matches the critical-path lower bound and is therefore optimal for this graph. QuestaSim verification confirms that both RTL designs compute the correct result, $z = 46$, while the two-ALU design finishes earlier. An analytic resource comparison quantifies the additional datapath hardware required by the faster design. The results demonstrate the typical HLS tradeoff between hardware resources and latency.
+\end{abstract}
+
+\begin{IEEEkeywords}
+High-Level Synthesis, List-Based Scheduling, ASAP, ALAP, mobility, RTL, VHDL, resource constraints, latency, C++
+\end{IEEEkeywords}
+
+\section{Introduction}
+Modern embedded and digital systems often require a compromise between execution speed, hardware area, and design cost. High-Level Synthesis (HLS) supports this process by translating an algorithmic description, for example written in C or C++, into an RTL-level hardware implementation. Teich and Haubelt describe synthesis as an automated design process and present allocation, scheduling, and binding as fundamental synthesis tasks \cite{teich2007}. De~Micheli likewise treats scheduling and binding as the central problems of architectural-level synthesis \cite{demicheli1994}. Surveys of the field trace how these ideas developed from early behavioral-synthesis research \cite{mcfarland1990} into the commercial and academic HLS tools that are used for FPGA and ASIC design today \cite{coussy2009,cong2011,nane2016}.
+
+This paper focuses on scheduling. Scheduling decides in which clock cycle, or control step, each operation is executed. If hardware resources are limited, independent operations may not be able to run in the same cycle even though their data dependencies would allow it. List-Based Scheduling addresses this by maintaining a list of ready operations and selecting operations according to a priority rule while checking resource availability \cite{demicheli1994,adam1974}.
+
+The contribution of this work is an educational implementation study that connects three abstraction levels of the same problem. First, the example data-flow graph is analyzed analytically: the unconstrained ASAP and ALAP schedules are computed, the mobility of every operation is derived, and the critical path is used as a latency lower bound. Second, a C++ program implements the list scheduler and produces schedules for two resource configurations. Third, the same schedules are realized in VHDL as finite-state-machine-plus-datapath (FSMD) designs and verified in QuestaSim. This connects the HLS scheduling concept to concrete RTL behavior and makes the resource--latency tradeoff directly observable in simulation.
+
+The remainder of the paper is organized as follows. Section~II reviews the background and related scheduling algorithms. Section~III introduces the mathematical model of the example. Section~IV derives the ASAP/ALAP bounds and mobilities. Section~V presents the list-scheduling algorithm and Section~VI its C++ implementation. Section~VII describes the VHDL realization and simulation. Section~VIII discusses the results, Section~IX states limitations and future work, and Section~X concludes.
+
+\section{Background and Related Work}
+In HLS, an algorithm is mapped to hardware components such as ALUs, multipliers, registers, multiplexers, and a control unit. Three synthesis terms are especially relevant \cite{teich2007,demicheli1994}:
+\begin{itemize}
+\item \emph{Allocation} decides the available hardware resources, such as one ALU or two ALUs.
+\item \emph{Scheduling} assigns operations to clock cycles or control steps.
+\item \emph{Binding} maps operations to concrete hardware units.
+\end{itemize}
+Teich and Haubelt discuss these synthesis tasks independently of the final implementation type and describe operations such as additions and multiplications as tasks that are mapped to resources such as ALUs and multipliers \cite{teich2007}. This is directly related to the example in this paper, where addition and multiplication operations are scheduled under ALU and multiplier constraints.
+
+\subsection{The Scheduling Landscape}
+Scheduling algorithms are commonly divided into unconstrained and constrained variants \cite{demicheli1994}. In the \emph{unconstrained} case, only data dependencies limit the schedule. The \emph{as-soon-as-possible} (ASAP) algorithm schedules each operation in the earliest cycle permitted by its predecessors and yields the minimum-latency schedule; the \emph{as-late-as-possible} (ALAP) algorithm schedules each operation in the latest cycle that still meets a given latency bound. The difference between the ALAP and ASAP start times of an operation is called its \emph{mobility} (or slack) and quantifies the scheduling freedom of that operation. Operations with zero mobility lie on the critical path.
+
+For \emph{resource-constrained} scheduling, exact and heuristic methods exist. The problem can be formulated as an integer linear program (ILP) whose solution is provably optimal \cite{hwang1991,demicheli1994}; however, resource-constrained scheduling is intractable in general, so ILP formulations scale poorly with problem size. Hu's algorithm solves a restricted special case (single operation type, unit delays, tree-structured graphs) exactly in polynomial time \cite{demicheli1994}. For general graphs, heuristics dominate in practice. List scheduling, studied since the early work on multiprocessor schedules \cite{adam1974}, processes the operations cycle by cycle using a priority list and is fast and simple. Force-directed scheduling by Paulin and Knight instead balances the expected resource usage across control steps to minimize resources under a latency constraint \cite{paulin1989}. De~Micheli places list scheduling among the heuristic algorithms for resource-constrained scheduling and notes that mobility-based priorities are a common choice \cite{demicheli1994}.
+
+\subsection{Modern HLS Tools}
+The algorithmic ideas above underpin modern HLS flows. Surveys by Coussy et al. \cite{coussy2009} and Cong et al. \cite{cong2011} describe how commercial tools compile C/C++ specifications into RTL through compilation, allocation, scheduling, and binding steps, and Nane et al. evaluate a broad set of academic and commercial FPGA HLS tools \cite{nane2016}. Although production tools add many refinements (operation chaining, pipelining, memory optimization), the scheduling core of several tools is still a list-based heuristic, which motivates studying it on a small, fully traceable example.
+
+\section{Mathematical Model of the Example}
+The arithmetic expression used in the experiment is
+\begin{equation}
+z = (a+b)(c+d) + e. \label{eq:expr}
+\end{equation}
+It is decomposed into four operations:
+\begin{align}
+v_1 &= a + b, \label{eq:v1}\\
+v_2 &= c + d, \label{eq:v2}\\
+v_3 &= v_1 \times v_2, \label{eq:v3}\\
+v_4 &= v_3 + e. \label{eq:v4}
+\end{align}
+The operation graph is represented as $G=(V,E)$, where $V$ is the set of operations and $E$ is the set of dependency edges:
+\begin{align}
+V &= \{v_1, v_2, v_3, v_4\},\\
+E &= \{(v_1,v_3), (v_2,v_3), (v_3,v_4)\}.
+\end{align}
+The edges mean that $v_3$ cannot start before both $v_1$ and $v_2$ finish, and $v_4$ cannot start before $v_3$ finishes. Fig.~\ref{fig:dfg} shows the resulting data-flow graph. If $s(v_i)$ denotes the start cycle of operation $v_i$ and $d(v_i)$ its duration, the dependency constraint is
+\begin{equation}
+s(v_j) \ge s(v_i) + d(v_i), \quad \forall (v_i,v_j)\in E. \label{eq:dep}
+\end{equation}
+In this study all operations have unit duration, $d(v_i)=1$. The resource constraint states that the number of operations of a certain type scheduled in a cycle must not exceed the number of allocated resources of that type. With $a_{\mathrm{ALU}}$ allocated ALUs and $a_{\mathrm{MUL}}$ multipliers,
+\begin{equation}
+\bigl|\{\,v_i : s(v_i)=t \ \wedge\ \mathrm{type}(v_i)=r\,\}\bigr| \le a_r \quad \forall t, r. \label{eq:res}
+\end{equation}
+For example, with one ALU, the two additions $v_1$ and $v_2$ cannot execute in the same cycle.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[
+  op/.style={circle, draw, minimum size=8mm, inner sep=1pt, font=\small},
+  inp/.style={font=\scriptsize},
+  >={Stealth[length=2mm]}, node distance=9mm and 11mm]
+\node[op] (v1) {$v_1$};
+\node[op, right=16mm of v1] (v2) {$v_2$};
+\node[op, below right=9mm and 8mm of v1] (v3) {$v_3$};
+\node[op, below=9mm of v3] (v4) {$v_4$};
+\node[inp, above left=4mm and 1mm of v1] (a) {$a$};
+\node[inp, above right=4mm and 1mm of v1] (b) {$b$};
+\node[inp, above left=4mm and 1mm of v2] (c) {$c$};
+\node[inp, above right=4mm and 1mm of v2] (d) {$d$};
+\node[inp, left=8mm of v4] (e) {$e$};
+\node[inp, below=4mm of v4] (z) {$z$};
+\draw[->] (a) -- (v1); \draw[->] (b) -- (v1);
+\draw[->] (c) -- (v2); \draw[->] (d) -- (v2);
+\draw[->] (v1) -- (v3); \draw[->] (v2) -- (v3);
+\draw[->] (v3) -- (v4); \draw[->] (e) -- (v4);
+\draw[->] (v4) -- (z);
+\node[right=2mm of v1, font=\scriptsize, text=gray] {$+$ (ALU)};
+\node[right=2mm of v2, font=\scriptsize, text=gray] {$+$ (ALU)};
+\node[right=2mm of v3, font=\scriptsize, text=gray] {$\times$ (MUL)};
+\node[right=2mm of v4, font=\scriptsize, text=gray] {$+$ (ALU)};
+\end{tikzpicture}
+\caption{Data-flow graph of the example $z=(a+b)(c+d)+e$. The critical path $v_1 \rightarrow v_3 \rightarrow v_4$ (equivalently $v_2 \rightarrow v_3 \rightarrow v_4$) has length 3.}
+\label{fig:dfg}
+\end{figure}
+
+\section{Unconstrained Bounds: ASAP, ALAP, and Mobility}
+Before applying the resource-constrained heuristic, it is instructive to compute the unconstrained bounds, since they establish the best latency any scheduler can achieve for this graph \cite{demicheli1994}.
+
+\emph{ASAP schedule.} Operations $v_1$ and $v_2$ have no predecessors and start in cycle 1. Operation $v_3$ depends on both and starts in cycle 2. Operation $v_4$ depends on $v_3$ and starts in cycle 3. The ASAP latency is therefore
+\begin{equation}
+L_{\min} = 3 \text{ cycles},
+\end{equation}
+determined by the critical path $v_1 \rightarrow v_3 \rightarrow v_4$.
+
+\emph{ALAP schedule.} With the latency bound $\bar L = L_{\min} = 3$, the ALAP schedule is computed backwards from the output: $v_4$ must start in cycle 3, $v_3$ in cycle 2, and both $v_1$ and $v_2$ in cycle 1.
+
+\emph{Mobility.} The mobility of each operation is $\mu(v_i) = s^{\mathrm{ALAP}}(v_i) - s^{\mathrm{ASAP}}(v_i)$. Table~\ref{tab:mobility} summarizes the result: for $\bar L = 3$ every operation has zero mobility, i.e., \emph{all four operations lie on a critical path} and there is no scheduling freedom. Two consequences follow. First, any schedule achieving 3 cycles must execute $v_1$ and $v_2$ in parallel in cycle~1, which requires at least two ALUs; with a single ALU the latency necessarily exceeds the bound and the best possible latency becomes 4 cycles. Second, the 3-cycle schedule found later by the list scheduler for the two-ALU configuration matches $L_{\min}$ and is therefore provably optimal for this graph, even though list scheduling is only a heuristic in general.
+
+\begin{table}[t]
+\caption{ASAP and ALAP start times and mobility ($\bar L = 3$).}
+\label{tab:mobility}
+\centering
+\begin{tabular}{ccccc}
+\toprule
+Operation & Type & $s^{\mathrm{ASAP}}$ & $s^{\mathrm{ALAP}}$ & Mobility $\mu$ \\
+\midrule
+$v_1 = a+b$        & ALU & 1 & 1 & 0 \\
+$v_2 = c+d$        & ALU & 1 & 1 & 0 \\
+$v_3 = v_1 \times v_2$ & MUL & 2 & 2 & 0 \\
+$v_4 = v_3 + e$    & ALU & 3 & 3 & 0 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{List-Based Scheduling Algorithm}
+List-Based Scheduling is a constructive heuristic. It maintains a ready list of operations whose predecessor operations have already been completed. The ready operations are sorted by priority, and the scheduler assigns operations to the current cycle if the required resource is available. De~Micheli places list scheduling among heuristic scheduling algorithms for resource-constrained scheduling \cite{demicheli1994}. Teich and Haubelt also present list scheduling in the context of resource-constrained scheduling \cite{teich2007}. Classic priority functions include mobility (operations with less slack first) and path length to the sink \cite{demicheli1994,adam1974}.
+
+The simplified algorithm implemented in this work is:
+\begin{figure}[h]
+\centering
+\fbox{\parbox{0.94\columnwidth}{\footnotesize\ttfamily
+Input: operation graph G(V,E), resource limits\\
+Output: start cycle for every operation\\[2pt]
+while not all operations are scheduled:\\
+\hspace*{1em}ready\_list = operations whose dependencies\\
+\hspace*{2.5em}are finished\\
+\hspace*{1em}sort ready\_list by priority\\
+\hspace*{1em}for each operation in ready\_list:\\
+\hspace*{2em}if required resource is available:\\
+\hspace*{3em}schedule operation in current cycle\\
+\hspace*{3em}mark resource as used\\
+\hspace*{1em}move to next cycle
+}}
+\end{figure}
+
+Each operation is visited at most once per cycle and the number of cycles is bounded by the sequential latency, so the run time is polynomial in the number of operations; with a sorted ready list the complexity is $O(|V|^2 \log |V|)$ in the worst case for unit-delay graphs. The method is fast and practical for educational and many engineering cases. However, it is a heuristic and therefore does not guarantee a globally optimal schedule for every possible problem; graphs exist for which a greedy priority choice leads to suboptimal latency \cite{demicheli1994}. For the graph in Fig.~\ref{fig:dfg} the mobility analysis of Section~IV shows that the heuristic result is in fact optimal.
+
+\section{C++ Implementation}
+The C++ implementation represents each operation using a structure containing its name, type, duration, priority, dependencies, and scheduled start cycle. The function \texttt{dependenciesFinished()} checks whether all predecessors of an operation have already completed. In every cycle, the program builds the ready list, sorts it by priority, and schedules operations if the required resource is available.
+
+\subsection{One ALU and One Multiplier}
+In the first experiment, the resources are one ALU and one multiplier. Since $v_1=a+b$ and $v_2=c+d$ both require an ALU, they must be scheduled in separate cycles. The resulting schedule is shown in Table~\ref{tab:sched1} and the C++ output is shown in Fig.~\ref{fig:cpp1}. The single-ALU constraint serializes the two additions, pushing $v_3$ to cycle 3 and $v_4$ to cycle 4, one cycle beyond the unconstrained bound.
+
+\begin{table}[t]
+\caption{Schedule with one ALU and one multiplier.}
+\label{tab:sched1}
+\centering
+\begin{tabular}{cl}
+\toprule
+Cycle & Scheduled operation \\
+\midrule
+1 & $v_1 = a+b$ \\
+2 & $v_2 = c+d$ \\
+3 & $v_3 = v_1 \times v_2$ \\
+4 & $v_4 = v_3 + e$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.95\columnwidth]{fig_cpp_1alu.png}
+\caption{C++ List-Based Scheduling output with one ALU and one multiplier. The two addition operations are scheduled in separate cycles, resulting in a latency of 4 cycles.}
+\label{fig:cpp1}
+\end{figure}
+
+\subsection{Two ALUs and One Multiplier}
+In the second experiment, two ALUs and one multiplier are available. The two independent additions can therefore be executed in parallel in cycle 1. The resulting schedule is shown in Table~\ref{tab:sched2} and the C++ output is shown in Fig.~\ref{fig:cpp2}. The measured latency of 3 cycles equals the ASAP lower bound of Section~IV.
+
+\begin{table}[t]
+\caption{Schedule with two ALUs and one multiplier.}
+\label{tab:sched2}
+\centering
+\begin{tabular}{cl}
+\toprule
+Cycle & Scheduled operation \\
+\midrule
+1 & $v_1 = a+b$ \ and \ $v_2 = c+d$ \\
+2 & $v_3 = v_1 \times v_2$ \\
+3 & $v_4 = v_3 + e$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.95\columnwidth]{fig_cpp_2alu.png}
+\caption{C++ List-Based Scheduling output with two ALUs and one multiplier. The two independent addition operations execute in parallel in cycle 1, reducing the latency to 3 cycles.}
+\label{fig:cpp2}
+\end{figure}
+
+\section{VHDL RTL Realization and Simulation}
+The VHDL implementation realizes the scheduled operations at RTL level and thereby makes the binding step of HLS concrete. Two modules were created: \texttt{hls\_sched\_1alu.vhd} for the 4-cycle schedule and \texttt{hls\_sched\_2alu.vhd} for the 3-cycle schedule.
+
+\subsection{FSMD Architecture}
+Each module follows the classic finite-state-machine-with-datapath (FSMD) structure that De~Micheli describes for control-unit synthesis of scheduled sequencing graphs \cite{demicheli1994}. The \emph{controller} is a Moore FSM with one state per control step of the schedule plus an idle and a done state; Fig.~\ref{fig:fsm} shows the controller of the two-ALU design. On \texttt{start}, the FSM steps through the control states $S_1 \rightarrow S_2 \rightarrow S_3$, asserting in each state the register-enable and operand-select signals that correspond to the operations scheduled in that cycle.
+
+The \emph{datapath} contains input registers for $a,\dots,e$, intermediate registers for $v_1$, $v_2$, and $v_3$, an output register for $z$, and the allocated functional units. In the one-ALU design a single adder is shared by $v_1$, $v_2$, and $v_4$; multiplexers at the ALU inputs select the operand pair of the current control step, which is exactly the binding of three operations onto one resource. In the two-ALU design a second adder removes the input multiplexers for the parallel additions, so cycle 1 computes $v_1$ and $v_2$ simultaneously. Both designs instantiate one combinational multiplier used in a single control step.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[shorten >=1pt, node distance=17mm, on grid, auto,
+  every state/.style={minimum size=8.5mm, font=\scriptsize}]
+\node[state, initial, initial text=] (idle) {Idle};
+\node[state, right=of idle] (s1) {$S_1$};
+\node[state, right=of s1] (s2) {$S_2$};
+\node[state, right=of s2] (s3) {$S_3$};
+\node[state, accepting, right=of s3] (done) {Done};
+\path[->]
+ (idle) edge node {\tiny start} (s1)
+ (s1) edge node {\tiny $v_1,v_2$} (s2)
+ (s2) edge node {\tiny $v_3$} (s3)
+ (s3) edge node {\tiny $v_4$} (done)
+ (done) edge[bend left=35] node[below] {\tiny start=0} (idle);
+\end{tikzpicture}
+\caption{Controller FSM of the two-ALU design. Each control state corresponds to one control step of the schedule in Table~\ref{tab:sched2}; the edge labels indicate the operations executed when leaving the state. The one-ALU controller is identical in structure but uses four control states.}
+\label{fig:fsm}
+\end{figure}
+
+\subsection{Testbench and Simulation}
+A common testbench instantiates both designs, drives them with the same clock and \texttt{start} pulse, and applies the input values
+\begin{equation}
+a=2,\quad b=3,\quad c=4,\quad d=5,\quad e=1.
+\end{equation}
+The expected result is
+\begin{equation}
+z = (2+3)(4+5)+1 = 5\cdot 9 + 1 = 46.
+\end{equation}
+The QuestaSim waveform in Fig.~\ref{fig:wave} shows that both designs produce $z=46$. The signal \texttt{done\_2alu} becomes high one clock cycle earlier than \texttt{done\_1alu}, confirming in simulation that the two-ALU implementation finishes earlier, exactly as predicted by the cycle counts of the C++ scheduler.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{fig_waveform.png}
+\caption{QuestaSim waveform of the VHDL RTL implementations. Both designs compute the same result $z=46$. The two-ALU design finishes earlier than the one-ALU design, confirming the resource--latency tradeoff.}
+\label{fig:wave}
+\end{figure}
+
+\section{Results and Discussion}
+Table~\ref{tab:comparison} summarizes the results. The C++ program demonstrates the scheduling decisions, while the VHDL simulation confirms the RTL behavior.
+
+\begin{table}[t]
+\caption{Comparison of resource configurations.}
+\label{tab:comparison}
+\centering
+\begin{tabular}{lccc}
+\toprule
+Configuration & Behavior & Latency & Output \\
+\midrule
+1 ALU + 1 multiplier  & Sequential additions & 4 cycles & 46 \\
+2 ALUs + 1 multiplier & Parallel additions   & 3 cycles & 46 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The results show the main tradeoff in resource-constrained HLS scheduling. With one ALU, operations $v_1$ and $v_2$ cannot run together, so the schedule requires four cycles. With two ALUs, these independent additions run in parallel, reducing the latency to three cycles---a 25\% latency improvement that, by the mobility analysis of Section~IV, is the best achievable for this graph.
+
+\subsection{Analytic Area Estimation}
+The latency gain is paid for in datapath hardware. Table~\ref{tab:area} counts the main datapath components of both designs analytically for a word width of $w$ bits. The two-ALU design adds one $w$-bit adder but removes the operand multiplexers that the shared ALU requires, since each adder now has dedicated operand sources. For a resource-dominated circuit, area grows roughly with the number of functional units \cite{demicheli1994}, so the second ALU is the dominant cost; the controller shrinks slightly because one control state disappears. This illustrates the area/latency design space that architectural optimization explores \cite{demicheli1994,teich2007}: neither design is "better" in isolation---the choice depends on whether the application values the saved cycle more than the extra adder.
+
+\begin{table}[t]
+\caption{Analytic datapath resource comparison ($w$-bit word width).}
+\label{tab:area}
+\centering
+\begin{tabular}{lcc}
+\toprule
+Component & 1 ALU design & 2 ALU design \\
+\midrule
+Adders ($w$-bit)              & 1 & 2 \\
+Multipliers ($w \times w$)    & 1 & 1 \\
+Registers ($w$-bit)           & 9 & 9 \\
+2:1 operand multiplexers      & $\ge 4$ & $\le 2$ \\
+FSM control states            & 6 & 5 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Interpretation in the HLS Design Flow}
+The experiment reproduces, on a minimal example, the loop that HLS tools execute automatically: allocate resources, schedule under the allocation, bind operations to units, and generate an FSMD \cite{coussy2009,cong2011}. Changing a single allocation parameter (the number of ALUs) changed the schedule, the controller, and the datapath structure, while functional correctness was preserved---the essential property that makes HLS-based design-space exploration practical.
+
+\section{Limitations and Future Work}
+The implementation is intentionally small and educational. It does not include register allocation optimization, memory access scheduling, multiplexer sharing, power estimation, or automatic priority computation; the priority of each operation is assigned manually rather than derived from mobility or path length. All operations complete in one cycle, so multi-cycle and pipelined functional units, operation chaining (executing dependent operations in the same cycle when the clock period allows), and pipelining across loop iterations are not covered \cite{demicheli1994}. Larger designs may require more advanced heuristics, force-directed scheduling \cite{paulin1989}, or exact ILP methods \cite{hwang1991}.
+
+Future work could extend the C++ scheduler to compute ASAP/ALAP mobilities automatically and use them as the priority function, add synthesis of the two VHDL designs to a concrete FPGA target to replace the analytic area estimate of Table~\ref{tab:area} with measured LUT and register counts, and compare the heuristic schedules against an ILP-optimal reference on larger randomly generated graphs. Nevertheless, the example demonstrates the essential idea of List-Based Scheduling and its connection to RTL implementation.
+
+\section{Conclusion}
+This paper presented List-Based Scheduling for High-Level Synthesis using a simple arithmetic data-flow example. An ASAP/ALAP mobility analysis established a latency lower bound of three cycles and showed that every operation of the example lies on the critical path. A C++ implementation generated schedules under two resource configurations, and VHDL RTL simulations verified the resulting hardware behavior. Increasing the available ALUs from one to two reduced latency from 4 cycles to 3 cycles---matching the theoretical bound---while both designs produced the correct output, $z=46$. An analytic resource comparison quantified the hardware cost of the faster design. The experiment demonstrates how List-Based Scheduling exploits parallelism when resources are available and highlights the HLS tradeoff between latency and hardware cost.
+
+\section*{AI Usage Statement}
+AI assistance was used to organize the explanation, prepare the LaTeX{} draft, and improve wording. The C++ outputs and VHDL waveform included in this paper were generated from the author's implementation and simulation runs. The final technical content should be checked against the cited references and submitted according to the course rules.
+
+\begin{thebibliography}{00}
+\bibitem{teich2007} J. Teich and C. Haubelt, \emph{Digitale Hardware/Software-Systeme: Synthese und Optimierung}, 2nd ed. Berlin, Germany: Springer, 2007.
+\bibitem{demicheli1994} G. De Micheli, \emph{Synthesis and Optimization of Digital Circuits}. New York, NY, USA: McGraw-Hill, 1994.
+\bibitem{mcfarland1990} M. C. McFarland, A. C. Parker, and R. Camposano, ``The high-level synthesis of digital systems,'' \emph{Proceedings of the IEEE}, vol. 78, no. 2, pp. 301--318, Feb. 1990.
+\bibitem{paulin1989} P. G. Paulin and J. P. Knight, ``Force-directed scheduling for the behavioral synthesis of ASICs,'' \emph{IEEE Transactions on Computer-Aided Design of Integrated Circuits and Systems}, vol. 8, no. 6, pp. 661--679, Jun. 1989.
+\bibitem{hwang1991} C.-T. Hwang, J.-H. Lee, and Y.-C. Hsu, ``A formal approach to the scheduling problem in high level synthesis,'' \emph{IEEE Transactions on Computer-Aided Design of Integrated Circuits and Systems}, vol. 10, no. 4, pp. 464--475, Apr. 1991.
+\bibitem{adam1974} T. L. Adam, K. M. Chandy, and J. R. Dickson, ``A comparison of list schedules for parallel processing systems,'' \emph{Communications of the ACM}, vol. 17, no. 12, pp. 685--690, Dec. 1974.
+\bibitem{coussy2009} P. Coussy, D. D. Gajski, M. Meredith, and A. Takach, ``An introduction to high-level synthesis,'' \emph{IEEE Design \& Test of Computers}, vol. 26, no. 4, pp. 8--17, Jul./Aug. 2009.
+\bibitem{cong2011} J. Cong, B. Liu, S. Neuendorffer, J. Noguera, K. Vissers, and Z. Zhang, ``High-level synthesis for FPGAs: From prototyping to deployment,'' \emph{IEEE Transactions on Computer-Aided Design of Integrated Circuits and Systems}, vol. 30, no. 4, pp. 473--491, Apr. 2011.
+\bibitem{nane2016} R. Nane \emph{et al.}, ``A survey and evaluation of FPGA high-level synthesis tools,'' \emph{IEEE Transactions on Computer-Aided Design of Integrated Circuits and Systems}, vol. 35, no. 10, pp. 1591--1604, Oct. 2016.
+\end{thebibliography}
+
+\end{document}
